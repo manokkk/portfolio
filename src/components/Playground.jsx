@@ -41,7 +41,7 @@ export default function Playground() {
       const parsed = JSON.parse(jsonInput);
       setJsonOutput(JSON.stringify(parsed, null, 2));
     } catch (err) {
-      setJsonOutput("⚠️ Invalid JSON syntax: " + err.message);
+      setJsonOutput("Invalid JSON syntax: " + err.message);
     }
   };
 

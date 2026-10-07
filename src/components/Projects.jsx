@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FolderGit2, ExternalLink, Layers, Code, CheckCircle2, X, Server } from 'lucide-react';
+import { FolderGit2, ExternalLink, Layers, Code, CheckCircle2, X, Server, Zap } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 import { portfolioData } from '../data/portfolioData';
 
@@ -86,8 +86,9 @@ export default function Projects() {
                   {/* Metrics Row */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.metrics.map((m, idx) => (
-                      <span key={idx} className="text-[11px] font-mono font-medium px-2.5 py-1 rounded-md bg-sky-500/10 text-sky-300 border border-sky-500/20">
-                        ⚡ {m}
+                      <span key={idx} className="text-[11px] font-mono font-medium px-2.5 py-1 rounded-md bg-sky-500/10 text-sky-300 border border-sky-500/20 flex items-center gap-1">
+                        <Zap className="w-3 h-3 text-sky-400 shrink-0" />
+                        <span>{m}</span>
                       </span>
                     ))}
                   </div>

@@ -7,7 +7,7 @@ export default function InteractiveTerminal() {
   const [history, setHistory] = useState([
     {
       type: 'system',
-      text: '⚡ Alex Rivera Interactive Terminal v2.4.0\nType "help" to list available commands, or click quick shortcut chips below.'
+      text: 'Mico Gianan Interactive Terminal v2.4.0\nType "help" to list available commands, or click quick shortcut chips below.'
     }
   ]);
 

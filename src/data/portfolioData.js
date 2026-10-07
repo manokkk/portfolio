@@ -6,7 +6,7 @@ export const portfolioData = {
     location: "San Francisco, CA • Remote Worldwide",
     status: "Open for High-Impact Roles & Consulting",
     bio: "Passionate Full-Stack Engineer with 7+ years of experience building mission-critical web applications, high-throughput microservices, and AI-driven platforms. Obsessed with clean code architecture, sub-second latency, and delightful developer experiences.",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600",
+    avatarUrl: "/images/profile.png",
     email: "alex.rivera.dev@gmail.com",
     github: "https://github.com",
     linkedin: "https://linkedin.com",
@@ -201,6 +201,6 @@ pub fn calculate_optimal_route(
     skills: "TECHNICAL STACK SUMMARY:\n[Frontend] React, Next.js, TypeScript, Tailwind, Canvas/WebGL\n[Backend] Node.js, Python FastAPI, Go, GraphQL, WebSockets\n[Infra] Kubernetes, Docker, AWS, GCP, Redis, CI/CD\n[Databases] PostgreSQL, TimescaleDB, MongoDB, Pinecone",
     projects: "FEATURED PRODUCTION PROJECTS:\n1. Cognito AI — Multi-Agent Workflow Engine\n2. AetherNet — Kubernetes Telemetry Monitor\n3. Orion Analytics — Web3 Algorithmic Trading Platform",
     contact: "CONNECT WITH ALEX:\nEmail: alex.rivera.dev@gmail.com\nGitHub: https://github.com\nLinkedIn: https://linkedin.com\nLocation: San Francisco, CA",
-    "sudo hire": "🚀 ACCESS GRANTED! Alex has been notified of your priority recruiter inquiry. Expect a response within 2 hours!"
+    "sudo hire": "[ACCESS GRANTED] Mico has been notified of your priority recruiter inquiry. Expect a response shortly!"
   }
 };
