@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, MailCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, MailCheck, ArrowRight } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 
-export default function Contact({ email = "micogianan28@gmail.com" }) {
+export default function Contact({ email = "micogianan28@gmail.com", prefilledInquiry = null }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', topic: 'Full-Stack Web Development', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' });
+
+  useEffect(() => {
+    if (prefilledInquiry) {
+      setForm(prev => ({
+        ...prev,
+        topic: prefilledInquiry.topic || prev.topic,
+        message: prefilledInquiry.message || prev.message
+      }));
+    }
+  }, [prefilledInquiry]);
 
   const handleCopyEmail = (e) => {
     e.preventDefault();
@@ -181,18 +191,19 @@ export default function Contact({ email = "micogianan28@gmail.com" }) {
 
                 {/* Action Buttons */}
                 <div className="success-action-row">
-                  <button
-                    onClick={() => { setSubmitted(false); setForm({ name: '', email: '', topic: 'Full-Stack Web Development', message: '' }); }}
+                  <a
+                    href="#works"
                     className="btn-success-item btn-success-white"
+                  >
+                    <span>EXPLORE PROJECTS</span>
+                    <ArrowRight className="w-4 h-4 ml-1.5" />
+                  </a>
+                  <button
+                    onClick={() => { setSubmitted(false); setForm({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' }); }}
+                    className="btn-success-item btn-success-outline"
                   >
                     <span>SEND ANOTHER MESSAGE</span>
                   </button>
-                  <a
-                    href="#works"
-                    className="btn-success-item btn-success-outline"
-                  >
-                    <span>EXPLORE PROJECTS</span>
-                  </a>
                 </div>
 
               </div>
@@ -234,11 +245,14 @@ export default function Contact({ email = "micogianan28@gmail.com" }) {
                     onChange={(e) => setForm({ ...form, topic: e.target.value })}
                     className="form-select"
                   >
-                    <option value="Full-Stack Web Development">Full-Stack Web Development</option>
-                    <option value="Mobile App (Expo)">Mobile App Development</option>
-                    <option value="Database & APIs">Database Architecture & REST APIs</option>
+                    <option value="Full-Stack Web Applications">Full-Stack Web Applications</option>
+                    <option value="Cross-Platform Mobile Apps">Cross-Platform Mobile Apps</option>
+                    <option value="Databases, Cloud & DevOps">Databases, Cloud & DevOps</option>
+                    <option value="Website Security & Vulnerability Audits">Website Security & Vulnerability Audits</option>
+                    <option value="AI & Semantic Search Engines">AI & Semantic Search Engines</option>
+                    <option value="IoT & Microcontroller Automation">IoT & Microcontroller Automation</option>
                     <option value="Full-Time Engineering Role">Full-Time Engineering Role</option>
-                    <option value="Consulting & Advice">Consulting & Project Inquiry</option>
+                    <option value="Consulting & Project Inquiry">Consulting & Project Inquiry</option>
                   </select>
                 </div>
 

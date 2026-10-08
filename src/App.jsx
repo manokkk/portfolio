@@ -9,6 +9,17 @@ import ResumeModal from './components/ResumeModal';
 
 export default function App() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [prefilledInquiry, setPrefilledInquiry] = useState(null);
+
+  const handleSelectInquiry = (topic, message) => {
+    setPrefilledInquiry({ topic, message });
+    setTimeout(() => {
+      const contactElem = document.getElementById('contact');
+      if (contactElem) {
+        contactElem.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
+  };
 
   return (
     <div className="min-h-screen bg-[#0c0d12] text-[#ffffff] font-sans antialiased">
@@ -23,8 +34,11 @@ export default function App() {
           description="a Full-Stack Web & Mobile Developer in Taguig, Philippines. Specializing in Next.js, NestJS, .NET Framework, and React Native (Expo) to build scalable cross-platform applications."
         />
         <Works />
-        <Services />
-        <Contact email="micogianan28@gmail.com" />
+        <Services onRequestInquiry={handleSelectInquiry} />
+        <Contact 
+          email="micogianan28@gmail.com" 
+          prefilledInquiry={prefilledInquiry}
+        />
       </main>
 
       <Footer />
@@ -37,3 +51,4 @@ export default function App() {
     </div>
   );
 }
+
