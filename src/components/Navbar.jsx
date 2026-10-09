@@ -26,7 +26,7 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
         {/* Right: Desktop Navigation Links */}
         <nav className="nav-links">
-          <a href="#works" className="nav-link">Works</a>
+          <a href="#projects" className="nav-link">Works & Projects</a>
           <button onClick={onOpenResume} className="nav-link">Resume</button>
           <a href="#services" className="nav-link">Services</a>
           <a href="#contact" className="nav-link">Contact</a>
@@ -45,7 +45,7 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="mobile-drawer">
-          <a href="#works" onClick={() => setMobileOpen(false)} className="mobile-nav-link">Works</a>
+          <a href="#projects" onClick={() => setMobileOpen(false)} className="mobile-nav-link">Works & Projects</a>
           <button 
             onClick={() => { setMobileOpen(false); onOpenResume(); }} 
             className="mobile-nav-link"

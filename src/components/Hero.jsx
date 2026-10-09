@@ -77,7 +77,7 @@ export default function Hero({
               <span>CONNECT WITH ME</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
-            <a href="#works" className="pill-btn-outline">
+            <a href="#projects" className="pill-btn-outline">
               <span>EXPLORE PROJECTS</span>
             </a>
           </div>

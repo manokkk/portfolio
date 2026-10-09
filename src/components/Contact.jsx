@@ -192,7 +192,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 {/* Action Buttons */}
                 <div className="success-action-row">
                   <a
-                    href="#works"
+                    href="#projects"
                     className="btn-success-item btn-success-white"
                   >
                     <span>EXPLORE PROJECTS</span>
