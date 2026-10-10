@@ -163,14 +163,7 @@ export default function Projects() {
               {activeModalProject.title}
             </h3>
 
-            {/* Modal Image */}
-            <div className="rounded-xl overflow-hidden mb-6 max-h-64 border border-white/10">
-              <img 
-                src={activeModalProject.image} 
-                alt={activeModalProject.title} 
-                className="w-full h-full object-cover"
-              />
-            </div>
+
 
             {/* Long Description */}
             <p className="text-slate-300 text-sm leading-relaxed mb-6">

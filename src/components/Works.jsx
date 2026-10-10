@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, X, ExternalLink, CheckCircle2, FolderGit2 } from 'lucide-react';
+import { 
+  ArrowUpRight, 
+  X, 
+  CheckCircle2, 
+  FolderGit2, 
+  Globe, 
+  Smartphone, 
+  Cpu, 
+  Database, 
+  ArrowRight,
+  Terminal,
+  Layers,
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  Code2
+} from 'lucide-react';
 
 export default function Works() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
-  const [activeImage, setActiveImage] = useState(null);
+  const [modalTab, setModalTab] = useState('overview');
 
   const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'AI & ML', 'IoT Hardware'];
 
@@ -14,13 +30,20 @@ export default function Works() {
       title: 'Inspire Holdings Website',
       category: 'Full-Stack Web',
       image: '/images/inspire_website.png',
-      description: 'Full-stack corporate enterprise web platform for Inspire Holdings, built with responsive architecture, optimized server-side rendering, and modern user interface components.',
-      highlights: [
-        'Built full-stack web application leveraging Next.js, React, and Tailwind CSS',
-        'Optimized server-side page rendering, SEO, and web performance metrics',
-        'Integrated responsive component architecture and dynamic content workflows'
+      description: 'Architecting robust, ultra-fast web platforms and microservices with clean code, RESTful APIs, and DB integrations.',
+      blueprint: 'Client (Next.js/React) ➔ API Gateway (NestJS/.NET) ➔ PostgreSQL DB + Redis Cache ➔ Vercel/Render Cloud',
+      metrics: [
+        { label: 'Sub-second Load', desc: 'SSR & Vercel Edge Optimization', icon: Zap },
+        { label: 'Enterprise Security', desc: 'JWT & RBAC Access Layer', icon: ShieldCheck },
+        { label: 'Cloud Architecture', desc: 'PostgreSQL + Redis Cache', icon: Sparkles }
       ],
-      tags: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js'],
+      highlights: [
+        'Production-Ready Next.js & React Web App',
+        'RESTful/GraphQL API Microservices',
+        'Authentication & RBAC Security Layer',
+        'Full System & API Documentation'
+      ],
+      tags: ['Next.js', 'React', 'NestJS', '.NET Framework', 'FastAPI', 'TailwindCSS', 'TypeScript'],
       projectUrl: 'https://github.com/manokkk'
     },
     {
@@ -29,12 +52,19 @@ export default function Works() {
       category: 'Full-Stack Web',
       image: '/images/project_confidential_admin.png',
       description: 'Next-generation enterprise administration dashboard providing real-time data analytics, role-based access control (RBAC), and backend system monitoring.',
-      highlights: [
-        'Architected scalable admin portal using Next.js, NestJS, and PostgreSQL',
-        'Implemented secure JWT authentication and fine-grained permissions system',
-        'Integrated Redis caching for low-latency dashboard state & analytical data'
+      blueprint: 'Admin Client (Next.js) ➔ Auth Layer (JWT/RBAC) ➔ NestJS API Engine ➔ Redis Cache + PostgreSQL',
+      metrics: [
+        { label: 'Real-time Analytics', desc: 'Low-latency Dashboard Feeds', icon: Zap },
+        { label: 'Fine-Grained Auth', desc: 'Role-Based Access Control', icon: ShieldCheck },
+        { label: 'High Availability', desc: 'Redis Cached State Storage', icon: Sparkles }
       ],
-      tags: ['Next.js', 'NestJS', 'PostgreSQL', 'Redis', 'Tailwind CSS'],
+      highlights: [
+        'Scalable Next.js & NestJS Admin Engine',
+        'JWT Authentication & Fine-Grained Permissions',
+        'Redis Dashboard Caching & Analytical Data',
+        'Real-time System Audit & Log Streams'
+      ],
+      tags: ['Next.js', 'NestJS', 'PostgreSQL', 'Redis', 'Tailwind CSS', 'TypeScript'],
       projectUrl: 'https://github.com/manokkk'
     },
     {
@@ -43,12 +73,19 @@ export default function Works() {
       category: 'Mobile (Expo)',
       image: '/images/inspire_app_v2.png',
       description: 'Cross-platform mobile application for iOS & Android powering Inspire Holdings client services with real-time push notifications, offline storage, and cloud sync.',
-      highlights: [
-        'Engineered cross-platform mobile apps with React Native & Expo framework',
-        'Integrated real-time database architecture using Supabase & Firebase',
-        'Delivered native mobile performance with seamless multi-device support'
+      blueprint: 'Mobile App (Expo) ➔ Offline Storage Sync ➔ Cloud API Endpoints ➔ Push Notification Server',
+      metrics: [
+        { label: 'Native 60 FPS', desc: 'React Native & Expo Suite', icon: Zap },
+        { label: 'Offline First', desc: 'AsyncStorage & Zustand Sync', icon: ShieldCheck },
+        { label: 'Cross-Platform', desc: 'iOS & Android Dual Build', icon: Sparkles }
       ],
-      tags: ['React Native (Expo)', 'TypeScript', 'Supabase', 'Firebase', 'Mobile'],
+      highlights: [
+        'Cross-Platform iOS & Android App Bundle',
+        'Offline Caching & State Synchronization',
+        'Push Notifications & Mobile Biometrics',
+        'App Store & Play Store Ready Deliverables'
+      ],
+      tags: ['React Native (Expo)', 'TypeScript', 'Supabase', 'Firebase', 'Zustand', 'Mobile'],
       projectUrl: 'https://github.com/manokkk'
     },
     {
@@ -57,12 +94,19 @@ export default function Works() {
       category: 'Full-Stack Web',
       image: '/images/project_confidential_admin.png',
       description: 'Secure fintech administrative engine for IamWallet, managing digital transaction monitoring, wallet balance ledger audits, and user verification workflows.',
-      highlights: [
-        'Designed full-stack admin suite using NestJS, .NET Framework, and React',
-        'Implemented real-time transaction auditing and balance reconciliation',
-        'Integrated Redis caching for high throughput transaction processing'
+      blueprint: 'Admin Dashboard (React) ➔ Ledger Audit Engine (.NET/NestJS) ➔ Redis Cache ➔ PostgreSQL DB',
+      metrics: [
+        { label: 'Fintech Audit', desc: 'Real-time Ledger Monitoring', icon: Zap },
+        { label: 'Secure Pipeline', desc: '.NET & NestJS Microservices', icon: ShieldCheck },
+        { label: 'High Throughput', desc: 'Sub-millisecond Redis Caching', icon: Sparkles }
       ],
-      tags: ['NestJS', '.NET', 'React', 'Redis', 'PostgreSQL'],
+      highlights: [
+        'Full-Stack Fintech Administrative Suite',
+        'Real-time Transaction Auditing Engine',
+        'High-Throughput Balance Reconciliation',
+        'Redis Performance In-Memory Caching'
+      ],
+      tags: ['NestJS', '.NET Framework', 'React', 'Redis', 'PostgreSQL', 'TypeScript'],
       projectUrl: 'https://github.com/manokkk'
     },
     {
@@ -71,12 +115,19 @@ export default function Works() {
       category: 'Mobile (Expo)',
       image: '/images/iamwallet_app.png',
       description: 'Feature-rich mobile fintech wallet (I\'M Pay) for iOS & Android providing secure digital money transfers, smart digital cards, QR payments, investment campaign plans, and real-time transaction tracking.',
-      highlights: [
-        'Developed iOS & Android mobile app using React Native (Expo) & TypeScript',
-        'Engineered Smart Digital Wallet interface with card & QR payment flows',
-        'Integrated Investment Campaign modules with real-time financial metrics'
+      blueprint: 'Mobile Wallet (Expo) ➔ Smart Digital Card Engine ➔ Firebase & Supabase ➔ REST APIs',
+      metrics: [
+        { label: 'Instant Transfers', desc: 'QR & Digital Card Flow', icon: Zap },
+        { label: 'Biometric Auth', desc: 'Encrypted Wallet Vault', icon: ShieldCheck },
+        { label: 'Smart Analytics', desc: 'Investment Campaign Tracker', icon: Sparkles }
       ],
-      tags: ['React Native (Expo)', 'Firebase', 'TypeScript', 'Fintech', 'REST API'],
+      highlights: [
+        'Smart Digital Wallet & QR Payment Engine',
+        'Investment Campaign & Metric Dashboard',
+        'Secure Mobile Payment Flow Integration',
+        'Real-time Transaction Tracking System'
+      ],
+      tags: ['React Native (Expo)', 'Firebase', 'TypeScript', 'Fintech', 'REST API', 'Zustand'],
       projectUrl: 'https://github.com/manokkk'
     },
     {
@@ -85,12 +136,19 @@ export default function Works() {
       category: 'AI & ML',
       image: '/images/project_ai_platform.jpg',
       description: 'A role-based digital repository featuring a machine learning semantic search engine and AI-driven thesis improvement module. Reached 90% search accuracy with sub-5-second retrieval times.',
-      highlights: [
-        'ML Semantic Search Engine achieving sub-5s retrieval times & 90% accuracy',
-        'Role-based digital repository with secure authentication & data integrity',
-        'Continuous QA strategies across security, performance, and usability testing'
+      blueprint: 'Next.js Frontend ➔ FastAPI Microservice ➔ Semantic Search Vector Index ➔ PostgreSQL Storage',
+      metrics: [
+        { label: '<5s Retrieval', desc: '90% Search Accuracy', icon: Zap },
+        { label: 'AI Thesis Module', desc: 'Automated Insight Assistant', icon: ShieldCheck },
+        { label: 'Vector Index', desc: 'FastAPI & Semantic Models', icon: Sparkles }
       ],
-      tags: ['Next.js', 'FastAPI', 'Python', 'ML / Semantic Search', 'PostgreSQL'],
+      highlights: [
+        'ML Semantic Search Engine (<5s Retrieval)',
+        'AI Thesis Improvement & Analysis Module',
+        'Role-Based Digital Archive & Security',
+        'Continuous Automated Usability & Performance QA'
+      ],
+      tags: ['Next.js', 'FastAPI', 'Python', 'ML / Vector Search', 'PostgreSQL', 'Tailwind CSS'],
       projectUrl: 'https://github.com/manokkk'
     },
     {
@@ -99,12 +157,19 @@ export default function Works() {
       category: 'IoT Hardware',
       image: '/images/project_iot_hardware.jpg',
       description: 'Real-time micro-controller automation system communicating with backend RESTful APIs for hardware sensor telemetry and remote device execution.',
-      highlights: [
-        'Programmed embedded controllers on Raspberry Pi and ESP32 boards',
-        'Engineered fast asynchronous RESTful APIs using Python and FastAPI',
-        'Docker containerized deployment pipeline'
+      blueprint: 'Embedded Boards (Raspberry Pi/ESP32) ➔ Telemetry Ingestion ➔ FastAPI Engine ➔ Docker Container',
+      metrics: [
+        { label: 'Real-time Telemetry', desc: 'Raspberry Pi & ESP32 Boards', icon: Zap },
+        { label: 'Async REST API', desc: 'High-speed FastAPI Ingestion', icon: ShieldCheck },
+        { label: 'Containerized', desc: 'Docker Automated Pipeline', icon: Sparkles }
       ],
-      tags: ['Raspberry Pi', 'ESP32', 'Python', 'FastAPI', 'Docker'],
+      highlights: [
+        'Micro-Controller Firmware Automation',
+        'Asynchronous Telemetry RESTful API',
+        'Real-time Sensor Monitoring Stream',
+        'Containerized Docker Deployment Pipeline'
+      ],
+      tags: ['Raspberry Pi', 'ESP32', 'Python', 'FastAPI', 'Docker', 'IoT Telemetry'],
       projectUrl: 'https://github.com/manokkk'
     }
   ];
@@ -115,7 +180,46 @@ export default function Works() {
 
   const handleOpenModal = (work) => {
     setSelectedProject(work);
-    setActiveImage(work.images?.[0] || work.image);
+    setModalTab('overview');
+  };
+
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case 'Full-Stack Web':
+        return <Globe className="w-5 h-5" style={{ color: '#38bdf8' }} />;
+      case 'Mobile (Expo)':
+        return <Smartphone className="w-5 h-5" style={{ color: '#34d399' }} />;
+      case 'AI & ML':
+        return <Cpu className="w-5 h-5" style={{ color: '#c084fc' }} />;
+      case 'IoT Hardware':
+        return <Database className="w-5 h-5" style={{ color: '#fbbf24' }} />;
+      default:
+        return <Globe className="w-5 h-5" style={{ color: '#38bdf8' }} />;
+    }
+  };
+
+  const getDeliverableSpecMeta = (project, index) => {
+    const modules = ['01 / FRONTEND', '02 / BACKEND', '03 / SECURITY', '04 / DEPLOYMENT'];
+    const statuses = ['● DEPLOYED', '● ACTIVE', '● ENCRYPTED', '● VERIFIED'];
+    return {
+      module: modules[index % modules.length],
+      status: statuses[index % statuses.length]
+    };
+  };
+
+  const getCategoryGlow = (category) => {
+    switch (category) {
+      case 'Full-Stack Web':
+        return { bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.3)' };
+      case 'Mobile (Expo)':
+        return { bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.3)' };
+      case 'AI & ML':
+        return { bg: 'rgba(192, 132, 252, 0.12)', border: 'rgba(192, 132, 252, 0.3)' };
+      case 'IoT Hardware':
+        return { bg: 'rgba(251, 191, 36, 0.12)', border: 'rgba(251, 191, 36, 0.3)' };
+      default:
+        return { bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.3)' };
+    }
   };
 
   return (
@@ -155,115 +259,205 @@ export default function Works() {
             </div>
             <div className="card-content">
               <span className="card-category">{work.category}</span>
-              <h3 className="card-title flex items-center justify-between">
+              <h3 className="card-title flex items-end justify-between gap-2">
                 <span>{work.title}</span>
-                <ArrowUpRight className="w-5 h-5 text-gray-400 shrink-0" />
+                <ArrowUpRight className="card-title-icon w-5 h-5 min-w-[20px] min-h-[20px] text-gray-400 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 mb-1" />
               </h3>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Project Details Modal */}
+      {/* Interactive Cyber-Terminal Inspector Modal */}
       {selectedProject && (
         <div className="modal-backdrop" onClick={() => setSelectedProject(null)}>
-          <div className="modal-box max-w-2xl overflow-x-hidden" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <button 
               className="modal-close-btn"
               onClick={() => setSelectedProject(null)}
+              title="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <span className="card-category mb-2 block">{selectedProject.category}</span>
-            <h3 className="text-2xl font-bold text-white mb-4">{selectedProject.title}</h3>
-
-            {/* Modal Image Showcase with Multi-image gallery support */}
-            <div className="mb-6 w-full">
-              {activeImage || selectedProject.image ? (
-                <div 
-                  className="w-full rounded-2xl overflow-hidden bg-[#0a0b12] border border-white/10 flex items-center justify-center p-3 text-center"
-                  style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
-                  <img 
-                    src={activeImage || selectedProject.image} 
-                    alt={selectedProject.title} 
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      width: 'auto',
-                      height: 'auto',
-                      objectFit: 'contain',
-                      margin: '0 auto',
-                      display: 'block'
-                    }}
-                    className="rounded-lg shadow-xl" 
-                  />
-                </div>
-              ) : (
-                <div className="rounded-xl overflow-hidden h-48 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950/60 border border-white/10 flex flex-col items-center justify-center p-6 text-center">
-                  <FolderGit2 className="w-12 h-12 text-sky-400 mb-3" />
-                  <span className="text-sm font-mono font-bold text-white mb-1">{selectedProject.title}</span>
-                  <span className="text-xs text-slate-400 font-mono">Image upload pending</span>
-                </div>
-              )}
-
-              {/* Thumbnails Gallery Slider for Multi-image projects */}
-              {selectedProject.images && selectedProject.images.length > 1 && (
-                <div className="flex gap-2.5 justify-center mt-3">
-                  {selectedProject.images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImage(img)}
-                      className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all bg-slate-950 p-1 ${
-                        activeImage === img 
-                          ? 'border-sky-400 scale-105 shadow-md shadow-sky-500/20' 
-                          : 'border-white/10 opacity-60 hover:opacity-100'
-                      }`}
-                      title={`Screen ${idx + 1}`}
-                    >
-                      <img src={img} alt="" className="w-full h-full object-cover rounded" />
-                    </button>
-                  ))}
-                </div>
-              )}
+            {/* Modal Header */}
+            <div className="service-modal-header">
+              <div 
+                className="service-modal-icon-box"
+                style={{ 
+                  backgroundColor: getCategoryGlow(selectedProject.category).bg,
+                  borderColor: getCategoryGlow(selectedProject.category).border
+                }}
+              >
+                {getCategoryIcon(selectedProject.category)}
+              </div>
+              <div>
+                <span className="service-modal-badge">{selectedProject.category}</span>
+                <h3 className="service-modal-title">{selectedProject.title}</h3>
+              </div>
             </div>
 
-            <p className="text-gray-300 text-sm leading-relaxed mb-6">
+            {/* Description */}
+            <p className="service-modal-desc">
               {selectedProject.description}
             </p>
 
-            <div className="mb-6">
-              <h4 className="text-sm font-bold text-white mb-3">Key Project Deliverables & Impact</h4>
-              <ul className="space-y-2 list-none p-0 m-0">
-                {selectedProject.highlights.map((h, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-gray-300">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
+            {/* Interactive Inspector Tab Navigation Bar */}
+            <div className="inspector-tab-nav">
+              <button
+                onClick={() => setModalTab('overview')}
+                className={`inspector-tab-btn ${modalTab === 'overview' ? 'active' : ''}`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Overview & Deliverables</span>
+              </button>
+              <button
+                onClick={() => setModalTab('architecture')}
+                className={`inspector-tab-btn ${modalTab === 'architecture' ? 'active' : ''}`}
+              >
+                <Terminal className="w-3.5 h-3.5" />
+                <span>Cyber Terminal</span>
+              </button>
+              <button
+                onClick={() => setModalTab('tech')}
+                className={`inspector-tab-btn ${modalTab === 'tech' ? 'active' : ''}`}
+              >
+                <Code2 className="w-3.5 h-3.5" />
+                <span>Tech Stack</span>
+              </button>
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {selectedProject.tags.map((t) => (
-                <span key={t} className="text-xs bg-white/5 border border-white/10 px-3 py-1 rounded-full text-gray-300">
-                  {t}
-                </span>
-              ))}
-            </div>
+            {/* TAB 1: OVERVIEW & DELIVERABLES */}
+            {modalTab === 'overview' && (
+              <div>
 
-            <div className="flex justify-end pt-4 border-t border-white/10">
+
+                {/* Interactive Terminal Spec Matrix Table */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+                    <h4 className="modal-section-title" style={{ marginBottom: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Terminal className="w-4 h-4" style={{ color: '#38bdf8' }} />
+                      <span>CORE DELIVERABLES & SPECIFICATION MATRIX</span>
+                    </h4>
+                    <span className="terminal-badge-active" style={{ fontSize: '0.625rem' }}>
+                      ● {selectedProject.highlights.length} Verified Modules
+                    </span>
+                  </div>
+
+                  <div className="spec-table-wrapper">
+                    <table className="spec-table">
+                      <thead>
+                        <tr>
+                          <th>MODULE</th>
+                          <th>DELIVERABLE SPECIFICATION</th>
+                          <th>STATUS</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedProject.highlights.map((h, i) => {
+                          const meta = getDeliverableSpecMeta(selectedProject, i);
+                          return (
+                            <tr key={i}>
+                              <td>
+                                <span className="spec-module-tag">{meta.module}</span>
+                              </td>
+                              <td>
+                                <span className="spec-title-text">{h}</span>
+                              </td>
+                              <td>
+                                <span className="spec-status-active">{meta.status}</span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: CYBER TERMINAL ARCHITECTURE */}
+            {modalTab === 'architecture' && (
+              <div className="cyber-terminal-window">
+                <div className="cyber-terminal-header">
+                  <div className="terminal-dots">
+                    <span className="terminal-dot red"></span>
+                    <span className="terminal-dot yellow"></span>
+                    <span className="terminal-dot green"></span>
+                    <span className="terminal-title">architecture.topology.ts</span>
+                  </div>
+                  <span className="terminal-badge-active">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Pipeline Active</span>
+                  </span>
+                </div>
+
+                <div className="terminal-body">
+                  <div className="terminal-comment">// Execution Topology</div>
+                  <div className="terminal-flow-box">
+                    <Terminal className="w-4 h-4 text-sky-400 shrink-0" />
+                    <span>{selectedProject.blueprint}</span>
+                  </div>
+
+                  <div className="terminal-comment" style={{ marginTop: '1rem' }}>// System Infrastructure Layers</div>
+                  <div className="terminal-layers-grid">
+                    <div className="terminal-layer-card">
+                      <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>01.</span>
+                      <span>Frontend: Client UI & SSR</span>
+                    </div>
+                    <div className="terminal-layer-card">
+                      <span style={{ color: '#818cf8', fontWeight: 'bold' }}>02.</span>
+                      <span>Gateway: REST & JWT Auth</span>
+                    </div>
+                    <div className="terminal-layer-card">
+                      <span style={{ color: '#c084fc', fontWeight: 'bold' }}>03.</span>
+                      <span>Cache: Redis Low-Latency</span>
+                    </div>
+                    <div className="terminal-layer-card">
+                      <span style={{ color: '#34d399', fontWeight: 'bold' }}>04.</span>
+                      <span>Database: Relational/Vector</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: TECH STACK */}
+            {modalTab === 'tech' && (
+              <div>
+                <h4 className="blueprint-label" style={{ marginBottom: '0.5rem' }}>LEVERAGED TECHNOLOGIES & TOOLS</h4>
+                <div className="tech-pills-wrap">
+                  {selectedProject.tags.map((tech) => (
+                    <span key={tech} className="tech-pill">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="blueprint-box" style={{ marginTop: '1rem' }}>
+                  <span className="blueprint-label">ENGINEERING & DEPLOYMENT INTEGRITY</span>
+                  <p className="service-modal-desc" style={{ marginBottom: 0 }}>
+                    Built according to strict software design patterns, type safety (TypeScript), continuous performance optimization, and modular component architecture.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Footer Actions */}
+            <div className="modal-footer-row" style={{ justifyContent: 'flex-end' }}>
               <a
                 href={selectedProject.projectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="pill-btn-white text-xs"
+                className="modal-request-btn"
+                style={{ textDecoration: 'none' }}
               >
-                <span>VIEW PROJECT ARCHIVE</span>
-                <ExternalLink className="w-4 h-4" />
+                <span>EXPLORE PROJECT ARCHIVE</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
+
           </div>
         </div>
       )}
