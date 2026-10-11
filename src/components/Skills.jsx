@@ -10,7 +10,8 @@ export default function Skills() {
     { id: 'frontend', label: 'Frontend & UI', icon: Code2, data: portfolioData.skills.frontend },
     { id: 'backend', label: 'Backend & APIs', icon: Server, data: portfolioData.skills.backend },
     { id: 'cloud', label: 'Cloud & DevOps', icon: Cloud, data: portfolioData.skills.cloud },
-    { id: 'databases', label: 'Databases & AI', icon: Database, data: portfolioData.skills.databases },
+    { id: 'databases', label: 'Databases & Storage', icon: Database, data: portfolioData.skills.databases },
+    { id: 'hardware', label: 'IoT & AI Systems', icon: Cpu, data: portfolioData.skills.hardware },
   ];
 
   const currentCategory = skillTabs.find(t => t.id === activeTab);

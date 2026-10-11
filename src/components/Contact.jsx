@@ -193,10 +193,10 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 <div className="success-action-row">
                   <a
                     href="#projects"
-                    className="btn-success-item btn-success-white"
+                    className="btn-success-item btn-success-white group"
                   >
                     <span>EXPLORE PROJECTS</span>
-                    <ArrowRight className="w-4 h-4 ml-1.5" />
+                    <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
                   </a>
                   <button
                     onClick={() => { setSubmitted(false); setForm({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' }); }}

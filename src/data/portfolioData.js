@@ -1,28 +1,27 @@
 export const portfolioData = {
   personal: {
-    name: "Alex Rivera",
-    title: "Senior Full-Stack & AI Systems Engineer",
-    tagline: "Architecting resilient distributed cloud systems, modern web apps, & intelligent AI agents.",
-    location: "San Francisco, CA • Remote Worldwide",
-    status: "Open for High-Impact Roles & Consulting",
-    bio: "Passionate Full-Stack Engineer with 7+ years of experience building mission-critical web applications, high-throughput microservices, and AI-driven platforms. Obsessed with clean code architecture, sub-second latency, and delightful developer experiences.",
-    avatarUrl: "/images/profile.png",
-    email: "alex.rivera.dev@gmail.com",
-    github: "https://github.com",
+    name: "Mico H. Gianan",
+    title: "Full-Stack Web & Mobile Developer",
+    tagline: "Building scalable cross-platform mobile apps, modern web apps, & resilient cloud backends.",
+    location: "Taguig City, Philippines",
+    status: "Available for Full-Stack, Web & Mobile Roles",
+    bio: "Full-Stack Web & Mobile Developer specializing in React.js, Next.js, React Native, NestJS, .NET Framework, and Laravel. Experienced with AWS, Docker, PostgreSQL, Supabase, Firebase, and IoT microcontrollers.",
+    avatarUrl: "/Copy_of_GIANAN__Mico_H._0335-removebg-preview.png",
+    email: "micogianan28@gmail.com",
+    github: "https://github.com/manokkk",
     linkedin: "https://linkedin.com",
-    twitter: "https://twitter.com",
-    resumeUrl: "#resume-download",
-    yearsExperience: 7,
-    completedProjects: 45,
-    openSourceStars: "2.4k+",
-    codeLines: "1.2M+"
+    resumeUrl: "/Gianan_Resume_FullStackDev.pdf",
+    yearsExperience: "4+",
+    completedProjects: "15+",
+    openSourceStars: "40+",
+    codeLines: "250k+"
   },
 
   stats: [
-    { label: "Years Experience", value: "7+", color: "var(--neon-cyan)" },
-    { label: "Production Apps", value: "45+", color: "var(--neon-purple)" },
-    { label: "Open Source Stars", value: "2.4k", color: "var(--neon-emerald)" },
-    { label: "Global Users Served", value: "5M+", color: "var(--neon-amber)" }
+    { label: "Active Stacks", value: "6+", color: "var(--neon-cyan)" },
+    { label: "Production Apps", value: "10+", color: "var(--neon-purple)" },
+    { label: "API Endpoints Built", value: "120+", color: "var(--neon-emerald)" },
+    { label: "Client Satisfaction", value: "100%", color: "var(--neon-amber)" }
   ],
 
   projects: [
@@ -126,31 +125,36 @@ pub fn calculate_optimal_route(
 
   skills: {
     frontend: [
-      { name: "React / Next.js", level: 95, exp: "6 yrs" },
-      { name: "TypeScript / ESNext", level: 92, exp: "6 yrs" },
-      { name: "HTML5 / Modern CSS / Tailwind", level: 95, exp: "7 yrs" },
-      { name: "State Mgt (Zustand, Redux, TanStack Query)", level: 90, exp: "5 yrs" },
-      { name: "WebGL / Canvas / UI Animations", level: 82, exp: "3 yrs" }
+      { name: "React.JS & Next.JS", level: 95, exp: "4 yrs" },
+      { name: "React Native (Expo Mobile)", level: 90, exp: "3 yrs" },
+      { name: "React Redux & State Mgt", level: 88, exp: "3 yrs" },
+      { name: "MERN Stack Development", level: 92, exp: "4 yrs" },
+      { name: "HTML & CSS / Modern UI", level: 95, exp: "4 yrs" }
     ],
     backend: [
-      { name: "Node.js / Express / NestJS", level: 92, exp: "7 yrs" },
-      { name: "Python (FastAPI, PyTorch, LangChain)", level: 88, exp: "4 yrs" },
-      { name: "Go (Golang)", level: 82, exp: "3 yrs" },
-      { name: "RESTful APIs / GraphQL / WebSockets", level: 94, exp: "7 yrs" },
-      { name: "Microservice Architecture", level: 90, exp: "5 yrs" }
+      { name: "Laravel Framework & PHP", level: 90, exp: "3 yrs" },
+      { name: "NestJS & Node.js", level: 88, exp: "3 yrs" },
+      { name: ".NET Framework & C#", level: 86, exp: "2 yrs" },
+      { name: "Python Programming (FastAPI)", level: 88, exp: "3 yrs" },
+      { name: "Java Programming & C++", level: 84, exp: "3 yrs" },
+      { name: "REST APIs & Systems Dev", level: 94, exp: "4 yrs" }
     ],
     cloud: [
-      { name: "Docker & Containerization", level: 92, exp: "6 yrs" },
-      { name: "Kubernetes & Helm", level: 84, exp: "4 yrs" },
-      { name: "AWS / Google Cloud Platform", level: 88, exp: "5 yrs" },
-      { name: "CI/CD (GitHub Actions, Terraform)", level: 86, exp: "5 yrs" },
-      { name: "Linux Administration & Bash", level: 90, exp: "7 yrs" }
+      { name: "Amazon Web Services (AWS)", level: 85, exp: "2 yrs" },
+      { name: "Docker Software & Containers", level: 88, exp: "3 yrs" },
+      { name: "CI/CD & Deployment Pipelines", level: 86, exp: "3 yrs" },
+      { name: "Git Version Control System", level: 94, exp: "4 yrs" },
+      { name: "Troubleshooting & Debugging", level: 92, exp: "4 yrs" }
     ],
     databases: [
-      { name: "PostgreSQL / TimescaleDB", level: 90, exp: "6 yrs" },
-      { name: "Redis & In-Memory Caching", level: 92, exp: "6 yrs" },
-      { name: "MongoDB / Vector DBs (Pinecone)", level: 85, exp: "4 yrs" },
-      { name: "Prisma / Drizzle ORM", level: 88, exp: "3 yrs" }
+      { name: "PostgreSQL & Database Systems", level: 92, exp: "4 yrs" },
+      { name: "MongoDB & Supabase", level: 90, exp: "3 yrs" },
+      { name: "Firebase & Redis Caching", level: 88, exp: "3 yrs" },
+      { name: "SQL Query Language & PhpMyAdmin", level: 94, exp: "4 yrs" }
+    ],
+    hardware: [
+      { name: "Raspberry PI & ESP32", level: 88, exp: "3 yrs" },
+      { name: "Claude Opus & AI Automation", level: 92, exp: "2 yrs" }
     ]
   },
 
@@ -197,10 +201,10 @@ pub fn calculate_optimal_route(
 
   terminalCommands: {
     help: "Available commands:\n  • about      - Brief bio and background summary\n  • skills     - Core technical stack breakdown\n  • projects   - View top production projects\n  • contact    - Get email and social contact details\n  • sudo hire  - Dispatch instant recruiter priority access\n  • cat resume - Print summary resume details\n  • clear      - Clear terminal screen history\n  • date       - Show current system date & time",
-    about: "Alex Rivera | Senior Full-Stack & AI Systems Engineer\n7+ Years building web platforms, high-scale APIs, & AI workflows.\nBased in San Francisco, CA. Available for remote work worldwide.",
-    skills: "TECHNICAL STACK SUMMARY:\n[Frontend] React, Next.js, TypeScript, Tailwind, Canvas/WebGL\n[Backend] Node.js, Python FastAPI, Go, GraphQL, WebSockets\n[Infra] Kubernetes, Docker, AWS, GCP, Redis, CI/CD\n[Databases] PostgreSQL, TimescaleDB, MongoDB, Pinecone",
-    projects: "FEATURED PRODUCTION PROJECTS:\n1. Cognito AI — Multi-Agent Workflow Engine\n2. AetherNet — Kubernetes Telemetry Monitor\n3. Orion Analytics — Web3 Algorithmic Trading Platform",
-    contact: "CONNECT WITH ALEX:\nEmail: alex.rivera.dev@gmail.com\nGitHub: https://github.com\nLinkedIn: https://linkedin.com\nLocation: San Francisco, CA",
+    about: "Mico H. Gianan | Full-Stack Web & Mobile Developer\nBuilding scalable cross-platform mobile apps, modern web platforms & APIs.\nBased in Taguig City, Philippines.",
+    skills: "TECHNICAL STACK SUMMARY:\n[Frontend & Mobile] React.JS, Next.JS, React Native, React Redux, MERN Stack, HTML, CSS\n[Backend & Languages] Laravel, NestJS, .NET, Python, PHP, Java, C#, C++, REST APIs\n[Databases & Storage] PostgreSQL, MongoDB, Supabase, Firebase, PhpMyAdmin, Redis\n[Cloud & DevOps] AWS, Docker Software, CI/CD Pipelines, Git Version Control\n[Hardware & AI] Raspberry Pi, ESP32, Claude Opus, Automation",
+    projects: "FEATURED PRODUCTION PROJECTS:\n1. Inspire Holdings Inc. — Web Platform & Admin Suite\n2. IamWallet — Mobile Application & Web Admin\n3. ISAP — TUPT Thesis Digital Archive & Search Engine\n4. IoT Embedded Hardware & Telemetry System",
+    contact: "CONNECT WITH MICO:\nEmail: micogianan28@gmail.com\nPhone: +63 939 319 1546\nGitHub: https://github.com/manokkk\nLocation: Taguig City, Philippines",
     "sudo hire": "[ACCESS GRANTED] Mico has been notified of your priority recruiter inquiry. Expect a response shortly!"
   }
 };
