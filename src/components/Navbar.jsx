@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Menu, X, Check } from 'lucide-react';
 
 export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [scrollPercent, setScrollPercent] = useState(0);
   const [activeSection, setActiveSection] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
+  const progressBarRef = useRef(null);
 
   useEffect(() => {
     let ticking = false;
+    let lastIsScrolled = false;
+    let lastActiveSection = '';
 
     const handleScroll = () => {
       if (!ticking) {
@@ -18,22 +20,27 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
           const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
           const percent = Math.min(100, Math.max(0, Math.round((currentY / docHeight) * 100)));
 
-          setScrollPercent(percent);
-          setIsScrolled(currentY > 40);
-
-          // Detect active section
-          const sections = ['projects', 'services', 'contact'];
-          let current = '';
-          for (let i = 0; i < sections.length; i++) {
-            const el = document.getElementById(sections[i]);
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              if (rect.top <= window.innerHeight * 0.45 && rect.bottom >= window.innerHeight * 0.15) {
-                current = sections[i];
-              }
-            }
+          // Direct DOM transform/style update avoids continuous React re-renders
+          if (progressBarRef.current) {
+            progressBarRef.current.style.width = `${percent}%`;
           }
-          setActiveSection(current);
+
+          const scrolledNow = currentY > 40;
+          if (scrolledNow !== lastIsScrolled) {
+            lastIsScrolled = scrolledNow;
+            setIsScrolled(scrolledNow);
+          }
+
+          // Fast arithmetic active section detection matching ScrollNavigator
+          let current = '';
+          if (percent >= 84) current = 'contact';
+          else if (percent >= 55) current = 'services';
+          else if (percent >= 24) current = 'projects';
+
+          if (current !== lastActiveSection) {
+            lastActiveSection = current;
+            setActiveSection(current);
+          }
 
           ticking = false;
         });
@@ -58,8 +65,9 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
     <header className={`site-header ${isScrolled ? 'site-header-scrolled' : ''}`}>
       {/* Laser Reading Progress Bar */}
       <div 
+        ref={progressBarRef}
         className="nav-reading-bar" 
-        style={{ width: `${scrollPercent}%` }} 
+        style={{ width: '0%' }} 
         aria-hidden="true" 
       />
 

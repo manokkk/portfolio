@@ -485,7 +485,7 @@ export default function CosmicOdyssey3D() {
       powerPreference: 'high-performance',
     });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
 
@@ -515,9 +515,9 @@ export default function CosmicOdyssey3D() {
     scene.add(rimLight);
 
     // ----------------------------------------------------------------------------
-    // A. DEEP-SPACE STELLAR FIELD (3,500 Star Coordinates)
+    // A. DEEP-SPACE STELLAR FIELD (1,800 Star Coordinates)
     // ----------------------------------------------------------------------------
-    const starCount = 3500;
+    const starCount = 1800;
     const starGeo = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
     const starColors = new Float32Array(starCount * 3);
@@ -795,7 +795,7 @@ export default function CosmicOdyssey3D() {
     deathFlashGroup.add(southJet);
 
     // 4. Relativistic Synchrotron Ionization Particles
-    const flashCount = 380;
+    const flashCount = 160;
     const flashGeo = new THREE.BufferGeometry();
     const flashPos = new Float32Array(flashCount * 3);
     const flashCols = new Float32Array(flashCount * 3);
@@ -927,8 +927,8 @@ export default function CosmicOdyssey3D() {
     s301OrbitLine.rotation.y = Math.PI * 0.18;
     blackHoleGroup.add(s301OrbitLine);
 
-    // 7. 2,200 Infalling Relativistic Accretion Vortex Particles
-    const vortexCount = 2200;
+    // 7. 1,000 Infalling Relativistic Accretion Vortex Particles
+    const vortexCount = 1000;
     const vortexGeo = new THREE.BufferGeometry();
     const vortexPos = new Float32Array(vortexCount * 3);
     const vortexCols = new Float32Array(vortexCount * 3);
@@ -1029,7 +1029,7 @@ export default function CosmicOdyssey3D() {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     };
 
     window.addEventListener('mousemove', onMouseMove, { passive: true });
@@ -1044,6 +1044,8 @@ export default function CosmicOdyssey3D() {
     let animId;
     let clock = new THREE.Clock();
     let uiThrottle = 0;
+    let lastReportedPercent = -1;
+    let lastReportedSectorId = '';
 
     const currentCamPos = new THREE.Vector3();
     const currentLookPos = new THREE.Vector3();
@@ -1082,51 +1084,53 @@ export default function CosmicOdyssey3D() {
       deathFlashGroup.visible = splineT > 0.42 && splineT < 0.86;
       blackHoleGroup.visible = splineT > 0.68;
 
-      // 2. Animate Celestial Bodies
-      // LHS 1140 b Ocean Rotation, Clouds Drift & Atmospheric Aurora
-      lhsPlanet.rotation.y = elapsed * 0.12;
-      cloudShell.rotation.y = elapsed * 0.18;
-      lhsAtmo.rotation.z = Math.sin(elapsed * 0.2) * 0.05;
+      // 2. Animate Celestial Bodies ONLY when in active visible range
+      if (lhsGroup.visible) {
+        lhsPlanet.rotation.y = elapsed * 0.12;
+        cloudShell.rotation.y = elapsed * 0.18;
+        lhsAtmo.rotation.z = Math.sin(elapsed * 0.2) * 0.05;
+      }
 
-      // Sector 2: Beta Pictoris & GJ 523b & 6,000 Exoplanets
-      betaStar.rotation.y = elapsed * 0.08;
-      debrisDisk.rotation.z = elapsed * 0.035;
-      giantPlanet.position.set(
-        Math.cos(elapsed * 0.45) * 26,
-        Math.sin(elapsed * 0.45) * 26 * 0.28,
-        Math.sin(elapsed * 0.45) * 26 * 0.85
-      );
-      giantPlanet.rotation.y = elapsed * 0.6;
+      if (exoplanetGroup.visible) {
+        betaStar.rotation.y = elapsed * 0.08;
+        debrisDisk.rotation.z = elapsed * 0.035;
+        giantPlanet.position.set(
+          Math.cos(elapsed * 0.45) * 26,
+          Math.sin(elapsed * 0.45) * 26 * 0.28,
+          Math.sin(elapsed * 0.45) * 26 * 0.85
+        );
+        giantPlanet.rotation.y = elapsed * 0.6;
+        megaEarth.position.set(
+          Math.cos(elapsed * 0.8 + 1.5) * 34,
+          Math.sin(elapsed * 0.8 + 1.5) * 34 * 0.28,
+          Math.sin(elapsed * 0.8 + 1.5) * 34 * 0.85
+        );
+        megaEarth.rotation.y = elapsed * 0.7;
+        fleetPoints.rotation.y = elapsed * 0.05;
+      }
 
-      megaEarth.position.set(
-        Math.cos(elapsed * 0.8 + 1.5) * 34,
-        Math.sin(elapsed * 0.8 + 1.5) * 34 * 0.28,
-        Math.sin(elapsed * 0.8 + 1.5) * 34 * 0.85
-      );
-      megaEarth.rotation.y = elapsed * 0.7;
-      fleetPoints.rotation.y = elapsed * 0.05;
+      if (deathFlashGroup.visible) {
+        deathFlashGroup.rotation.y = elapsed * 0.06;
+        explodingCore.scale.setScalar(1 + Math.sin(elapsed * 4.8) * 0.06);
+        shockwaveRings.forEach((r, idx) => {
+          r.rotation.z = elapsed * (0.18 + idx * 0.08);
+        });
+        flashPoints.rotation.z = elapsed * 0.12;
+      }
 
-      // Sector 3: EP260321a Pre-Supernova Cosmic Flash
-      deathFlashGroup.rotation.y = elapsed * 0.06;
-      explodingCore.scale.setScalar(1 + Math.sin(elapsed * 4.8) * 0.06);
-      shockwaveRings.forEach((r, idx) => {
-        r.rotation.z = elapsed * (0.18 + idx * 0.08);
-      });
-      flashPoints.rotation.z = elapsed * 0.12;
+      if (blackHoleGroup.visible) {
+        vortexPoints.rotation.z = elapsed * 0.28;
+        photonRing.rotation.z = -elapsed * 0.15;
+        accretionRing.rotation.z = elapsed * 0.05;
+        redCorona.rotation.y = elapsed * 0.04;
 
-      // Sector 4: Sagittarius A* Black Hole & S301 Speed Demon Star
-      vortexPoints.rotation.z = elapsed * 0.28;
-      photonRing.rotation.z = -elapsed * 0.15;
-      accretionRing.rotation.z = elapsed * 0.05;
-      redCorona.rotation.y = elapsed * 0.04;
-
-      // Star S301 ultra-fast relativistic orbit (25,000 km/s - 8.5% light speed!)
-      const s301Angle = elapsed * 3.4;
-      starS301.position.set(
-        Math.cos(s301Angle) * 28,
-        Math.sin(s301Angle) * 20 * 0.32,
-        Math.sin(s301Angle) * 20
-      );
+        const s301Angle = elapsed * 3.4;
+        starS301.position.set(
+          Math.cos(s301Angle) * 28,
+          Math.sin(s301Angle) * 20 * 0.32,
+          Math.sin(s301Angle) * 20
+        );
+      }
 
       // High-speed warp stretch on fast scroll
       if (Math.abs(scroll.velocity) > 1.2) {
@@ -1139,17 +1143,24 @@ export default function CosmicOdyssey3D() {
 
       renderer.render(scene, camera);
 
-      // Throttled UI State Sync
+      // Throttled UI State Sync - Only trigger React state updates on actual value change
       uiThrottle++;
-      if (uiThrottle % 8 === 0) {
+      if (uiThrottle % 6 === 0) {
         const percent = Math.round(scroll.current * 100);
-        setScrollPercent(percent);
+        if (percent !== lastReportedPercent) {
+          lastReportedPercent = percent;
+          setScrollPercent(percent);
+        }
 
-        // Map flight progress to the 4 astronomical discoveries
-        if (percent < 26) setActiveSector(COSMIC_SECTORS[0]);
-        else if (percent < 58) setActiveSector(COSMIC_SECTORS[1]);
-        else if (percent < 84) setActiveSector(COSMIC_SECTORS[2]);
-        else setActiveSector(COSMIC_SECTORS[3]);
+        let nextSector = COSMIC_SECTORS[0];
+        if (percent >= 84) nextSector = COSMIC_SECTORS[3];
+        else if (percent >= 58) nextSector = COSMIC_SECTORS[2];
+        else if (percent >= 26) nextSector = COSMIC_SECTORS[1];
+
+        if (nextSector.id !== lastReportedSectorId) {
+          lastReportedSectorId = nextSector.id;
+          setActiveSector(nextSector);
+        }
       }
     };
 

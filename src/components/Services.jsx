@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { 
   Layout, 
   Smartphone, 
@@ -21,18 +21,10 @@ import {
   Check,
   RefreshCw
 } from 'lucide-react';
-import { useScrollPhysics } from '../hooks/useScrollPhysics';
 
 export default function Services({ onRequestInquiry }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedServiceModal, setSelectedServiceModal] = useState(null);
-  
-  const { scrollY, viewportH, getElementPhysics } = useScrollPhysics();
-  const sectionRef = useRef(null);
-  const headerRef = useRef(null);
-  const cardRefs = useRef([]);
-
-
 
   const categories = ['All', 'Web & Mobile', 'Cloud & DB', 'Security', 'AI & IoT'];
 
@@ -218,25 +210,11 @@ export default function Services({ onRequestInquiry }) {
     ? services
     : services.filter(s => s.category === activeCategory);
 
-  const headerPhysics = getElementPhysics(headerRef.current, {
-    maxLift: 32,
-    focalZone: 0.35,
-    minOpacity: 0.22
-  });
-
   return (
-    <section id="services" ref={sectionRef} className="container-custom py-16 relative">
+    <section id="services" className="container-custom py-16 relative">
       
-      {/* Header & Filter Tabs with Fade & Lift In/Out */}
-      <div 
-        ref={headerRef}
-        style={{
-          opacity: headerPhysics.opacity,
-          transform: `translateY(${headerPhysics.translateY}px) scale(${headerPhysics.scale})`,
-          transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
-          willChange: 'opacity, transform'
-        }}
-      >
+      {/* Header & Filter Tabs */}
+      <div>
         <div className="flex flex-col items-start mb-8">
           <h2 className="section-title section-title-glow mb-2">Services & Tech Stack</h2>
         </div>
@@ -255,58 +233,31 @@ export default function Services({ onRequestInquiry }) {
         </div>
       </div>
 
-      {/* Services Grid (3-column responsive grid matching CSS with Continuous Scroll Physics) */}
+      {/* Services Grid (3-column responsive grid matching CSS) */}
       <div className="services-grid">
-        {filteredServices.map((service, idx) => {
+        {filteredServices.map((service) => {
           const Icon = service.icon;
-          const cardPhysics = getElementPhysics(cardRefs.current[idx], {
-            col: idx % 3,
-            maxLift: 46,
-            maxTilt: 5.5,
-            focalZone: 0.32,
-            minOpacity: 0.20,
-            minScale: 0.88
-          });
 
           return (
-            <div 
-              key={service.id} 
-              ref={el => cardRefs.current[idx] = el}
-              className="scroll-anchor"
-            >
+            <div key={service.id}>
               <div 
                 className="service-card group cursor-pointer"
-                style={{
-                  opacity: cardPhysics.opacity,
-                  transform: `translateY(${cardPhysics.totalOffsetY}px) scale(${cardPhysics.scale}) perspective(1000px) rotateX(${cardPhysics.rotateX}deg) rotateY(${cardPhysics.rotateY}deg)`,
-                  transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
-                  willChange: 'opacity, transform'
-                }}
                 onClick={() => setSelectedServiceModal(service)}
               >
                 {/* Card Content Top */}
                 <div>
-                  {/* Header Row: Icon + Badge with Floating Parallax */}
+                  {/* Header Row: Icon + Badge */}
                   <div className="flex items-center justify-between mb-4">
                     <div 
                       className="service-icon-box"
                       style={{ 
                         backgroundColor: service.bgGlow,
-                        borderColor: service.borderColor,
-                        transform: `translateY(${cardPhysics.iconOffsetY}px) rotate(${cardPhysics.iconRot}deg)`,
-                        transition: 'transform 0.06s ease-out'
+                        borderColor: service.borderColor
                       }}
                     >
                       <Icon className="w-5 h-5" style={{ color: service.color }} />
                     </div>
-                    <span 
-                      className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10"
-                      style={{
-                        transform: `translateX(${cardPhysics.tagDrift}px)`,
-                        transition: 'transform 0.06s ease-out',
-                        display: 'inline-block'
-                      }}
-                    >
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10">
                       {service.badge}
                     </span>
                   </div>

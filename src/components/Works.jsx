@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { 
   ArrowUpRight, 
   X, 
@@ -17,17 +17,10 @@ import {
   Code2
 } from 'lucide-react';
 
-import { useScrollPhysics } from '../hooks/useScrollPhysics';
-
 export default function Works() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
   const [modalTab, setModalTab] = useState('overview');
-  
-  const { scrollY, viewportH, getElementPhysics } = useScrollPhysics();
-  const sectionRef = useRef(null);
-  const headerRef = useRef(null);
-  const cardRefs = useRef([]);
 
   const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'AI & ML', 'IoT Hardware'];
 
@@ -229,24 +222,10 @@ export default function Works() {
     }
   };
 
-  const headerPhysics = getElementPhysics(headerRef.current, {
-    maxLift: 32,
-    focalZone: 0.35,
-    minOpacity: 0.22
-  });
-
   return (
-    <section id="projects" ref={sectionRef} className="container-custom py-16">
-      {/* Header & Filter Tabs with Fade & Lift In/Out */}
-      <div 
-        ref={headerRef}
-        style={{
-          opacity: headerPhysics.opacity,
-          transform: `translateY(${headerPhysics.translateY}px) scale(${headerPhysics.scale})`,
-          transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
-          willChange: 'opacity, transform'
-        }}
-      >
+    <section id="projects" className="container-custom py-16">
+      {/* Header & Filter Tabs */}
+      <div>
         <div className="flex items-center gap-3 mb-2">
           <h2 className="section-title section-title-glow">Works & Projects</h2>
         </div>
@@ -265,32 +244,13 @@ export default function Works() {
         </div>
       </div>
 
-      {/* Works Grid with Staggered Multi-Column In & Out Scroll Physics */}
+      {/* Works Grid */}
       <div className="work-grid">
-        {filteredWorks.map((work, idx) => {
-          const cardPhysics = getElementPhysics(cardRefs.current[idx], {
-            col: idx % 3,
-            maxLift: 48,
-            maxTilt: 5.5,
-            focalZone: 0.32,
-            minOpacity: 0.20,
-            minScale: 0.88
-          });
-
+        {filteredWorks.map((work) => {
           return (
-            <div 
-              key={work.id} 
-              ref={el => cardRefs.current[idx] = el}
-              className="scroll-anchor"
-            >
+            <div key={work.id}>
               <div 
                 className="work-card group"
-                style={{
-                  opacity: cardPhysics.opacity,
-                  transform: `translateY(${cardPhysics.totalOffsetY}px) scale(${cardPhysics.scale}) perspective(1000px) rotateX(${cardPhysics.rotateX}deg) rotateY(${cardPhysics.rotateY}deg)`,
-                  transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
-                  willChange: 'opacity, transform'
-                }}
                 onClick={() => handleOpenModal(work)}
               >
                 <div className="card-img-box">
@@ -298,12 +258,7 @@ export default function Works() {
                     <img 
                       src={work.image} 
                       alt={work.title} 
-                      className="card-img card-img-parallax"
-                      style={{
-                        transform: `scale(1.08) translateY(${cardPhysics.imgOffsetY}px)`,
-                        transition: 'transform 0.06s ease-out',
-                        willChange: 'transform'
-                      }}
+                      className="card-img"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#12141f] to-[#1a1d2e] p-4 text-center border-b border-white/10 group-hover:from-[#181b2c] group-hover:to-[#22263d] transition-colors">
@@ -314,14 +269,7 @@ export default function Works() {
                 </div>
                 <div className="card-content">
                   <div>
-                    <span 
-                      className="card-category"
-                      style={{
-                        transform: `translateX(${cardPhysics.tagDrift}px)`,
-                        transition: 'transform 0.06s ease-out',
-                        display: 'inline-block'
-                      }}
-                    >
+                    <span className="card-category">
                       {work.category}
                     </span>
                     <div className="card-title-row">

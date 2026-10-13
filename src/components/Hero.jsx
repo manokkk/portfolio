@@ -18,8 +18,8 @@ export default function Hero({
           const y = window.scrollY || 0;
           const clamped = Math.min(600, y);
 
-          // Only re-render Hero if clamped parallax value changed
-          if (Math.abs(clamped - lastClamped) >= 1) {
+          // Only re-render Hero if clamped parallax value changed by >= 3px
+          if (Math.abs(clamped - lastClamped) >= 3) {
             lastClamped = clamped;
             setScrollY(clamped);
           }

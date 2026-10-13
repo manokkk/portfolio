@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, MailCheck, ArrowRight } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
-import { useScrollPhysics } from '../hooks/useScrollPhysics';
 
 export default function Contact({ email = "micogianan28@gmail.com", prefilledInquiry = null }) {
   const [submitting, setSubmitting] = useState(false);
@@ -9,10 +8,6 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' });
-
-  const { scrollY, viewportH, getElementPhysics } = useScrollPhysics();
-  const leftColRef = useRef(null);
-  const rightColRef = useRef(null);
 
   useEffect(() => {
     if (prefilledInquiry) {
@@ -85,24 +80,6 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
     }
   };
 
-  // Continuous scroll interactivity physics (matching Hero, Works, Services)
-  const leftPhysics = getElementPhysics(leftColRef.current, {
-    col: 0,
-    maxLift: 44,
-    focalZone: 0.35,
-    minOpacity: 0.20,
-    minScale: 0.90
-  });
-
-  const formPhysics = getElementPhysics(rightColRef.current, {
-    col: 2,
-    maxLift: 46,
-    maxTilt: 5.0,
-    focalZone: 0.35,
-    minOpacity: 0.20,
-    minScale: 0.90
-  });
-
   return (
     <section id="contact" className="contact-section">
       <div className="container-custom">
@@ -110,17 +87,9 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
         {/* 2-Column Grid */}
         <div className="contact-grid">
           
-          {/* Left Column: Headline, Bio & Interactive Contact Cards with Scroll Parallax */}
-          <div ref={leftColRef} className="scroll-anchor">
-            <div 
-              className="contact-info-col"
-              style={{
-                opacity: leftPhysics.opacity,
-                transform: `translateY(${leftPhysics.totalOffsetY}px) scale(${leftPhysics.scale}) perspective(1000px) rotateY(${leftPhysics.rotateY}deg)`,
-                transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
-                willChange: 'opacity, transform'
-              }}
-            >
+          {/* Left Column: Headline, Bio & Interactive Contact Cards */}
+          <div>
+            <div className="contact-info-col">
               <span className="card-category mb-2">GET IN TOUCH</span>
               <h2 className="section-title section-title-glow mb-3" style={{ fontSize: '2.5rem' }}>
                 Let's build something extraordinary.
@@ -201,17 +170,9 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
             </div>
           </div>
 
-          {/* Right Column: Sleek Message Form Box with 3D Scroll Physics */}
-          <div ref={rightColRef} className="scroll-anchor">
-            <div 
-              className="form-box"
-              style={{
-                opacity: formPhysics.opacity,
-                transform: `translateY(${formPhysics.totalOffsetY}px) scale(${formPhysics.scale}) perspective(1000px) rotateX(${formPhysics.rotateX}deg) rotateY(${formPhysics.rotateY}deg)`,
-                transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
-                willChange: 'opacity, transform'
-              }}
-            >
+          {/* Right Column: Sleek Message Form Box */}
+          <div>
+            <div className="form-box">
             {submitted ? (
               <div className="form-success-card text-left items-start">
                 
