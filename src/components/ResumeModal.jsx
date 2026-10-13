@@ -156,10 +156,6 @@ export default function ResumeModal({ isOpen, onClose }) {
               <Briefcase className="w-3.5 h-3.5" />
               <span>MICO H. GIANAN — CURRICULUM VITAE</span>
             </span>
-            <div className="resume-status-indicator">
-              <span className="resume-status-dot"></span>
-              <span>Available for Roles</span>
-            </div>
           </div>
 
           <h2 className="resume-title">Professional Resume</h2>

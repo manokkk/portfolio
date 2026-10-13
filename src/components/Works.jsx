@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowUpRight, 
   X, 
@@ -17,10 +17,17 @@ import {
   Code2
 } from 'lucide-react';
 
+import { useScrollPhysics } from '../hooks/useScrollPhysics';
+
 export default function Works() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
   const [modalTab, setModalTab] = useState('overview');
+  
+  const { scrollY, viewportH, getElementPhysics } = useScrollPhysics();
+  const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const cardRefs = useRef([]);
 
   const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'AI & ML', 'IoT Hardware'];
 
@@ -132,10 +139,10 @@ export default function Works() {
     },
     {
       id: 6,
-      title: 'ISAP — TUPT Thesis Archive: Intelligent Search & Access Platform',
+      title: 'ISAP — TUPT Thesis Archive',
       category: 'AI & ML',
       image: '/images/project_ai_platform.jpg',
-      description: 'A role-based digital repository featuring a machine learning semantic search engine and AI-driven thesis improvement module. Reached 90% search accuracy with sub-5-second retrieval times.',
+      description: 'ISAP (Intelligent Search & Access Platform) — A role-based digital repository featuring a machine learning semantic search engine and AI-driven thesis improvement module. Reached 90% search accuracy with sub-5-second retrieval times.',
       blueprint: 'Next.js Frontend ➔ FastAPI Microservice ➔ Semantic Search Vector Index ➔ PostgreSQL Storage',
       metrics: [
         { label: '<5s Retrieval', desc: '90% Search Accuracy', icon: Zap },
@@ -222,50 +229,113 @@ export default function Works() {
     }
   };
 
-  return (
-    <section id="projects" className="container-custom py-16">
-      <h2 className="section-title">Works & Projects</h2>
+  const headerPhysics = getElementPhysics(headerRef.current, {
+    maxLift: 32,
+    focalZone: 0.35,
+    minOpacity: 0.22
+  });
 
-      {/* Interactive Category Filter Tabs */}
-      <div className="filter-tabs">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
-          >
-            {cat}
-          </button>
-        ))}
+  return (
+    <section id="projects" ref={sectionRef} className="container-custom py-16">
+      {/* Header & Filter Tabs with Fade & Lift In/Out */}
+      <div 
+        ref={headerRef}
+        style={{
+          opacity: headerPhysics.opacity,
+          transform: `translateY(${headerPhysics.translateY}px) scale(${headerPhysics.scale})`,
+          transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
+          willChange: 'opacity, transform'
+        }}
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <h2 className="section-title section-title-glow">Works & Projects</h2>
+        </div>
+
+        {/* Interactive Category Filter Tabs */}
+        <div className="filter-tabs">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Works Grid */}
+      {/* Works Grid with Staggered Multi-Column In & Out Scroll Physics */}
       <div className="work-grid">
-        {filteredWorks.map((work) => (
-          <div 
-            key={work.id} 
-            className="work-card group"
-            onClick={() => handleOpenModal(work)}
-          >
-            <div className="card-img-box">
-              {work.image ? (
-                <img src={work.image} alt={work.title} className="card-img" />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#12141f] to-[#1a1d2e] p-4 text-center border-b border-white/10 group-hover:from-[#181b2c] group-hover:to-[#22263d] transition-colors">
-                  <FolderGit2 className="w-10 h-10 text-sky-400/80 mb-2" />
-                  <span className="text-xs font-mono font-semibold text-slate-300 line-clamp-1">{work.title}</span>
+        {filteredWorks.map((work, idx) => {
+          const cardPhysics = getElementPhysics(cardRefs.current[idx], {
+            col: idx % 3,
+            maxLift: 48,
+            maxTilt: 5.5,
+            focalZone: 0.32,
+            minOpacity: 0.20,
+            minScale: 0.88
+          });
+
+          return (
+            <div 
+              key={work.id} 
+              ref={el => cardRefs.current[idx] = el}
+              className="scroll-anchor"
+            >
+              <div 
+                className="work-card group"
+                style={{
+                  opacity: cardPhysics.opacity,
+                  transform: `translateY(${cardPhysics.totalOffsetY}px) scale(${cardPhysics.scale}) perspective(1000px) rotateX(${cardPhysics.rotateX}deg) rotateY(${cardPhysics.rotateY}deg)`,
+                  transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
+                  willChange: 'opacity, transform'
+                }}
+                onClick={() => handleOpenModal(work)}
+              >
+                <div className="card-img-box">
+                  {work.image ? (
+                    <img 
+                      src={work.image} 
+                      alt={work.title} 
+                      className="card-img card-img-parallax"
+                      style={{
+                        transform: `scale(1.08) translateY(${cardPhysics.imgOffsetY}px)`,
+                        transition: 'transform 0.06s ease-out',
+                        willChange: 'transform'
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#12141f] to-[#1a1d2e] p-4 text-center border-b border-white/10 group-hover:from-[#181b2c] group-hover:to-[#22263d] transition-colors">
+                      <FolderGit2 className="w-10 h-10 text-sky-400/80 mb-2" />
+                      <span className="text-xs font-mono font-semibold text-slate-300 line-clamp-1">{work.title}</span>
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="card-content">
+                  <div>
+                    <span 
+                      className="card-category"
+                      style={{
+                        transform: `translateX(${cardPhysics.tagDrift}px)`,
+                        transition: 'transform 0.06s ease-out',
+                        display: 'inline-block'
+                      }}
+                    >
+                      {work.category}
+                    </span>
+                    <div className="card-title-row">
+                      <h3 className="card-title" title={work.title}>
+                        {work.title}
+                      </h3>
+                      <ArrowUpRight className="card-title-icon text-gray-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="card-content">
-              <span className="card-category">{work.category}</span>
-              <h3 className="card-title flex items-end justify-between gap-2">
-                <span>{work.title}</span>
-                <ArrowUpRight className="card-title-icon w-5 h-5 min-w-[20px] min-h-[20px] text-gray-400 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 mb-1" />
-              </h3>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Interactive Cyber-Terminal Inspector Modal */}

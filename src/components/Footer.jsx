@@ -17,10 +17,6 @@ export default function Footer() {
           <div className="footer-brand">
             <div className="footer-brand-title">
               <span>Mico H. Gianan.</span>
-              <span className="status-badge">
-                <span className="status-dot"></span>
-                Available for Roles
-              </span>
             </div>
             <p className="footer-brand-desc">
               Full-Stack Web, Backend & Mobile Developer specializing in Next.js, NestJS, .NET Framework, and React Native (Expo).

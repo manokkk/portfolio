@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Layout, 
   Smartphone, 
@@ -21,10 +21,18 @@ import {
   Check,
   RefreshCw
 } from 'lucide-react';
+import { useScrollPhysics } from '../hooks/useScrollPhysics';
 
 export default function Services({ onRequestInquiry }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedServiceModal, setSelectedServiceModal] = useState(null);
+  
+  const { scrollY, viewportH, getElementPhysics } = useScrollPhysics();
+  const sectionRef = useRef(null);
+  const headerRef = useRef(null);
+  const cardRefs = useRef([]);
+
+
 
   const categories = ['All', 'Web & Mobile', 'Cloud & DB', 'Security', 'AI & IoT'];
 
@@ -210,92 +218,137 @@ export default function Services({ onRequestInquiry }) {
     ? services
     : services.filter(s => s.category === activeCategory);
 
+  const headerPhysics = getElementPhysics(headerRef.current, {
+    maxLift: 32,
+    focalZone: 0.35,
+    minOpacity: 0.22
+  });
+
   return (
-    <section id="services" className="container-custom py-16 relative">
+    <section id="services" ref={sectionRef} className="container-custom py-16 relative">
       
-      {/* Header */}
-      <div className="flex flex-col items-start mb-8">
-        <h2 className="section-title mb-2">Services & Tech Stack</h2>
+      {/* Header & Filter Tabs with Fade & Lift In/Out */}
+      <div 
+        ref={headerRef}
+        style={{
+          opacity: headerPhysics.opacity,
+          transform: `translateY(${headerPhysics.translateY}px) scale(${headerPhysics.scale})`,
+          transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
+          willChange: 'opacity, transform'
+        }}
+      >
+        <div className="flex flex-col items-start mb-8">
+          <h2 className="section-title section-title-glow mb-2">Services & Tech Stack</h2>
+        </div>
+
+        {/* Category Filter Pills */}
+        <div className="filter-tabs mb-8">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Category Filter Pills */}
-      <div className="filter-tabs mb-8">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Services Grid (3-column responsive grid matching CSS) */}
+      {/* Services Grid (3-column responsive grid matching CSS with Continuous Scroll Physics) */}
       <div className="services-grid">
-        {filteredServices.map((service) => {
+        {filteredServices.map((service, idx) => {
           const Icon = service.icon;
+          const cardPhysics = getElementPhysics(cardRefs.current[idx], {
+            col: idx % 3,
+            maxLift: 46,
+            maxTilt: 5.5,
+            focalZone: 0.32,
+            minOpacity: 0.20,
+            minScale: 0.88
+          });
+
           return (
             <div 
               key={service.id} 
-              className="service-card group cursor-pointer"
-              onClick={() => setSelectedServiceModal(service)}
+              ref={el => cardRefs.current[idx] = el}
+              className="scroll-anchor"
             >
-              {/* Card Content Top */}
-              <div>
-                {/* Header Row: Icon + Badge */}
-                <div className="flex items-center justify-between mb-4">
-                  <div 
-                    className="service-icon-box"
-                    style={{ 
-                      backgroundColor: service.bgGlow,
-                      borderColor: service.borderColor
-                    }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color: service.color }} />
-                  </div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10">
-                    {service.badge}
-                  </span>
-                </div>
-
-                {/* Title & Arrow */}
-                <h3 className="service-title flex items-center justify-between group-hover:text-sky-300 transition-colors">
-                  <span>{service.title}</span>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0 ml-1" />
-                </h3>
-                
-                {/* Tagline */}
-                <p className="text-[11px] font-mono text-sky-400/90 mb-2">{service.tagline}</p>
-                
-                {/* Short Description */}
-                <p className="service-desc mb-4">
-                  {service.description}
-                </p>
-
-                {/* Capabilities checklist */}
-                <div className="service-cap-list">
-                  {service.capabilities.map((cap, idx) => (
-                    <div key={idx} className="service-cap-item">
-                      <CheckCircle2 className="service-cap-icon" />
-                      <span>{cap}</span>
+              <div 
+                className="service-card group cursor-pointer"
+                style={{
+                  opacity: cardPhysics.opacity,
+                  transform: `translateY(${cardPhysics.totalOffsetY}px) scale(${cardPhysics.scale}) perspective(1000px) rotateX(${cardPhysics.rotateX}deg) rotateY(${cardPhysics.rotateY}deg)`,
+                  transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
+                  willChange: 'opacity, transform'
+                }}
+                onClick={() => setSelectedServiceModal(service)}
+              >
+                {/* Card Content Top */}
+                <div>
+                  {/* Header Row: Icon + Badge with Floating Parallax */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div 
+                      className="service-icon-box"
+                      style={{ 
+                        backgroundColor: service.bgGlow,
+                        borderColor: service.borderColor,
+                        transform: `translateY(${cardPhysics.iconOffsetY}px) rotate(${cardPhysics.iconRot}deg)`,
+                        transition: 'transform 0.06s ease-out'
+                      }}
+                    >
+                      <Icon className="w-5 h-5" style={{ color: service.color }} />
                     </div>
-                  ))}
-                </div>
-              </div>
+                    <span 
+                      className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10"
+                      style={{
+                        transform: `translateX(${cardPhysics.tagDrift}px)`,
+                        transition: 'transform 0.06s ease-out',
+                        display: 'inline-block'
+                      }}
+                    >
+                      {service.badge}
+                    </span>
+                  </div>
 
-              {/* Card Footer Row */}
-              <div className="service-card-footer">
-                <div className="service-footer-left">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>Est. {service.timeline}</span>
-                </div>
-                <div className="service-footer-right">
-                  <span>View Scope</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
+                  {/* Title & Arrow */}
+                  <h3 className="service-title flex items-center justify-between group-hover:text-sky-300 transition-colors">
+                    <span>{service.title}</span>
+                    <ChevronRight className="w-4 h-4 text-gray-500 group-hover:translate-x-1 group-hover:text-white transition-all shrink-0 ml-1" />
+                  </h3>
+                  
+                  {/* Tagline */}
+                  <p className="text-[11px] font-mono text-sky-400/90 mb-2">{service.tagline}</p>
+                  
+                  {/* Short Description */}
+                  <p className="service-desc mb-4">
+                    {service.description}
+                  </p>
 
+                  {/* Capabilities checklist */}
+                  <div className="service-cap-list">
+                    {service.capabilities.map((cap, capIdx) => (
+                      <div key={capIdx} className="service-cap-item">
+                        <CheckCircle2 className="service-cap-icon" />
+                        <span>{cap}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Card Footer Row */}
+                <div className="service-card-footer">
+                  <div className="service-footer-left">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Est. {service.timeline}</span>
+                  </div>
+                  <div className="service-footer-right">
+                    <span>View Scope</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+
+              </div>
             </div>
           );
         })}

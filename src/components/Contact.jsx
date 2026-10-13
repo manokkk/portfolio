@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, MailCheck, ArrowRight } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
+import { useScrollPhysics } from '../hooks/useScrollPhysics';
 
 export default function Contact({ email = "micogianan28@gmail.com", prefilledInquiry = null }) {
   const [submitting, setSubmitting] = useState(false);
@@ -8,6 +9,10 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' });
+
+  const { scrollY, viewportH, getElementPhysics } = useScrollPhysics();
+  const leftColRef = useRef(null);
+  const rightColRef = useRef(null);
 
   useEffect(() => {
     if (prefilledInquiry) {
@@ -80,6 +85,24 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
     }
   };
 
+  // Continuous scroll interactivity physics (matching Hero, Works, Services)
+  const leftPhysics = getElementPhysics(leftColRef.current, {
+    col: 0,
+    maxLift: 44,
+    focalZone: 0.35,
+    minOpacity: 0.20,
+    minScale: 0.90
+  });
+
+  const formPhysics = getElementPhysics(rightColRef.current, {
+    col: 2,
+    maxLift: 46,
+    maxTilt: 5.0,
+    focalZone: 0.35,
+    minOpacity: 0.20,
+    minScale: 0.90
+  });
+
   return (
     <section id="contact" className="contact-section">
       <div className="container-custom">
@@ -87,95 +110,108 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
         {/* 2-Column Grid */}
         <div className="contact-grid">
           
-          {/* Left Column: Headline, Bio & Interactive Contact Cards */}
-          <div className="contact-info-col">
-            <span className="card-category mb-2">GET IN TOUCH</span>
-            <h2 className="section-title mb-3" style={{ fontSize: '2.5rem' }}>
-              Let's build something extraordinary.
-            </h2>
-            <p className="hero-description text-left mb-6" style={{ fontSize: '1rem', maxWidth: '500px' }}>
-              Have a project in mind, a full-stack engineering position, or a mobile app opportunity? Reach out directly or send a message.
-            </p>
+          {/* Left Column: Headline, Bio & Interactive Contact Cards with Scroll Parallax */}
+          <div ref={leftColRef} className="scroll-anchor">
+            <div 
+              className="contact-info-col"
+              style={{
+                opacity: leftPhysics.opacity,
+                transform: `translateY(${leftPhysics.totalOffsetY}px) scale(${leftPhysics.scale}) perspective(1000px) rotateY(${leftPhysics.rotateY}deg)`,
+                transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
+                willChange: 'opacity, transform'
+              }}
+            >
+              <span className="card-category mb-2">GET IN TOUCH</span>
+              <h2 className="section-title section-title-glow mb-3" style={{ fontSize: '2.5rem' }}>
+                Let's build something extraordinary.
+              </h2>
+              <p className="hero-description text-left mb-6" style={{ fontSize: '1rem', maxWidth: '500px' }}>
+                Have a project in mind, a full-stack engineering position, or a mobile app opportunity? Reach out directly or send a message.
+              </p>
 
-            {/* Availability pill */}
-            <div className="status-badge mb-6" style={{ width: 'fit-content', padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
-              <span className="status-dot"></span>
-              <span>Available for Full-Stack, Web & Mobile Projects</span>
-            </div>
-
-            {/* Stack of Interactive Info Cards */}
-            <div className="contact-cards-stack">
-              
-              {/* Email Card */}
-              <div className="contact-info-card" onClick={handleCopyEmail} title="Click to copy email">
-                <div className="contact-card-left">
-                  <div className="contact-icon-box">
-                    <Mail className="w-5 h-5 text-sky-400" />
+              {/* Stack of Interactive Info Cards */}
+              <div className="contact-cards-stack">
+                
+                {/* Email Card */}
+                <div className="contact-info-card" onClick={handleCopyEmail} title="Click to copy email">
+                  <div className="contact-card-left">
+                    <div className="contact-icon-box">
+                      <Mail className="w-5 h-5 text-sky-400" />
+                    </div>
+                    <div>
+                      <span className="contact-card-label">EMAIL ADDRESS</span>
+                      <span className="contact-card-val">{email}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="contact-card-label">EMAIL ADDRESS</span>
-                    <span className="contact-card-val">{email}</span>
+                  <div className="text-xs font-mono text-gray-400 flex items-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
                   </div>
                 </div>
-                <div className="text-xs font-mono text-gray-400 flex items-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                  {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
+
+                {/* Phone Card */}
+                <div className="contact-info-card" onClick={handleCopyPhone} title="Click to copy phone number">
+                  <div className="contact-card-left">
+                    <div className="contact-icon-box">
+                      <Phone className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <span className="contact-card-label">PHONE / WHATSAPP</span>
+                      <span className="contact-card-val">+63 939 319 1546</span>
+                    </div>
+                  </div>
+                  <div className="text-xs font-mono text-gray-400 flex items-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                    {copiedPhone ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
+                  </div>
                 </div>
+
+                {/* Location Card */}
+                <div className="contact-info-card" style={{ cursor: 'default' }}>
+                  <div className="contact-card-left">
+                    <div className="contact-icon-box">
+                      <MapPin className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <span className="contact-card-label">LOCATION</span>
+                      <span className="contact-card-val">Taguig City, Philippines</span>
+                    </div>
+                  </div>
+                  <span className="text-xs font-mono text-gray-400">GMT +8</span>
+                </div>
+
+                {/* GitHub Card */}
+                <a 
+                  href="https://github.com/manokkk" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="contact-info-card"
+                >
+                  <div className="contact-card-left">
+                    <div className="contact-icon-box">
+                      <GithubIcon className="w-5 h-5 text-gray-300" />
+                    </div>
+                    <div>
+                      <span className="contact-card-label">GITHUB PROFILE</span>
+                      <span className="contact-card-val">github.com/manokkk</span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-gray-400" />
+                </a>
+
               </div>
-
-              {/* Phone Card */}
-              <div className="contact-info-card" onClick={handleCopyPhone} title="Click to copy phone number">
-                <div className="contact-card-left">
-                  <div className="contact-icon-box">
-                    <Phone className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <span className="contact-card-label">PHONE / WHATSAPP</span>
-                    <span className="contact-card-val">+63 939 319 1546</span>
-                  </div>
-                </div>
-                <div className="text-xs font-mono text-gray-400 flex items-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                  {copiedPhone ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
-                </div>
-              </div>
-
-              {/* Location Card */}
-              <div className="contact-info-card" style={{ cursor: 'default' }}>
-                <div className="contact-card-left">
-                  <div className="contact-icon-box">
-                    <MapPin className="w-5 h-5 text-purple-400" />
-                  </div>
-                  <div>
-                    <span className="contact-card-label">LOCATION</span>
-                    <span className="contact-card-val">Taguig City, Philippines</span>
-                  </div>
-                </div>
-                <span className="text-xs font-mono text-gray-400">GMT +8</span>
-              </div>
-
-              {/* GitHub Card */}
-              <a 
-                href="https://github.com/manokkk" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="contact-info-card"
-              >
-                <div className="contact-card-left">
-                  <div className="contact-icon-box">
-                    <GithubIcon className="w-5 h-5 text-gray-300" />
-                  </div>
-                  <div>
-                    <span className="contact-card-label">GITHUB PROFILE</span>
-                    <span className="contact-card-val">github.com/manokkk</span>
-                  </div>
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400" />
-              </a>
-
             </div>
           </div>
 
-          {/* Right Column: Sleek Message Form Box */}
-          <div className="form-box">
+          {/* Right Column: Sleek Message Form Box with 3D Scroll Physics */}
+          <div ref={rightColRef} className="scroll-anchor">
+            <div 
+              className="form-box"
+              style={{
+                opacity: formPhysics.opacity,
+                transform: `translateY(${formPhysics.totalOffsetY}px) scale(${formPhysics.scale}) perspective(1000px) rotateX(${formPhysics.rotateX}deg) rotateY(${formPhysics.rotateY}deg)`,
+                transition: 'opacity 0.06s ease-out, transform 0.06s ease-out',
+                willChange: 'opacity, transform'
+              }}
+            >
             {submitted ? (
               <div className="form-success-card text-left items-start">
                 
@@ -281,6 +317,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
               </form>
             )}
           </div>
+        </div>
 
         </div>
 
