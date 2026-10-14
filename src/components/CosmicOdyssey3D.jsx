@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
-import { Volume2, VolumeX, Eye, EyeOff, Compass, Sparkles, ExternalLink, X, Orbit } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 // ============================================================================
 // 1. SCROLLYTELLING SPACE MAP WAYPOINTS (Aligned with Page Sections)
@@ -147,17 +147,29 @@ export const DISCOVERY_DOSSIER = [
 
 export default function CosmicOdyssey3D() {
   const mountRef = useRef(null);
-  const [activeSector, setActiveSector] = useState(COSMIC_SECTORS[0]);
-  const [scrollPercent, setScrollPercent] = useState(0);
-  const [isAudioActive, setIsAudioActive] = useState(false);
   const [isCinematicMode, setIsCinematicMode] = useState(false);
-  const [isDossierOpen, setIsDossierOpen] = useState(false);
-  const [dossierTab, setDossierTab] = useState('ALL');
 
-  // Web Audio Context & Node Refs
-  const audioCtxRef = useRef(null);
-  const gainNodeRef = useRef(null);
-  const oscillatorsRef = useRef([]);
+  // Sync cinematic mode with document body so HTML page contents fade out
+  useEffect(() => {
+    if (isCinematicMode) {
+      document.body.classList.add('cinematic-active');
+    } else {
+      document.body.classList.remove('cinematic-active');
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isCinematicMode) {
+        setIsCinematicMode(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.classList.remove('cinematic-active');
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isCinematicMode]);
+
 
   // ============================================================================
   // PROCEDURAL HIGH-DEFINITION TEXTURE GENERATORS
@@ -351,7 +363,7 @@ export default function CosmicOdyssey3D() {
     return texture;
   }, []);
 
-  // 6. Relativistic Accretion Ring Texture (Sagittarius A* & Black Hole Star 100B× Energy)
+  // 6. Relativistic Accretion Ring Texture (Doppler Blueshift to Crimson Redshift)
   const createAccretionRingTexture = useCallback(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 512;
@@ -375,91 +387,6 @@ export default function CosmicOdyssey3D() {
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     return texture;
-  }, []);
-
-  // ============================================================================
-  // PROCEDURAL WEB AUDIO COSMIC SYNTHESIZER
-  // ============================================================================
-  const toggleAmbientSound = () => {
-    if (!isAudioActive) {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-
-        const ctx = new AudioCtx();
-        audioCtxRef.current = ctx;
-
-        if (ctx.state === 'suspended') {
-          ctx.resume();
-        }
-
-        const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-        masterGain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 3);
-        masterGain.connect(ctx.destination);
-        gainNodeRef.current = masterGain;
-
-        const droneFreqs = [55.0, 110.0, 164.81];
-        const oscs = droneFreqs.map((freq, idx) => {
-          const osc = ctx.createOscillator();
-          osc.type = idx === 0 ? 'sine' : (idx === 1 ? 'triangle' : 'sine');
-          osc.frequency.setValueAtTime(freq, ctx.currentTime);
-
-          const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
-          if (pan) {
-            pan.pan.value = (idx - 1) * 0.45;
-          }
-
-          const filter = ctx.createBiquadFilter();
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(320 + idx * 80, ctx.currentTime);
-
-          if (pan) {
-            osc.connect(filter);
-            filter.connect(pan);
-            pan.connect(masterGain);
-          } else {
-            osc.connect(filter);
-            filter.connect(masterGain);
-          }
-
-          osc.start();
-          return osc;
-        });
-
-        oscillatorsRef.current = oscs;
-        setIsAudioActive(true);
-      } catch (err) {
-        console.warn('Audio initialization restricted by browser policy:', err);
-      }
-    } else {
-      if (gainNodeRef.current && audioCtxRef.current) {
-        gainNodeRef.current.gain.exponentialRampToValueAtTime(0.0001, audioCtxRef.current.currentTime + 1.2);
-        setTimeout(() => {
-          oscillatorsRef.current.forEach(osc => {
-            try { osc.stop(); osc.disconnect(); } catch {}
-          });
-          oscillatorsRef.current = [];
-          if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
-            audioCtxRef.current.close().catch(() => {});
-          }
-          setIsAudioActive(false);
-        }, 1300);
-      } else {
-        setIsAudioActive(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      oscillatorsRef.current.forEach(osc => {
-        try { osc.stop(); osc.disconnect(); } catch {}
-      });
-      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
-        audioCtxRef.current.close().catch(() => {});
-      }
-    };
   }, []);
 
   // ============================================================================
@@ -777,22 +704,6 @@ export default function CosmicOdyssey3D() {
       shockwaveRings.push(swMesh);
     });
 
-    // 3. Dual Relativistic Polar Jets (Cosmic Flash Beams Detected by NOIRLab)
-    const jetGeo = new THREE.CylinderGeometry(0.6, 2.8, 36, 16);
-    const jetMat = new THREE.MeshBasicMaterial({
-      color: 0x38bdf8,
-      transparent: true,
-      opacity: 0.35,
-      blending: THREE.AdditiveBlending,
-    });
-    const northJet = new THREE.Mesh(jetGeo, jetMat);
-    northJet.position.y = 18;
-    deathFlashGroup.add(northJet);
-
-    const southJet = new THREE.Mesh(jetGeo, jetMat);
-    southJet.position.y = -18;
-    southJet.rotation.x = Math.PI;
-    deathFlashGroup.add(southJet);
 
     // 4. Relativistic Synchrotron Ionization Particles
     const flashCount = 160;
@@ -1043,9 +954,6 @@ export default function CosmicOdyssey3D() {
     // ============================================================================
     let animId;
     let clock = new THREE.Clock();
-    let uiThrottle = 0;
-    let lastReportedPercent = -1;
-    let lastReportedSectorId = '';
 
     const currentCamPos = new THREE.Vector3();
     const currentLookPos = new THREE.Vector3();
@@ -1142,26 +1050,6 @@ export default function CosmicOdyssey3D() {
       }
 
       renderer.render(scene, camera);
-
-      // Throttled UI State Sync - Only trigger React state updates on actual value change
-      uiThrottle++;
-      if (uiThrottle % 6 === 0) {
-        const percent = Math.round(scroll.current * 100);
-        if (percent !== lastReportedPercent) {
-          lastReportedPercent = percent;
-          setScrollPercent(percent);
-        }
-
-        let nextSector = COSMIC_SECTORS[0];
-        if (percent >= 84) nextSector = COSMIC_SECTORS[3];
-        else if (percent >= 58) nextSector = COSMIC_SECTORS[2];
-        else if (percent >= 26) nextSector = COSMIC_SECTORS[1];
-
-        if (nextSector.id !== lastReportedSectorId) {
-          lastReportedSectorId = nextSector.id;
-          setActiveSector(nextSector);
-        }
-      }
     };
 
     animate();
@@ -1200,19 +1088,7 @@ export default function CosmicOdyssey3D() {
     createAccretionRingTexture,
   ]);
 
-  const jumpToSector = (sectorId) => {
-    setIsDossierOpen(false);
-    const el = document.getElementById(sectorId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
-  // Filtered Dossier Discoveries
-  const filteredDossier = DISCOVERY_DOSSIER.filter((item) => {
-    if (dossierTab === 'ALL') return true;
-    return item.type === dossierTab;
-  });
 
   return (
     <>
@@ -1227,51 +1103,8 @@ export default function CosmicOdyssey3D() {
           TOP TELEMETRY HUD BAR
           ========================================================================= */}
       <header aria-label="Astronomical Discoveries HUD" className="cosmic-hud-top">
-        <div 
-          className="cosmic-hud-pill interactive"
-          onClick={() => setIsDossierOpen(true)}
-          title="Click to Open Full Cosmic Discovery Dossier"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsDossierOpen(true); }}
-        >
-          <div className="cosmic-pulse-indicator" />
-          <div className="cosmic-telemetry-text">
-            <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>DISCOVERY //</span>
-            <span style={{ color: 'rgba(255, 255, 255, 0.95)', fontWeight: '600' }}>{activeSector.title}</span>
-            <span style={{ color: 'rgba(255, 255, 255, 0.3)' }}>•</span>
-            <span style={{ color: 'rgba(56, 189, 248, 0.9)', fontFamily: 'monospace' }}>DIST: {activeSector.distance}</span>
-            <span style={{ color: 'rgba(255, 255, 255, 0.3)' }} className="hidden lg:inline">•</span>
-            <span style={{ color: 'rgba(203, 213, 225, 0.75)', fontFamily: 'monospace' }} className="hidden lg:inline">{activeSector.mission}</span>
-          </div>
-        </div>
-
-        {/* Action Controls: Dossier, Sound & Cinematic Mode */}
+        {/* Action Controls: Cinematic Galaxy Mode */}
         <div className="cosmic-hud-actions">
-          {/* Open Discovery Dossier Modal */}
-          <button
-            type="button"
-            onClick={() => setIsDossierOpen(true)}
-            className="cosmic-hud-btn"
-            title="Browse all 7 mind-boggling star and planet discoveries"
-            aria-label="Open Cosmic Discovery Dossier"
-          >
-            <Sparkles className="w-3.5 h-3.5" style={{ color: '#38bdf8' }} />
-            <span>DOSSIER</span>
-          </button>
-
-          {/* Ambient Sound Toggle */}
-          <button
-            type="button"
-            onClick={toggleAmbientSound}
-            className={`cosmic-hud-btn ${isAudioActive ? 'active' : ''}`}
-            title={isAudioActive ? 'Mute Deep Space Ambient Sound' : 'Play Deep Space Ambient Audio'}
-            aria-label="Toggle Cosmic Audio"
-          >
-            {isAudioActive ? <Volume2 className="w-3.5 h-3.5" style={{ color: '#38bdf8' }} /> : <VolumeX className="w-3.5 h-3.5" />}
-            <span>{isAudioActive ? 'AUDIO ON' : 'AUDIO OFF'}</span>
-          </button>
-
           {/* Cinematic / Unobstructed 3D Galaxy Toggle */}
           <button
             type="button"
@@ -1286,49 +1119,7 @@ export default function CosmicOdyssey3D() {
         </div>
       </header>
 
-      {/* =========================================================================
-          RIGHT-SIDE VERTICAL FLIGHT RAIL / DISCOVERY MAP
-          ========================================================================= */}
-      <aside aria-label="Discovery Progress Map" className="cosmic-hud-flight-rail">
-        <div className="cosmic-flight-tracker">
-          <div className="cosmic-flight-title">
-            <Compass className="w-3 h-3" style={{ color: '#38bdf8', flexShrink: 0 }} />
-            <span>DISCOVERY LOG</span>
-          </div>
 
-          <div className="cosmic-flight-line-box">
-            {/* Active Flight Progress Fill Line */}
-            <div 
-              className="cosmic-flight-line-fill" 
-              style={{ height: `${scrollPercent}%` }} 
-            />
-
-            {/* Discovery Milestone Pips */}
-            {COSMIC_SECTORS.map((sec) => {
-              const isActive = activeSector.id === sec.id;
-              return (
-                <button
-                  key={sec.id}
-                  type="button"
-                  onClick={() => jumpToSector(sec.id)}
-                  className={`cosmic-waypoint-pip ${isActive ? 'active' : ''}`}
-                  title={`${sec.label} — ${sec.title} (${sec.distance})`}
-                  aria-label={`Jump to ${sec.title}`}
-                >
-                  <span className="cosmic-pip-dot" />
-                  <span className="cosmic-pip-label">{sec.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Current Flight Distance Telemetry */}
-          <div className="cosmic-flight-meter-stat">
-            <span>{scrollPercent}%</span>
-            <span style={{ fontSize: '0.62rem', color: 'rgba(56, 189, 248, 0.8)' }}>WARP</span>
-          </div>
-        </div>
-      </aside>
 
       {/* =========================================================================
           CINEMATIC MODE PROMPT BANNER
@@ -1358,116 +1149,6 @@ export default function CosmicOdyssey3D() {
             >
               Return to Portfolio View
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* =========================================================================
-          INTERACTIVE COSMIC DISCOVERY DOSSIER MODAL
-          ========================================================================= */}
-      {isDossierOpen && (
-        <div className="cosmic-dossier-overlay" onClick={() => setIsDossierOpen(false)}>
-          <div className="cosmic-dossier-container" onClick={(e) => e.stopPropagation()}>
-            {/* Modal Header */}
-            <div className="cosmic-dossier-top">
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                  <Sparkles className="w-4 h-4" style={{ color: '#38bdf8' }} />
-                  <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', color: '#38bdf8', fontWeight: 'bold', letterSpacing: '0.1em' }}>
-                    ASTRONOMICAL DISCOVERY DOSSIER
-                  </span>
-                </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: '700', color: '#ffffff', margin: 0, letterSpacing: '-0.02em' }}>
-                  Mind-Boggling Stars & Record-Breaking Planets
-                </h3>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsDossierOpen(false)}
-                className="modal-close-btn"
-                title="Close Dossier"
-                aria-label="Close Dossier"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="cosmic-dossier-tabs">
-              <button
-                type="button"
-                onClick={() => setDossierTab('ALL')}
-                className={`cosmic-dossier-tab-btn ${dossierTab === 'ALL' ? 'active' : ''}`}
-              >
-                ALL DISCOVERIES ({DISCOVERY_DOSSIER.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setDossierTab('STAR')}
-                className={`cosmic-dossier-tab-btn ${dossierTab === 'STAR' ? 'active' : ''}`}
-              >
-                🌟 MIND-BOGGLING STARS (3)
-              </button>
-              <button
-                type="button"
-                onClick={() => setDossierTab('PLANET')}
-                className={`cosmic-dossier-tab-btn ${dossierTab === 'PLANET' ? 'active' : ''}`}
-              >
-                🪐 RECORD-BREAKING PLANETS (4)
-              </button>
-            </div>
-
-            {/* Discoveries List */}
-            <div className="cosmic-dossier-body">
-              {filteredDossier.map((item) => {
-                const isBlackHole = item.targetSector === 'contact';
-                return (
-                  <article 
-                    key={item.id} 
-                    className={`cosmic-dossier-card ${isBlackHole ? 'black-hole-card' : ''}`}
-                  >
-                    <div className="cosmic-dossier-card-header">
-                      <span className={`cosmic-dossier-badge ${item.badgeColor}`}>
-                        {item.badge}
-                      </span>
-                      <div className="cosmic-dossier-meta">
-                        <span>{item.location}</span>
-                      </div>
-                    </div>
-
-                    <h4 className="cosmic-dossier-card-title">{item.title}</h4>
-
-                    <div style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: isBlackHole ? '#fb7185' : '#38bdf8', fontWeight: '600' }}>
-                      KEY METRIC: {item.stat}
-                    </div>
-
-                    <p className="cosmic-dossier-desc">{item.description}</p>
-
-                    <div className="cosmic-dossier-footer">
-                      <button
-                        type="button"
-                        onClick={() => jumpToSector(item.targetSector)}
-                        className="cosmic-dossier-warp-btn"
-                      >
-                        <Orbit className="w-3.5 h-3.5" />
-                        <span>WARP TO WAYPOINT</span>
-                      </button>
-
-                      <a
-                        href={item.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="cosmic-dossier-source-link"
-                      >
-                        <span>Source: {item.source}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
           </div>
         </div>
       )}

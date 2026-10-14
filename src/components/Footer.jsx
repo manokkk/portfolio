@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* Quick Links & Email Action */}
           <div className="footer-nav">
-            <a href="#projects" className="footer-link">Works & Projects</a>
+            <a href="#projects" className="footer-link">Projects</a>
             <a href="#services" className="footer-link">Services</a>
             <a href="#contact" className="footer-link">Contact</a>
 

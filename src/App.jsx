@@ -7,7 +7,6 @@ import Services from './components/Services';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ResumeModal from './components/ResumeModal';
-import ScrollNavigator from './components/ScrollNavigator';
 
 export default function App() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
@@ -28,8 +27,6 @@ export default function App() {
       {/* 3D Cosmic Space Odyssey Scrollytelling System */}
       <CosmicOdyssey3D />
 
-      {/* Floating Scroll Navigator on Bottom Right */}
-      <ScrollNavigator />
 
       <Navbar 
         email="micogianan28@gmail.com" 

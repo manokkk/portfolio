@@ -227,7 +227,7 @@ export default function Works() {
       {/* Header & Filter Tabs */}
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <h2 className="section-title section-title-glow">Works & Projects</h2>
+          <h2 className="section-title section-title-glow">Projects</h2>
         </div>
 
         {/* Interactive Category Filter Tabs */}

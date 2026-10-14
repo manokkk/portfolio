@@ -82,15 +82,15 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
         {/* Right: Desktop Navigation Links with Scroll-Active Glow */}
         <nav className="nav-links">
+          <button onClick={onOpenResume} className="nav-link">
+            Resume
+          </button>
           <a 
             href="#projects" 
             className={`nav-link ${activeSection === 'projects' ? 'active-nav-link' : ''}`}
           >
-            Works & Projects
+            Projects
           </a>
-          <button onClick={onOpenResume} className="nav-link">
-            Resume
-          </button>
           <a 
             href="#services" 
             className={`nav-link ${activeSection === 'services' ? 'active-nav-link' : ''}`}
@@ -118,19 +118,19 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="mobile-drawer">
-          <a 
-            href="#projects" 
-            onClick={() => setMobileOpen(false)} 
-            className={`mobile-nav-link ${activeSection === 'projects' ? 'active-mobile-link' : ''}`}
-          >
-            Works & Projects
-          </a>
           <button 
             onClick={() => { setMobileOpen(false); onOpenResume(); }} 
             className="mobile-nav-link"
           >
             Resume
           </button>
+          <a 
+            href="#projects" 
+            onClick={() => setMobileOpen(false)} 
+            className={`mobile-nav-link ${activeSection === 'projects' ? 'active-mobile-link' : ''}`}
+          >
+            Projects
+          </a>
           <a 
             href="#services" 
             onClick={() => setMobileOpen(false)} 
