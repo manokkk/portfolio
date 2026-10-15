@@ -119,7 +119,67 @@ pub fn calculate_optimal_route(
     let mut best_execution = RoutingResult::default();
     // High speed memory buffer traversal...
     best_execution
+}
+`
+    },
+    {
+      id: "budget-planner-web",
+      title: "Budget Planner Web — Financial Management Platform",
+      category: "Full-Stack Web",
+      featured: true,
+      image: "/images/budget_planner_web.jpg",
+      description: "Full-stack personal finance and budgeting platform featuring real-time financial tracking, category budget allocations, daily allowance calculations, savings milestone goals, and dynamic cash flow visualizers.",
+      longDescription: "Budget Planner Web provides real-time financial tracking with intuitive category envelopes, daily allowance calculation, and interactive cash flow visualizers. Built with React 19, Vite, Express REST API, Prisma ORM, PostgreSQL, Supabase, and Recharts.",
+      techStack: ["React 19", "Vite", "Express", "Prisma ORM", "PostgreSQL", "Supabase", "Recharts", "Framer Motion"],
+      metrics: ["Sub-second queries", "Interactive Recharts", "Daily allowance engine"],
+      githubUrl: "https://github.com/manokkk/BudgetPlanner",
+      demoUrl: "https://github.com/manokkk/BudgetPlanner",
+      architectureHighlights: [
+        "Interactive analytics and spending visualizer built with Recharts & Framer Motion",
+        "Express REST microservice layer connected with Prisma ORM and PostgreSQL",
+        "Supabase Authentication and secure user data isolation",
+        "Dynamic daily allowance calculator based on current month budget balance"
+      ],
+      sampleCode: `// Budget Category Calculation Engine
+export function computeDailyAllowance(totalBudget, totalSpent, daysRemaining) {
+  const remainingBudget = Math.max(0, totalBudget - totalSpent);
+  const dailyAllowance = daysRemaining > 0 ? remainingBudget / daysRemaining : 0;
+  return {
+    remainingBudget,
+    dailyAllowance: Math.round(dailyAllowance * 100) / 100,
+    isExceeded: totalSpent > totalBudget,
+  };
 }`
+    },
+    {
+      id: "budget-planner-app",
+      title: "Budget Planner Application — Mobile Finance Tracker",
+      category: "Mobile (Expo)",
+      featured: true,
+      image: "/images/budget_planner_app.jpg",
+      description: "Cross-platform personal finance mobile application for iOS & Android built with React Native (Expo). Features daily allowance calculations, daily expense history tracking matching web behavior, budget envelopes, savings goals, and offline persistence.",
+      longDescription: "A high-performance React Native (Expo 54) mobile application engineered for seamless daily personal finance tracking. Synchronized with the Express & Supabase backend, featuring daily allowance tracking, savings goals, and AsyncStorage persistence.",
+      techStack: ["React Native", "Expo 54", "Supabase", "React 19", "Reanimated", "AsyncStorage", "REST API"],
+      metrics: ["60 FPS animations", "AsyncStorage offline sync", "EAS production AAB"],
+      githubUrl: "https://github.com/manokkk/BudgetPlannerMobile",
+      demoUrl: "https://github.com/manokkk/BudgetPlannerMobile",
+      architectureHighlights: [
+        "Expo 54 & React Native 0.81 cross-platform suite with React Navigation tabs",
+        "Daily Allowance and Daily History tracking matching web application logic",
+        "AsyncStorage local persistence with seamless backend synchronization",
+        "EAS automated build configurations for installable APK and production AAB bundles"
+      ],
+      sampleCode: `// Mobile Transaction & Daily Allowance Hook
+export const useDailyAllowance = (budgetSummary) => {
+  const { totalBudget, totalSpent, daysInMonth, currentDay } = budgetSummary;
+  const daysLeft = Math.max(1, daysInMonth - currentDay + 1);
+  const remaining = Math.max(0, totalBudget - totalSpent);
+  return {
+    allowanceToday: (remaining / daysLeft).toFixed(2),
+    spentSoFar: totalSpent,
+    remaining
+  };
+};`
     }
   ],
 
@@ -203,7 +263,7 @@ pub fn calculate_optimal_route(
     help: "Available commands:\n  • about      - Brief bio and background summary\n  • skills     - Core technical stack breakdown\n  • projects   - View top production projects\n  • contact    - Get email and social contact details\n  • sudo hire  - Dispatch instant recruiter priority access\n  • cat resume - Print summary resume details\n  • clear      - Clear terminal screen history\n  • date       - Show current system date & time",
     about: "Mico H. Gianan | Full-Stack Web & Mobile Developer\nBuilding scalable cross-platform mobile apps, modern web platforms & APIs.\nBased in Taguig City, Philippines.",
     skills: "TECHNICAL STACK SUMMARY:\n[Frontend & Mobile] React.JS, Next.JS, React Native, React Redux, MERN Stack, HTML, CSS\n[Backend & Languages] Laravel, NestJS, .NET, Python, PHP, Java, C#, C++, REST APIs\n[Databases & Storage] PostgreSQL, MongoDB, Supabase, Firebase, PhpMyAdmin, Redis\n[Cloud & DevOps] AWS, Docker Software, CI/CD Pipelines, Git Version Control\n[Hardware & AI] Raspberry Pi, ESP32, Claude Opus, Automation",
-    projects: "FEATURED PRODUCTION PROJECTS:\n1. Inspire Holdings Inc. — Web Platform & Admin Suite\n2. IamWallet — Mobile Application & Web Admin\n3. ISAP — TUPT Thesis Digital Archive & Search Engine\n4. IoT Embedded Hardware & Telemetry System",
+    projects: "FEATURED PRODUCTION PROJECTS:\n1. Inspire Holdings Inc. — Web Platform & Admin Suite\n2. IamWallet — Mobile Application & Web Admin\n3. Budget Planner Web — Financial Management Platform\n4. Budget Planner Application — Mobile Finance Tracker\n5. ISAP — TUPT Thesis Digital Archive & Search Engine\n6. IoT Embedded Hardware & Telemetry System",
     contact: "CONNECT WITH MICO:\nEmail: micogianan28@gmail.com\nPhone: +63 939 319 1546\nGitHub: https://github.com/manokkk\nLocation: Taguig City, Philippines",
     "sudo hire": "[ACCESS GRANTED] Mico has been notified of your priority recruiter inquiry. Expect a response shortly!"
   }

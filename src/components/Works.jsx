@@ -132,6 +132,48 @@ export default function Works() {
     },
     {
       id: 6,
+      title: 'Budget Planner Web',
+      category: 'Full-Stack Web',
+      image: '/images/budget_planner_web.jpg',
+      description: 'Full-stack personal finance and budgeting platform featuring real-time financial tracking, category budget allocations, daily allowance calculations, savings milestone goals, and dynamic cash flow visualizers.',
+      blueprint: 'Client (React 19/Vite) ➔ Express REST API ➔ Prisma ORM ➔ PostgreSQL DB + Supabase Auth',
+      metrics: [
+        { label: 'Real-time Analytics', desc: 'Interactive Recharts & Cashflow Streams', icon: Zap },
+        { label: 'Daily Allowance', desc: 'Dynamic Allowance & Savings Engine', icon: ShieldCheck },
+        { label: 'Prisma + Supabase', desc: 'PostgreSQL Relational Storage & Auth', icon: Sparkles }
+      ],
+      highlights: [
+        'Interactive Recharts Financial Analytics & Cashflow UI',
+        'Express REST Microservice with Prisma ORM & PostgreSQL',
+        'Supabase Authentication & Encrypted Session Layer',
+        'Savings Milestone Goals with Trash Bin & 7-Day Auto Recovery'
+      ],
+      tags: ['React 19', 'Vite', 'Express', 'Prisma ORM', 'PostgreSQL', 'Supabase', 'Recharts', 'Framer Motion'],
+      projectUrl: 'https://github.com/manokkk/BudgetPlanner'
+    },
+    {
+      id: 7,
+      title: 'Budget Planner Application',
+      category: 'Mobile (Expo)',
+      image: '/images/budget_planner_app.jpg',
+      description: 'Cross-platform personal finance mobile application for iOS & Android built with React Native (Expo). Features daily allowance calculations, daily expense history tracking matching web behavior, budget envelopes, savings goals, and offline persistence.',
+      blueprint: 'Mobile Client (Expo 54/React Native 0.81) ➔ React Navigation ➔ AsyncStorage ➔ Express API / Supabase',
+      metrics: [
+        { label: 'Daily Allowance', desc: 'Calculated daily spending limits & history', icon: Zap },
+        { label: 'Expo 54 Native', desc: '60 FPS Reanimated & Native Gestures', icon: ShieldCheck },
+        { label: 'EAS Android Builds', desc: 'Preview APK & Production AAB Ready', icon: Sparkles }
+      ],
+      highlights: [
+        'Expo 54 & React Native Reanimated Touch Experience',
+        'AsyncStorage Offline Persistence & Express REST Client',
+        'Supabase Session Token Persistence & User Isolation',
+        'Expo EAS Build Pipeline (Android APK & Production AAB)'
+      ],
+      tags: ['React Native', 'Expo', 'Supabase', 'React 19', 'Reanimated', 'AsyncStorage', 'REST API'],
+      projectUrl: 'https://github.com/manokkk/BudgetPlannerMobile'
+    },
+    {
+      id: 8,
       title: 'ISAP — TUPT Thesis Archive',
       category: 'AI & ML',
       image: '/images/project_ai_platform.jpg',
@@ -152,7 +194,7 @@ export default function Works() {
       projectUrl: 'https://github.com/manokkk'
     },
     {
-      id: 7,
+      id: 9,
       title: 'IoT Embedded Hardware & Telemetry System',
       category: 'IoT Hardware',
       image: '/images/project_iot_hardware.jpg',

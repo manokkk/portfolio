@@ -7,7 +7,7 @@ export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeModalProject, setActiveModalProject] = useState(null);
 
-  const categories = ['All', 'AI & Full Stack', 'Cloud & DevOps', 'Fintech & Web3'];
+  const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'AI & Full Stack', 'Cloud & DevOps', 'Fintech & Web3'];
 
   const filteredProjects = selectedCategory === 'All'
     ? portfolioData.projects
