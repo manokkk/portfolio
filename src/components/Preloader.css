@@ -1,0 +1,910 @@
+/* ==========================================================================
+   J.A.R.V.I.S. STARK INDUSTRIES PRELOADER & CLOSING ANIMATION ENGINE
+   Closing FX Options:
+   1. iris: Holographic Arc-Reactor Aperture & Shockwave Flare
+   2. shutter: Dual Cinematic Shutter / Blast Doors Horizon Split
+   3. curtain: Editorial Parallax Curtain Lift with Laser Trailing Edge
+   ========================================================================== */
+
+/* Fullscreen Master Overlay */
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: #06070a;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  user-select: none;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Background Subtle Grid Texture (Hardware accelerated, zero blur slop) */
+.preloader-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   CLOSING ANIMATION 1: ARC-REACTOR IRIS APERTURE & FLARE (.exiting-iris)
+   ========================================================================== */
+.preloader-overlay.exiting-iris {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+  transition: 
+    opacity 0.44s cubic-bezier(0.85, 0, 0.15, 1) 0.08s,
+    transform 0.48s cubic-bezier(0.85, 0, 0.15, 1);
+  will-change: transform, opacity;
+}
+
+.preloader-overlay.exiting-iris .jarvis-side-col,
+.preloader-overlay.exiting-iris .jarvis-dialogue-box,
+.preloader-overlay.exiting-iris .preloader-topbar,
+.preloader-overlay.exiting-iris .preloader-footer {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.preloader-overlay.exiting-iris .jarvis-reactor-stage {
+  transform: scale(1.35);
+  filter: drop-shadow(0 0 45px #38bdf8);
+  transition: transform 0.46s cubic-bezier(0.16, 1, 0.3, 1), filter 0.46s ease-out;
+  will-change: transform, filter;
+}
+
+/* ==========================================================================
+   CLOSING ANIMATION 2: DUAL SHUTTER HORIZON SPLIT (.exiting-shutter)
+   ========================================================================== */
+.jarvis-shutter-panel {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #06070a;
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 1;
+  pointer-events: none;
+  transition: transform 0.54s cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+}
+
+.jarvis-shutter-top {
+  top: 0;
+  transform-origin: top;
+  border-bottom: 2px solid #38bdf8;
+  box-shadow: 0 4px 24px rgba(56, 189, 248, 0.4);
+}
+
+.jarvis-shutter-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+  border-top: 2px solid #38bdf8;
+  box-shadow: 0 -4px 24px rgba(56, 189, 248, 0.4);
+}
+
+.jarvis-shutter-laser {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #38bdf8;
+  box-shadow: 0 0 16px #38bdf8, 0 0 35px rgba(56, 189, 248, 0.9);
+  transform: translateY(-50%) scaleX(0);
+  opacity: 0;
+  z-index: 2;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out;
+  will-change: transform, opacity;
+}
+
+.preloader-overlay.exiting-shutter {
+  background: transparent !important;
+  pointer-events: none;
+}
+
+.preloader-overlay.exiting-shutter .jarvis-shutter-top {
+  transform: translateY(-100%);
+}
+
+.preloader-overlay.exiting-shutter .jarvis-shutter-bottom {
+  transform: translateY(100%);
+}
+
+.preloader-overlay.exiting-shutter .jarvis-shutter-laser {
+  transform: translateY(-50%) scaleX(1);
+  opacity: 1;
+}
+
+.preloader-overlay.exiting-shutter .preloader-content-wrap,
+.preloader-overlay.exiting-shutter .preloader-topbar,
+.preloader-overlay.exiting-shutter .preloader-footer {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+}
+
+/* ==========================================================================
+   CLOSING ANIMATION 3: EDITORIAL CURTAIN LIFT (.exiting-curtain)
+   ========================================================================== */
+.preloader-overlay.exiting-curtain {
+  transform: translateY(-100%);
+  opacity: 0.98;
+  box-shadow: 0 12px 40px rgba(56, 189, 248, 0.7), 0 2px 0 #38bdf8;
+  pointer-events: none;
+  transition: transform 0.52s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s ease 0.24s;
+  will-change: transform;
+}
+
+.preloader-overlay.exiting-curtain .preloader-content-wrap {
+  transform: translateY(-25px);
+  opacity: 0.2;
+  transition: transform 0.3s ease-out, opacity 0.25s ease-out;
+}
+
+/* ==========================================================================
+   TOP BAR & EXIT ANIMATION SELECTOR
+   ========================================================================== */
+.preloader-topbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 768px) {
+  .preloader-topbar {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+.preloader-brand-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preloader-live-beacon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.9);
+  animation: jarvisBeaconPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes jarvisBeaconPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.preloader-brand-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.preloader-brand-coords {
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  text-transform: uppercase;
+}
+
+/* Closing Animation Switcher Controls */
+.preloader-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.preloader-switcher-pill {
+  display: flex;
+  align-items: center;
+  background: rgba(12, 14, 22, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 9999px;
+  padding: 0.2rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.preloader-mode-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.preloader-mode-btn:hover {
+  color: #ffffff;
+}
+
+.preloader-mode-btn.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+}
+
+.preloader-mode-btn:focus-visible,
+.preloader-skip-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #06070a, 0 0 0 4px #38bdf8;
+}
+
+.preloader-skip-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 0.38rem 0.85rem;
+  border-radius: 9999px;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preloader-skip-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-1px);
+}
+
+.preloader-skip-kbd {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+/* ==========================================================================
+   J.A.R.V.I.S. HUD CONTENT STAGE
+   ========================================================================== */
+.preloader-content-wrap {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+.jarvis-hud-stage {
+  max-width: 1260px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 290px 1.3fr 290px;
+  gap: 1.75rem;
+  align-items: center;
+  position: relative;
+}
+
+@media (max-width: 1120px) {
+  .jarvis-hud-stage {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-height: calc(100vh - 12rem);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Side Columns with Dual Modular Cards */
+.jarvis-side-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* Jarvis Side Panels (Holographic Stark UI Cards) */
+.jarvis-holo-card {
+  background: rgba(10, 13, 20, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 0.85rem;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+}
+
+.jarvis-holo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+}
+
+/* Corner HUD Technical Brackets */
+.jarvis-corner-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(56, 189, 248, 0.5);
+  pointer-events: none;
+}
+
+.jarvis-bracket-tl {
+  top: -8px;
+  left: -8px;
+  border-top: 2px solid #38bdf8;
+  border-left: 2px solid #38bdf8;
+}
+
+.jarvis-bracket-tr {
+  top: -8px;
+  right: -8px;
+  border-top: 2px solid #38bdf8;
+  border-right: 2px solid #38bdf8;
+}
+
+.jarvis-bracket-bl {
+  bottom: -8px;
+  left: -8px;
+  border-bottom: 2px solid #38bdf8;
+  border-left: 2px solid #38bdf8;
+}
+
+.jarvis-bracket-br {
+  bottom: -8px;
+  right: -8px;
+  border-bottom: 2px solid #38bdf8;
+  border-right: 2px solid #38bdf8;
+}
+
+.jarvis-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 0.75rem;
+}
+
+.jarvis-card-title {
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jarvis-card-badge {
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.jarvis-card-badge.gold {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.jarvis-card-badge.emerald {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Metric Rows */
+.jarvis-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.69rem;
+  padding: 0.28rem 0;
+  color: #94a3b8;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.jarvis-metric-row:last-child {
+  border-bottom: none;
+}
+
+.jarvis-metric-val {
+  font-weight: 700;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.jarvis-metric-val.highlight {
+  color: #38bdf8;
+}
+
+.jarvis-metric-val.gold {
+  color: #fbbf24;
+}
+
+.jarvis-metric-val.emerald {
+  color: #34d399;
+}
+
+/* Center Stage: Rotating Arc Reactor Hologram & Acoustic Waveform */
+.jarvis-center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  position: relative;
+}
+
+.jarvis-reactor-stage {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease-out;
+}
+
+.jarvis-reactor-svg {
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+}
+
+.jarvis-spin-cw {
+  animation: jarvisSpinCw 12s linear infinite;
+  transform-origin: center;
+}
+
+.jarvis-spin-ccw {
+  animation: jarvisSpinCcw 8s linear infinite;
+  transform-origin: center;
+}
+
+.jarvis-spin-fast {
+  animation: jarvisSpinCw 3.5s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes jarvisSpinCw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes jarvisSpinCcw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+/* Center Pulse Glow */
+.jarvis-core-pulse {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.95) 0%, rgba(56, 189, 248, 0) 70%);
+  animation: jarvisPulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes jarvisPulse {
+  0% { transform: scale(0.8); opacity: 0.55; }
+  100% { transform: scale(1.3); opacity: 1; }
+}
+
+/* Dynamic Arc Reactor Center Label */
+.jarvis-reactor-center-tag {
+  position: absolute;
+  bottom: -0.75rem;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #38bdf8;
+  background: rgba(12, 14, 22, 0.9);
+  padding: 0.15rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+/* Acoustic Voice Waveform Bar Visualizer */
+.jarvis-waveform-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  max-width: 440px;
+}
+
+.jarvis-waveform-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 0.5rem;
+  width: 100%;
+}
+
+.jarvis-wave-bar {
+  flex: 1;
+  max-width: 6px;
+  background: linear-gradient(180deg, #38bdf8, #818cf8);
+  border-radius: 9999px;
+  animation: jarvisWaveOsc 1.2s ease-in-out infinite alternate;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+}
+
+@keyframes jarvisWaveOsc {
+  0% { height: 6px; }
+  100% { height: 30px; }
+}
+
+.jarvis-freq-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0.5rem;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: #64748b;
+  letter-spacing: 0.05em;
+}
+
+/* Jarvis Dialogue Message Box */
+.jarvis-dialogue-box {
+  background: rgba(10, 13, 20, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 0.85rem;
+  padding: 0.95rem 1.35rem;
+  max-width: 540px;
+  width: 100%;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(56, 189, 248, 0.18);
+  position: relative;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.jarvis-dialogue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.35rem;
+}
+
+.jarvis-dialogue-tag {
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jarvis-dialogue-codec {
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: #64748b;
+}
+
+.jarvis-dialogue-quote {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+/* Right Panel: Suit Diagnostics & Weapons Suite */
+.jarvis-suit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.jarvis-suit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 0.25rem 0;
+  color: #cbd5e1;
+}
+
+.jarvis-suit-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jarvis-suit-state {
+  font-weight: 700;
+  font-size: 0.62rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+.jarvis-suit-state.armed {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.jarvis-suit-state.nominal {
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* ==========================================================================
+   BOTTOM BAR & PROGRESS TRACK
+   ========================================================================== */
+.preloader-footer {
+  position: relative;
+  z-index: 10;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .preloader-footer {
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* Segmented Precision Progress Track */
+.preloader-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.preloader-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+  transition: width 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preloader-footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.preloader-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #cbd5e1;
+}
+
+.preloader-footer-hints {
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   FLOATING PRELOADER TEST DOCK (Available on the main site for instant replay)
+   ========================================================================== */
+.preloader-test-dock {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 98;
+  user-select: none;
+}
+
+.preloader-dock-card {
+  background: rgba(12, 14, 22, 0.95);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 0.85rem;
+  width: 320px;
+  max-width: calc(100vw - 2.5rem);
+}
+
+.preloader-dock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 0.65rem;
+}
+
+.preloader-dock-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.preloader-dock-close {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.preloader-dock-close:hover {
+  color: #ffffff;
+}
+
+.preloader-dock-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.preloader-dock-mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.55rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+}
+
+.preloader-dock-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+.preloader-dock-mode-btn.active {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.preloader-dock-replay-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.25));
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #ffffff;
+  border-radius: 0.55rem;
+  padding: 0.55rem;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preloader-dock-replay-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(99, 102, 241, 0.35));
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.preloader-dock-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(12, 14, 22, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 9999px;
+  padding: 0.45rem 0.95rem;
+  color: #cbd5e1;
+  font-family: ui-monospace, 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preloader-dock-toggle-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* Reduced Motion Fallback */
+@media (prefers-reduced-motion: reduce) {
+  .preloader-overlay,
+  .preloader-progress-fill,
+  .jarvis-spin-cw,
+  .jarvis-spin-ccw,
+  .jarvis-spin-fast,
+  .preloader-live-beacon {
+    animation: none !important;
+    transition: none !important;
+  }
+}
