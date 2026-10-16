@@ -64,99 +64,7 @@
 }
 
 /* ==========================================================================
-   CLOSING ANIMATION 2: DUAL SHUTTER HORIZON SPLIT (.exiting-shutter)
-   ========================================================================== */
-.jarvis-shutter-panel {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  background: #06070a;
-  background-image: 
-    linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  z-index: 1;
-  pointer-events: none;
-  transition: transform 0.54s cubic-bezier(0.76, 0, 0.24, 1);
-  will-change: transform;
-}
-
-.jarvis-shutter-top {
-  top: 0;
-  transform-origin: top;
-  border-bottom: 2px solid #38bdf8;
-  box-shadow: 0 4px 24px rgba(56, 189, 248, 0.4);
-}
-
-.jarvis-shutter-bottom {
-  bottom: 0;
-  transform-origin: bottom;
-  border-top: 2px solid #38bdf8;
-  box-shadow: 0 -4px 24px rgba(56, 189, 248, 0.4);
-}
-
-.jarvis-shutter-laser {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: #38bdf8;
-  box-shadow: 0 0 16px #38bdf8, 0 0 35px rgba(56, 189, 248, 0.9);
-  transform: translateY(-50%) scaleX(0);
-  opacity: 0;
-  z-index: 2;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out;
-  will-change: transform, opacity;
-}
-
-.preloader-overlay.exiting-shutter {
-  background: transparent !important;
-  pointer-events: none;
-}
-
-.preloader-overlay.exiting-shutter .jarvis-shutter-top {
-  transform: translateY(-100%);
-}
-
-.preloader-overlay.exiting-shutter .jarvis-shutter-bottom {
-  transform: translateY(100%);
-}
-
-.preloader-overlay.exiting-shutter .jarvis-shutter-laser {
-  transform: translateY(-50%) scaleX(1);
-  opacity: 1;
-}
-
-.preloader-overlay.exiting-shutter .preloader-content-wrap,
-.preloader-overlay.exiting-shutter .preloader-topbar,
-.preloader-overlay.exiting-shutter .preloader-footer {
-  opacity: 0;
-  transform: scale(0.96);
-  transition: opacity 0.18s ease-out, transform 0.18s ease-out;
-}
-
-/* ==========================================================================
-   CLOSING ANIMATION 3: EDITORIAL CURTAIN LIFT (.exiting-curtain)
-   ========================================================================== */
-.preloader-overlay.exiting-curtain {
-  transform: translateY(-100%);
-  opacity: 0.98;
-  box-shadow: 0 12px 40px rgba(56, 189, 248, 0.7), 0 2px 0 #38bdf8;
-  pointer-events: none;
-  transition: transform 0.52s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.3s ease 0.24s;
-  will-change: transform;
-}
-
-.preloader-overlay.exiting-curtain .preloader-content-wrap {
-  transform: translateY(-25px);
-  opacity: 0.2;
-  transition: transform 0.3s ease-out, opacity 0.25s ease-out;
-}
-
-/* ==========================================================================
-   TOP BAR & EXIT ANIMATION SELECTOR
+   TOP BAR & SKIP CONTROLS
    ========================================================================== */
 .preloader-topbar {
   position: relative;
@@ -168,14 +76,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-@media (max-width: 768px) {
-  .preloader-topbar {
-    padding: 1rem 1.25rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-}
 
 .preloader-brand-tag {
   display: flex;
@@ -213,53 +113,12 @@
   text-transform: uppercase;
 }
 
-/* Closing Animation Switcher Controls */
 .preloader-controls {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-wrap: wrap;
 }
 
-.preloader-switcher-pill {
-  display: flex;
-  align-items: center;
-  background: rgba(12, 14, 22, 0.92);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 9999px;
-  padding: 0.2rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.preloader-mode-btn {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
-  font-family: ui-monospace, 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.preloader-mode-btn:hover {
-  color: #ffffff;
-}
-
-.preloader-mode-btn.active {
-  background: rgba(56, 189, 248, 0.18);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
-}
-
-.preloader-mode-btn:focus-visible,
 .preloader-skip-btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px #06070a, 0 0 0 4px #38bdf8;
@@ -321,13 +180,137 @@
   position: relative;
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1120px) and (min-width: 861px) {
   .jarvis-hud-stage {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    max-height: calc(100vh - 12rem);
-    overflow-y: auto;
-    padding-right: 0.5rem;
+    grid-template-columns: 240px 1fr 240px;
+    gap: 1.2rem;
+  }
+}
+
+/* ==========================================================================
+   MOBILE PRELOADER: CINEMATIC ARC REACTOR ONLY (MAX-WIDTH: 860px)
+   Eliminates cramped cards; focuses 100% on the rotating Arc Reactor core
+   ========================================================================== */
+@media (max-width: 860px) {
+  .preloader-overlay {
+    height: 100vh;
+    height: 100dvh;
+    justify-content: space-between;
+  }
+
+  /* Compact, clean horizontal top bar */
+  .preloader-topbar {
+    padding: 0.85rem 1.25rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .preloader-brand-title {
+    font-size: 0.82rem;
+  }
+
+  .preloader-brand-coords {
+    font-size: 0.55rem;
+  }
+
+  .preloader-skip-btn {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.68rem;
+  }
+
+  .preloader-skip-kbd {
+    display: none;
+  }
+
+  /* Main Stage Container */
+  .preloader-content-wrap {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .jarvis-hud-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+    gap: 0;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* HIDE ALL 4 CARDS ON MOBILE — Arc Reactor ONLY */
+  .jarvis-side-col {
+    display: none !important;
+  }
+
+  /* HIDE Waveform and Dialogue Box on mobile — Arc Reactor ONLY */
+  .jarvis-waveform-box,
+  .jarvis-dialogue-box {
+    display: none !important;
+  }
+
+  /* Center Column becomes the pure focal hero */
+  .jarvis-center-col {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    padding: 0;
+  }
+
+  .jarvis-reactor-stage {
+    width: min(250px, 70vw);
+    height: min(250px, 70vw);
+  }
+
+  .jarvis-reactor-center-tag {
+    font-size: 0.64rem;
+    padding: 0.28rem 0.6rem;
+    bottom: -6px;
+  }
+
+  /* Optical brackets framing the Arc Reactor on mobile */
+  .jarvis-corner-bracket {
+    width: 16px;
+    height: 16px;
+    border-color: rgba(56, 189, 248, 0.4);
+  }
+
+  .jarvis-bracket-tl { top: -10px; left: -10px; }
+  .jarvis-bracket-tr { top: -10px; right: -10px; }
+  .jarvis-bracket-bl { bottom: -10px; left: -10px; }
+  .jarvis-bracket-br { bottom: -10px; right: -10px; }
+
+  /* Bottom Bar */
+  .preloader-footer {
+    padding: 0.85rem 1.25rem 1.25rem;
+    gap: 0.6rem;
+  }
+
+  .preloader-footer-hints {
+    display: none !important;
+  }
+
+  .preloader-footer-meta {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .preloader-footer-status {
+    font-size: 0.66rem;
+    justify-content: center;
+    text-align: center;
   }
 }
 
@@ -665,33 +648,139 @@
   justify-content: space-between;
   font-family: ui-monospace, 'JetBrains Mono', monospace;
   font-size: 0.68rem;
-  padding: 0.25rem 0;
-  color: #cbd5e1;
+  padding: 0.28rem 0.4rem;
+  border-radius: 0.4rem;
+  color: #94a3b8;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.jarvis-suit-item.is-pending {
+  opacity: 0.6;
+}
+
+.jarvis-suit-item.is-calibrating {
+  opacity: 1;
+  color: #f0f9ff;
+  background: rgba(56, 189, 248, 0.05);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+.jarvis-suit-item.is-ready {
+  opacity: 1;
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.03);
 }
 
 .jarvis-suit-label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
+}
+
+.jarvis-suit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: #64748b;
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.jarvis-suit-item.is-calibrating .jarvis-suit-icon {
+  color: #38bdf8;
+  transform: scale(1.08);
+}
+
+.jarvis-suit-item.is-ready .jarvis-suit-icon {
+  color: #38bdf8;
+  transform: scale(1);
+  opacity: 1;
 }
 
 .jarvis-suit-state {
-  font-weight: 700;
-  font-size: 0.62rem;
-  padding: 0.1rem 0.35rem;
-  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.6rem;
+  padding: 0.12rem 0.38rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
 }
 
+/* Delicate, casual checkmark icon (clean, no glow) */
+.jarvis-suit-check,
+.jarvis-suit-state svg {
+  width: 10px !important;
+  height: 10px !important;
+  min-width: 10px !important;
+  max-width: 10px !important;
+  stroke-width: 2.2 !important;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  color: #38bdf8;
+  filter: none;
+  animation: jarvisCasualCheck 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes jarvisCasualCheck {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  65% {
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Queued / Waiting in line */
+.jarvis-suit-state.calibrating {
+  background: rgba(255, 255, 255, 0.03);
+  color: #64748b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Actively calibrating right now (clean border pulse, zero blurry glow) */
+.jarvis-suit-state.calibrating-active {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: none;
+  animation: jarvisCalibratePulse 1.2s infinite ease-in-out;
+}
+
+@keyframes jarvisCalibratePulse {
+  0%, 100% { border-color: rgba(56, 189, 248, 0.3); }
+  50% { border-color: rgba(56, 189, 248, 0.8); }
+}
+
+/* Armed & Locked in (Clean, crisp matte border — zero glow) */
 .jarvis-suit-state.armed {
-  background: rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.08);
   color: #38bdf8;
   border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: none;
+  animation: jarvisCasualLock 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.jarvis-suit-state.nominal {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.3);
+@keyframes jarvisCasualLock {
+  0% { transform: scale(0.96); opacity: 0.8; }
+  60% { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* ==========================================================================
@@ -707,11 +796,6 @@
   gap: 0.85rem;
 }
 
-@media (max-width: 640px) {
-  .preloader-footer {
-    padding: 1rem 1.25rem;
-  }
-}
 
 /* Segmented Precision Progress Track */
 .preloader-progress-track {
@@ -750,150 +834,6 @@
 
 .preloader-footer-hints {
   letter-spacing: 0.04em;
-}
-
-/* ==========================================================================
-   FLOATING PRELOADER TEST DOCK (Available on the main site for instant replay)
-   ========================================================================== */
-.preloader-test-dock {
-  position: fixed;
-  bottom: 1.25rem;
-  right: 1.25rem;
-  z-index: 98;
-  user-select: none;
-}
-
-.preloader-dock-card {
-  background: rgba(12, 14, 22, 0.95);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 0.85rem;
-  width: 320px;
-  max-width: calc(100vw - 2.5rem);
-}
-
-.preloader-dock-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 0.65rem;
-}
-
-.preloader-dock-title {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: ui-monospace, 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #ffffff;
-}
-
-.preloader-dock-close {
-  background: transparent;
-  border: none;
-  color: #64748b;
-  cursor: pointer;
-  padding: 0.2rem;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  transition: color 0.15s;
-}
-
-.preloader-dock-close:hover {
-  color: #ffffff;
-}
-
-.preloader-dock-modes {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.75rem;
-}
-
-.preloader-dock-mode-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0.7rem;
-  border-radius: 0.55rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #cbd5e1;
-  font-family: ui-monospace, 'JetBrains Mono', monospace;
-  font-size: 0.72rem;
-  cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  text-align: left;
-}
-
-.preloader-dock-mode-btn:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
-}
-
-.preloader-dock-mode-btn.active {
-  background: rgba(56, 189, 248, 0.16);
-  border-color: rgba(56, 189, 248, 0.45);
-  color: #38bdf8;
-  font-weight: 700;
-}
-
-.preloader-dock-replay-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.25));
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  color: #ffffff;
-  border-radius: 0.55rem;
-  padding: 0.55rem;
-  font-family: ui-monospace, 'JetBrains Mono', monospace;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.preloader-dock-replay-btn:hover {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(99, 102, 241, 0.35));
-  border-color: #38bdf8;
-  transform: translateY(-1px);
-}
-
-.preloader-dock-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(12, 14, 22, 0.94);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  border-radius: 9999px;
-  padding: 0.45rem 0.95rem;
-  color: #cbd5e1;
-  font-family: ui-monospace, 'JetBrains Mono', monospace;
-  font-size: 0.74rem;
-  font-weight: 600;
-  cursor: pointer;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.preloader-dock-toggle-btn:hover {
-  background: rgba(56, 189, 248, 0.15);
-  color: #ffffff;
-  border-color: #38bdf8;
 }
 
 /* Reduced Motion Fallback */

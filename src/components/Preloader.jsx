@@ -4,24 +4,23 @@ import {
   Shield, 
   Cpu, 
   Activity, 
-  Wifi, 
-  RotateCcw, 
-  X, 
-  Sparkles, 
+  Wifi,
   Check,
-  Disc,
-  Split,
-  ArrowUp
+  Layers,
+  Server,
+  Smartphone,
+  Globe
 } from 'lucide-react';
 import './Preloader.css';
 
 // J.A.R.V.I.S. Mark-85 Suit and Developer Arsenal
+// Each system initializes and locks in one-by-one based on loader progress percentage
 const JARVIS_SUIT_DIAGNOSTICS = [
-  { label: 'NEURAL LINK INTERFACE', state: 'ONLINE', icon: '⚡' },
-  { label: 'NEXT.JS 15 & NESTJS ARSENAL', state: 'ARMED', icon: '🛡️' },
-  { label: '.NET 9 ENTERPRISE BACKEND', state: 'NOMINAL', icon: '🔷' },
-  { label: 'REACT NATIVE (EXPO SUIT)', state: 'CALIBRATED', icon: '📱' },
-  { label: 'THREE.JS 3D HUD RENDERER', state: 'MOUNTED', icon: '🌐' }
+  { label: 'NEURAL LINK INTERFACE', targetState: 'ONLINE', icon: Zap, threshold: 22 },
+  { label: 'NEXT.JS 15 & NESTJS ARSENAL', targetState: 'ARMED', icon: Layers, threshold: 44 },
+  { label: '.NET 9 ENTERPRISE BACKEND', targetState: 'NOMINAL', icon: Server, threshold: 64 },
+  { label: 'REACT NATIVE (EXPO SUIT)', targetState: 'CALIBRATED', icon: Smartphone, threshold: 82 },
+  { label: 'THREE.JS 3D HUD RENDERER', targetState: 'MOUNTED', icon: Globe, threshold: 96 }
 ];
 
 const getJarvisDialogue = (prog) => {
@@ -33,41 +32,46 @@ const getJarvisDialogue = (prog) => {
 };
 
 export default function Preloader({
-  exitStyle = 'iris', // 'iris' | 'shutter' | 'curtain'
-  initialPaused = false,
-  onExitStyleChange,
   onComplete,
 }) {
-  const [progress, setProgress] = useState(initialPaused ? 75 : 0);
-  const [isPaused, setIsPaused] = useState(initialPaused);
+  const [progress, setProgress] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const freezeVal = urlParams.get('freeze');
+      if (freezeVal !== null) {
+        const parsed = parseInt(freezeVal, 10);
+        return !isNaN(parsed) ? parsed : 70;
+      }
+    }
+    return 0;
+  });
   const [isExiting, setIsExiting] = useState(false);
-  const [statusMessage, setStatusMessage] = useState(
-    initialPaused ? 'PREVIEW MODE // ANIMATION FROZEN FOR INSPECTION' : 'J.A.R.V.I.S.: ARC REACTOR CORE ONLINE (400% CAPACITY)...'
-  );
+  const [statusMessage, setStatusMessage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const freezeVal = urlParams.get('freeze');
+      if (freezeVal !== null) {
+        const parsed = parseInt(freezeVal, 10);
+        return `J.A.R.V.I.S.: ARSENAL INSPECTION MODE [${!isNaN(parsed) ? parsed : 70}%]`;
+      }
+    }
+    return 'J.A.R.V.I.S.: ARC REACTOR CORE ONLINE (400% CAPACITY)...';
+  });
   const animFrameRef = useRef(null);
   const startTimeRef = useRef(null);
   const isCompletedRef = useRef(false);
-  const pausedProgressRef = useRef(progress);
 
-  useEffect(() => {
-    pausedProgressRef.current = progress;
-  }, [progress]);
-
-  // Phased, silky-smooth exit animation
+  // Phased, silky-smooth Arc Iris Aperture exit animation (Style 1)
   const handleExit = useCallback(() => {
     if (isCompletedRef.current) return;
     isCompletedRef.current = true;
     setIsExiting(true);
 
-    // Duration synchronized with each closing CSS animation to guarantee zero pop
-    let exitDuration = 550;
-    if (exitStyle === 'shutter') exitDuration = 580;
-    if (exitStyle === 'curtain') exitDuration = 540;
-
+    // Synchronized with Arc Iris CSS transition (0.44s + 0.08s delay = 520ms) to guarantee zero pop
     setTimeout(() => {
       if (onComplete) onComplete();
-    }, exitDuration);
-  }, [exitStyle, onComplete]);
+    }, 550);
+  }, [onComplete]);
 
   // Fast-forward / Skip handler
   const handleSkip = useCallback(() => {
@@ -76,7 +80,7 @@ export default function Preloader({
     setTimeout(handleExit, 100);
   }, [handleExit]);
 
-  // Keyboard shortcut listener (Escape to skip, Space to fast-forward, P to pause)
+  // Keyboard shortcut listener (Escape to skip, Space to fast-forward)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -85,9 +89,6 @@ export default function Preloader({
       } else if (e.key === ' ' || e.code === 'Space') {
         e.preventDefault();
         setProgress((prev) => Math.min(100, prev + 25));
-      } else if (e.key === 'p' || e.key === 'P') {
-        e.preventDefault();
-        setIsPaused((prev) => !prev);
       }
     };
 
@@ -104,15 +105,18 @@ export default function Preloader({
     };
   }, []);
 
-  // Progressive loading loop with pause support
+  // Progressive loading loop
   useEffect(() => {
-    if (isPaused) {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      return;
+    // If frozen for visual inspection, do not run the timer loop
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('freeze') !== null) {
+        return;
+      }
     }
 
     let targetDuration = 2400; // Comfortable pacing
-    startTimeRef.current = performance.now() - (pausedProgressRef.current / 100) * targetDuration;
+    startTimeRef.current = performance.now();
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(() => {
@@ -161,15 +165,11 @@ export default function Preloader({
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [handleExit, isPaused]);
-
-  const exitClass = isExiting 
-    ? (exitStyle === 'shutter' ? 'exiting-shutter' : exitStyle === 'curtain' ? 'exiting-curtain' : 'exiting-iris') 
-    : '';
+  }, [handleExit]);
 
   return (
     <div 
-      className={`preloader-overlay exit-style-${exitStyle} ${exitClass}`}
+      className={`preloader-overlay ${isExiting ? 'exiting-iris' : ''}`}
       role="dialog"
       aria-modal="true"
       aria-label="J.A.R.V.I.S. Portfolio Loading Screen"
@@ -177,17 +177,8 @@ export default function Preloader({
       {/* Background Subtle Grid Texture */}
       <div className="preloader-bg-grid" aria-hidden="true" />
 
-      {/* Shutter Panels for Exit Style 2 (Dual Horizon Split) */}
-      {exitStyle === 'shutter' && (
-        <>
-          <div className="jarvis-shutter-panel jarvis-shutter-top" aria-hidden="true" />
-          <div className="jarvis-shutter-panel jarvis-shutter-bottom" aria-hidden="true" />
-          <div className="jarvis-shutter-laser" aria-hidden="true" />
-        </>
-      )}
-
       {/* =========================================================================
-          TOP BAR: Identification + Closing Animation Switcher
+          TOP BAR: Identification + Skip Control
           ========================================================================= */}
       <header className="preloader-topbar">
         <div className="preloader-brand-tag">
@@ -200,65 +191,15 @@ export default function Preloader({
           </div>
         </div>
 
-        {/* Closing Animation Switcher Controls */}
         <div className="preloader-controls">
-          <div className="preloader-switcher-pill" role="group" aria-label="Choose Closing Animation Style">
-            <button
-              type="button"
-              className={`preloader-mode-btn ${exitStyle === 'iris' ? 'active' : ''}`}
-              onClick={() => onExitStyleChange && onExitStyleChange('iris')}
-              aria-pressed={exitStyle === 'iris'}
-              aria-label="Switch Closing Animation to Arc Iris Aperture"
-              title="Style 1: Holographic Arc-Reactor Aperture"
-            >
-              <Disc className="w-3.5 h-3.5" />
-              <span>Arc Iris</span>
-            </button>
-            <button
-              type="button"
-              className={`preloader-mode-btn ${exitStyle === 'shutter' ? 'active' : ''}`}
-              onClick={() => onExitStyleChange && onExitStyleChange('shutter')}
-              aria-pressed={exitStyle === 'shutter'}
-              aria-label="Switch Closing Animation to Dual Shutter Split"
-              title="Style 2: Dual Horizon Shutter Split"
-            >
-              <Split className="w-3.5 h-3.5" />
-              <span>Shutter Split</span>
-            </button>
-            <button
-              type="button"
-              className={`preloader-mode-btn ${exitStyle === 'curtain' ? 'active' : ''}`}
-              onClick={() => onExitStyleChange && onExitStyleChange('curtain')}
-              aria-pressed={exitStyle === 'curtain'}
-              aria-label="Switch Closing Animation to Editorial Curtain Lift"
-              title="Style 3: Editorial Parallax Curtain Lift"
-            >
-              <ArrowUp className="w-3.5 h-3.5" />
-              <span>Curtain Lift</span>
-            </button>
-          </div>
-
-          {/* Pause / Resume Button for detailed inspection */}
-          <button
-            type="button"
-            className="preloader-skip-btn"
-            onClick={() => setIsPaused((prev) => !prev)}
-            aria-label={isPaused ? 'Resume Animation' : 'Pause Animation to Inspect'}
-            title={isPaused ? 'Resume Animation' : 'Pause Animation'}
-          >
-            <span>{isPaused ? '▶ Resume' : '⏸ Pause'}</span>
-            <kbd className="preloader-skip-kbd">P</kbd>
-          </button>
-
-          {/* Quick Skip Button */}
           <button
             type="button"
             className="preloader-skip-btn"
             onClick={handleSkip}
-            aria-label="Trigger Closing Animation and Enter Portfolio (or press Escape)"
-            title="Trigger Closing Animation"
+            aria-label="Skip Loading Screen and Enter Portfolio (or press Escape)"
+            title="Skip Intro"
           >
-            <span>Test Close</span>
+            <span>Skip Intro</span>
             <kbd className="preloader-skip-kbd">Esc</kbd>
           </button>
         </div>
@@ -453,17 +394,38 @@ export default function Preloader({
                 <span className="jarvis-card-badge">MK-85</span>
               </div>
               <div className="jarvis-suit-list">
-                {JARVIS_SUIT_DIAGNOSTICS.map((item) => (
-                  <div key={item.label} className="jarvis-suit-item">
-                    <div className="jarvis-suit-label">
-                      <span>{item.icon}</span>
-                      <span>{item.label}</span>
+                {JARVIS_SUIT_DIAGNOSTICS.map((item, idx) => {
+                  const isReady = progress >= item.threshold;
+                  const prevThreshold = idx === 0 ? 0 : JARVIS_SUIT_DIAGNOSTICS[idx - 1].threshold;
+                  const isCurrent = !isReady && progress >= prevThreshold;
+                  const IconComp = item.icon;
+
+                  return (
+                    <div 
+                      key={item.label} 
+                      className={`jarvis-suit-item ${isReady ? 'is-ready' : isCurrent ? 'is-calibrating' : 'is-pending'}`}
+                    >
+                      <div className="jarvis-suit-label">
+                        <span className="jarvis-suit-icon">
+                          <IconComp size={12} strokeWidth={2} />
+                        </span>
+                        <span className="jarvis-suit-text">{item.label}</span>
+                      </div>
+                      <span 
+                        className={`jarvis-suit-state ${isReady ? 'armed' : isCurrent ? 'calibrating-active' : 'calibrating'}`}
+                      >
+                        {isReady ? (
+                          <>
+                            <Check size={10} strokeWidth={2.2} className="jarvis-suit-check" />
+                            <span>{item.targetState}</span>
+                          </>
+                        ) : (
+                          <span>CALIBRATING</span>
+                        )}
+                      </span>
                     </div>
-                    <span className="jarvis-suit-state armed">
-                      {progress >= 85 ? item.state : 'CALIBRATING'}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -515,126 +477,10 @@ export default function Preloader({
             <span>{statusMessage}</span>
           </div>
           <div className="preloader-footer-hints">
-            <span>PRESS <kbd className="text-white bg-white/10 px-1 py-0.5 rounded font-mono text-[10px]">SPACE</kbd> TO FAST-FORWARD • <kbd className="text-white bg-white/10 px-1 py-0.5 rounded font-mono text-[10px]">P</kbd> TO PAUSE • <kbd className="text-white bg-white/10 px-1 py-0.5 rounded font-mono text-[10px]">ESC</kbd> TO TEST CLOSE</span>
+            <span>PRESS <kbd className="text-white bg-white/10 px-1 py-0.5 rounded font-mono text-[10px]">SPACE</kbd> TO FAST-FORWARD • <kbd className="text-white bg-white/10 px-1 py-0.5 rounded font-mono text-[10px]">ESC</kbd> TO SKIP INTRO</span>
           </div>
         </div>
       </footer>
     </div>
-  );
-}
-
-// ==========================================================================
-// PRELOADER TEST DOCK (Floating Control on the Live Website)
-// Allows user to test and compare the 3 closing animations whenever they want!
-// ==========================================================================
-export function PreloaderTestDock({ 
-  currentExitStyle, 
-  onSelectExitStyle, 
-  onReplayPreloader 
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <aside aria-label="J.A.R.V.I.S. Closing Animation Test Panel" className="preloader-test-dock">
-      {isOpen ? (
-        <div className="preloader-dock-card">
-          <div className="preloader-dock-header">
-            <div className="preloader-dock-title">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-              <span>TEST CLOSING ANIMATIONS</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="preloader-dock-close"
-              aria-label="Close Test Dock"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="preloader-dock-modes">
-            <button
-              type="button"
-              className={`preloader-dock-mode-btn ${currentExitStyle === 'iris' ? 'active' : ''}`}
-              onClick={() => onSelectExitStyle('iris')}
-            >
-              <span>🔘 Style 1: Arc Iris Aperture</span>
-              {currentExitStyle === 'iris' && <Check className="w-3 h-3 text-sky-400" />}
-            </button>
-            <button
-              type="button"
-              className={`preloader-dock-mode-btn ${currentExitStyle === 'shutter' ? 'active' : ''}`}
-              onClick={() => onSelectExitStyle('shutter')}
-            >
-              <span>↔️ Style 2: Dual Shutter Split</span>
-              {currentExitStyle === 'shutter' && <Check className="w-3 h-3 text-sky-400" />}
-            </button>
-            <button
-              type="button"
-              className={`preloader-dock-mode-btn ${currentExitStyle === 'curtain' ? 'active' : ''}`}
-              onClick={() => onSelectExitStyle('curtain')}
-            >
-              <span>⬆️ Style 3: Editorial Curtain Lift</span>
-              {currentExitStyle === 'curtain' && <Check className="w-3 h-3 text-sky-400" />}
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(false);
-                onReplayPreloader(false);
-              }}
-              className="preloader-dock-replay-btn"
-              aria-label="Replay J.A.R.V.I.S. with Selected Closing Animation"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Replay & Test Closing</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(false);
-                onReplayPreloader(true);
-              }}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.45rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                color: '#cbd5e1',
-                borderRadius: '0.55rem',
-                padding: '0.45rem',
-                fontFamily: 'ui-monospace, JetBrains Mono, monospace',
-                fontSize: '0.72rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-              }}
-              aria-label="Freeze & Inspect J.A.R.V.I.S. Screen"
-              title="Loads the preloader paused so you can inspect everything closely"
-            >
-              <span>⏸️ Freeze & Inspect Screen</span>
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          className="preloader-dock-toggle-btn"
-          aria-label="Open Closing Animation Switcher"
-          title="Test J.A.R.V.I.S. Closing Animations"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-          <span>Closing FX: {currentExitStyle === 'iris' ? 'Arc Iris' : currentExitStyle === 'shutter' ? 'Shutter Split' : 'Curtain Lift'}</span>
-        </button>
-      )}
-    </aside>
   );
 }
