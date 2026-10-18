@@ -16,9 +16,9 @@ export const COSMIC_SECTORS = [
     title: 'LHS 1140 b Ocean Super-Earth',
     sub: 'Super-Earth',
     distance: '48 LY',
-    color: '#0ea5e9', // Sky Cyan (Image 2 station badge style)
-    border: '#38bdf8',
-    bg: 'rgba(14, 165, 233, 0.25)',
+    color: '#f472b6', // Pastel pink accent
+    border: '#f9a8d4',
+    bg: 'rgba(244, 114, 182, 0.25)',
     mission: 'JWST Habitable Zone Milestone',
     coord: 'Cetus Constellation • Orbiting in Habitable Zone',
   },
@@ -30,9 +30,9 @@ export const COSMIC_SECTORS = [
     title: 'Beta Pictoris d & GJ 523b',
     sub: 'Beta Pic d',
     distance: '63 LY',
-    color: '#f59e0b', // Amber / Orange
-    border: '#fbbf24',
-    bg: 'rgba(245, 158, 11, 0.25)',
+    color: '#f472b6', // Pastel pink accent
+    border: '#f9a8d4',
+    bg: 'rgba(244, 114, 182, 0.25)',
     mission: 'Exoplanet Archive 6,000+ Milestone',
     coord: 'Debris Disk • 23.5 M⊕ Mega-Earth',
   },
@@ -44,9 +44,9 @@ export const COSMIC_SECTORS = [
     title: 'EP260321a Pre-Supernova Flash',
     sub: 'Pre-Supernova',
     distance: '500M LY',
-    color: '#f43f5e', // Coral / Red-Orange
-    border: '#fb7185',
-    bg: 'rgba(244, 63, 94, 0.25)',
+    color: '#f472b6', // Pastel pink accent
+    border: '#f9a8d4',
+    bg: 'rgba(244, 114, 182, 0.25)',
     mission: 'NOIRLab Real-Time Explosion Alert',
     coord: '500M LY • Pre-Supernova Cosmic Flash',
   },
@@ -58,9 +58,9 @@ export const COSMIC_SECTORS = [
     title: 'Sagittarius A* & Star S301',
     sub: 'Black Hole & S301',
     distance: '26,000 LY',
-    color: '#a855f7', // Violet / Purple
-    border: '#c084fc',
-    bg: 'rgba(168, 85, 247, 0.25)',
+    color: '#f472b6', // Pastel pink accent
+    border: '#f9a8d4',
+    bg: 'rgba(244, 114, 182, 0.25)',
     mission: 'EHT & JWST Black Hole Star',
     coord: 'Galactic Center • Relativistic Horizon',
   },
@@ -172,6 +172,10 @@ export default function CosmicOdyssey3D() {
   const [activeSectorIdx, setActiveSectorIdx] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  const isNavigatingRef = useRef(false);
+  const navTimeoutRef = useRef(null);
+  const cosmicProgressRef = useRef(0);
+
   // Sync cinematic mode with document body so HTML page contents fade out
   useEffect(() => {
     if (isCinematicMode) {
@@ -193,7 +197,31 @@ export default function CosmicOdyssey3D() {
     };
   }, [isCinematicMode]);
 
-  // Real-time responsive scroll tracking for horizontal transit route map
+  // Dynamic calculation of document positions for the 4 cosmic waypoints
+  const getSectionScrollTops = useCallback(() => {
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+
+    const getElementDocTop = (id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const rect = el.getBoundingClientRect();
+      return rect.top + (window.pageYOffset || window.scrollY || 0);
+    };
+
+    const headerOffset = 70;
+    const projectsElTop = getElementDocTop('projects');
+    const servicesElTop = getElementDocTop('services');
+    const contactElTop = getElementDocTop('contact');
+
+    const pos0 = 0;
+    const pos1 = projectsElTop !== null ? Math.min(maxScroll, Math.max(0, projectsElTop - headerOffset)) : maxScroll * 0.333;
+    const pos2 = servicesElTop !== null ? Math.min(maxScroll, Math.max(0, servicesElTop - headerOffset)) : maxScroll * 0.667;
+    const pos3 = contactElTop !== null ? Math.min(maxScroll, Math.max(0, contactElTop - headerOffset)) : maxScroll;
+
+    return [pos0, pos1, pos2, pos3];
+  }, []);
+
+  // Real-time responsive scroll tracking with piecewise waypoint mapping
   useEffect(() => {
     let ticking = false;
     let lastIdx = -1;
@@ -201,21 +229,46 @@ export default function CosmicOdyssey3D() {
     const handleScrollTracking = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const currentY = window.scrollY || window.pageYOffset || 0;
-          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-          const ratio = Math.min(1, Math.max(0, currentY / maxScroll));
-          setScrollProgress(ratio);
+          if (!isNavigatingRef.current) {
+            const currentY = window.scrollY || window.pageYOffset || 0;
+            const positions = getSectionScrollTops();
+            const [pos0, pos1, pos2, pos3] = positions;
 
-          let idx = 0;
-          if (ratio >= 0.82) idx = 3;
-          else if (ratio >= 0.52) idx = 2;
-          else if (ratio >= 0.22) idx = 1;
+            let progress = 0;
+            let idx = 0;
 
-          if (idx !== lastIdx) {
-            lastIdx = idx;
-            setActiveSectorIdx(idx);
+            if (currentY <= pos0 + 10) {
+              progress = 0;
+              idx = 0;
+            } else if (currentY >= pos3 - 40) {
+              progress = 1;
+              idx = 3;
+            } else if (currentY < pos1) {
+              const span = Math.max(1, pos1 - pos0);
+              const t = Math.min(1, Math.max(0, (currentY - pos0) / span));
+              progress = (t * 1) / 3;
+              idx = t >= 0.85 ? 1 : 0;
+            } else if (currentY < pos2) {
+              const span = Math.max(1, pos2 - pos1);
+              const t = Math.min(1, Math.max(0, (currentY - pos1) / span));
+              progress = (1 + t) / 3;
+              idx = t >= 0.85 ? 2 : 1;
+            } else {
+              const span = Math.max(1, pos3 - pos2);
+              const t = Math.min(1, Math.max(0, (currentY - pos2) / span));
+              progress = (2 + t) / 3;
+              idx = t >= 0.85 ? 3 : 2;
+            }
+
+            const clampedProgress = Math.min(1, Math.max(0, progress));
+            setScrollProgress(clampedProgress);
+            cosmicProgressRef.current = clampedProgress;
+
+            if (idx !== lastIdx) {
+              lastIdx = idx;
+              setActiveSectorIdx(idx);
+            }
           }
-
           ticking = false;
         });
         ticking = true;
@@ -225,21 +278,36 @@ export default function CosmicOdyssey3D() {
     window.addEventListener('scroll', handleScrollTracking, { passive: true });
     handleScrollTracking();
 
-    return () => window.removeEventListener('scroll', handleScrollTracking);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScrollTracking);
+      if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    };
+  }, [getSectionScrollTops]);
 
   const handleStationClick = (targetId) => {
-    const elem = document.getElementById(targetId);
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      let targetRatio = 0;
-      if (targetId === 'projects') targetRatio = 0.32;
-      else if (targetId === 'services') targetRatio = 0.62;
-      else if (targetId === 'contact') targetRatio = 0.95;
-      window.scrollTo({ top: targetRatio * maxScroll, behavior: 'smooth' });
-    }
+    const idx = COSMIC_SECTORS.findIndex((s) => s.id === targetId);
+    if (idx === -1) return;
+
+    // Immediately snap active sector and exact destination progress for 100% precision
+    setActiveSectorIdx(idx);
+    const targetProgress = idx / 3;
+    setScrollProgress(targetProgress);
+    cosmicProgressRef.current = targetProgress;
+
+    // Suppress scroll listener jitter while smooth scrolling
+    isNavigatingRef.current = true;
+    if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    navTimeoutRef.current = setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 1000);
+
+    const positions = getSectionScrollTops();
+    const targetY = positions[idx];
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth',
+    });
   };
 
 
@@ -265,6 +333,251 @@ export default function CosmicOdyssey3D() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 64, 64);
 
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    return texture;
+  }, []);
+
+  // 1b. Meteor Fireball & Incandescent Plasma Texture
+  const createFireTexture = useCallback(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    grad.addColorStop(0.15, 'rgba(254, 240, 138, 0.98)');
+    grad.addColorStop(0.35, 'rgba(249, 115, 22, 0.85)');
+    grad.addColorStop(0.65, 'rgba(225, 29, 72, 0.45)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 64, 64);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    return texture;
+  }, []);
+
+  // 1c. Shooting Star Hypersonic Ion Streak (Oxygen 557.7nm line + Magnesium Core)
+  const createStreakTexture = useCallback(() => {
+    const width = 64;
+    const height = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const imgData = ctx.createImageData(width, height);
+    const data = imgData.data;
+
+    // Hyper-velocity shooting star streak (smooth Gaussian cross-section)
+    // y = 0 is head (forward), y = 255 is tail (backward)
+    for (let y = 0; y < height; y++) {
+      const v = y / (height - 1); // 0 at head, 1 at tail
+      const longFade = Math.pow(1.0 - v, 1.25);
+      const sigmaCore = 1.3 + v * 1.8;
+      const sigmaHalo = 3.6 + v * 7.5;
+
+      for (let x = 0; x < width; x++) {
+        const idx = (y * width + x) * 4;
+        const dx = x - 31.5;
+
+        const dCore = (dx * dx) / (2 * sigmaCore * sigmaCore);
+        const dHalo = (dx * dx) / (2 * sigmaHalo * sigmaHalo);
+
+        const coreVal = Math.exp(-dCore) * longFade;
+        const haloVal = Math.exp(-dHalo) * longFade;
+
+        if (haloVal > 0.003 || coreVal > 0.003) {
+          // Atmospheric forbidden oxygen 557.7nm line (teal/green) + cyan + violet fringe
+          const r = Math.min(255, Math.round(coreVal * 255 + haloVal * 45));
+          const g = Math.min(255, Math.round(coreVal * 255 + haloVal * 212));
+          const b = Math.min(255, Math.round(coreVal * 255 + haloVal * 191));
+          const a = Math.min(255, Math.round(Math.max(coreVal * 0.98, haloVal * 0.85) * 255));
+
+          data[idx] = r;
+          data[idx + 1] = g;
+          data[idx + 2] = b;
+          data[idx + 3] = a;
+        }
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    return texture;
+  }, []);
+
+  // 1d. Persistent Ion Train Texture (Lingering Mesospheric Plasma Glow)
+  const createPersistentIonTexture = useCallback(() => {
+    const width = 64;
+    const height = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const imgData = ctx.createImageData(width, height);
+    const data = imgData.data;
+
+    // Persistent ion train: excited mesospheric plasma glow
+    for (let y = 0; y < height; y++) {
+      const v = y / (height - 1);
+      const longShape = Math.sin(v * Math.PI);
+      const sigmaPlasma = 3.6 + Math.sin(v * Math.PI) * 4.5;
+      const sigmaCore = 1.4;
+
+      for (let x = 0; x < width; x++) {
+        const idx = (y * width + x) * 4;
+        const dx = x - 31.5;
+
+        const dPlasma = (dx * dx) / (2 * sigmaPlasma * sigmaPlasma);
+        const dCore = (dx * dx) / (2 * sigmaCore * sigmaCore);
+
+        const plasmaVal = Math.exp(-dPlasma) * longShape;
+        const coreVal = Math.exp(-dCore) * longShape;
+
+        if (plasmaVal > 0.003) {
+          const r = Math.min(255, Math.round(coreVal * 240 + plasmaVal * 80));
+          const g = Math.min(255, Math.round(coreVal * 255 + plasmaVal * 215));
+          const b = Math.min(255, Math.round(coreVal * 255 + plasmaVal * 240));
+          const a = Math.min(255, Math.round(plasmaVal * 230));
+
+          data[idx] = r;
+          data[idx + 1] = g;
+          data[idx + 2] = b;
+          data[idx + 3] = a;
+        }
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    return texture;
+  }, []);
+
+  // 1e. Hypersonic Bow Shock Crescent Texture (Aerodynamic Parabolic Sheath)
+  const createBowShockTexture = useCallback(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const imgData = ctx.createImageData(128, 128);
+    const data = imgData.data;
+
+    // Aerodynamic hypersonic bow shock profile: apex at (64, 28)
+    for (let y = 0; y < 128; y++) {
+      for (let x = 0; x < 128; x++) {
+        const idx = (y * 128 + x) * 4;
+        const dx = (x - 64) / 48; // [-1.33, 1.33]
+        const targetY = 28 + 42 * (dx * dx);
+        const dy = y - targetY;
+
+        if (dy >= -6 && dy <= 32) {
+          const shockNorm = dy < 0 ? (dy + 6) / 6 : 1.0 - (dy / 32);
+          const wingFade = Math.max(0, 1.0 - Math.abs(dx) * 0.7);
+          const alpha = Math.max(0, Math.min(1, Math.pow(shockNorm, 1.4) * wingFade));
+
+          if (alpha > 0.005) {
+            const warmth = Math.min(1, Math.abs(dx) * 0.85 + (dy > 0 ? (dy / 32) * 0.5 : 0));
+            data[idx] = 255;
+            data[idx + 1] = Math.round(255 - warmth * 110);
+            data[idx + 2] = Math.round(240 - warmth * 210);
+            data[idx + 3] = Math.round(alpha * 255);
+          }
+        }
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    return texture;
+  }, []);
+
+  // 1f. Mesospheric Smoke Puff Texture (Gaussian Radial Mineral Dust Cloud)
+  const createSmokePuffTexture = useCallback(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 62);
+    grad.addColorStop(0.0, 'rgba(255, 255, 255, 1)');
+    grad.addColorStop(0.25, 'rgba(240, 240, 245, 0.85)');
+    grad.addColorStop(0.55, 'rgba(200, 210, 225, 0.45)');
+    grad.addColorStop(0.80, 'rgba(160, 175, 195, 0.18)');
+    grad.addColorStop(1.0, 'rgba(100, 116, 139, 0)');
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 128, 128);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    return texture;
+  }, []);
+
+  // 1g. Meteor Bolide Plasma Streak Texture (Thermal Ablation Wake)
+  const createMeteorPlasmaTexture = useCallback(() => {
+    const width = 64;
+    const height = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const imgData = ctx.createImageData(width, height);
+    const data = imgData.data;
+
+    // Bolide plasma wake: incandescent molten white core, burning orange/crimson wake
+    for (let y = 0; y < height; y++) {
+      const v = y / (height - 1); // 0 at head, 1 at tail
+      const longFade = Math.pow(1.0 - v, 1.4);
+      const sigmaCore = 1.6 + v * 2.5;
+      const sigmaWake = 4.2 + v * 12.0;
+
+      for (let x = 0; x < width; x++) {
+        const idx = (y * width + x) * 4;
+        const dx = x - 31.5;
+
+        const dCore = (dx * dx) / (2 * sigmaCore * sigmaCore);
+        const dWake = (dx * dx) / (2 * sigmaWake * sigmaWake);
+
+        const coreVal = Math.exp(-dCore) * longFade;
+        const wakeVal = Math.exp(-dWake) * longFade;
+
+        if (wakeVal > 0.003 || coreVal > 0.003) {
+          const r = 255;
+          const g = Math.min(255, Math.round(coreVal * 255 + wakeVal * 125));
+          const b = Math.min(255, Math.round(coreVal * 230 + wakeVal * 20));
+          const a = Math.min(255, Math.round(Math.max(coreVal * 0.98, wakeVal * 0.88) * 255));
+
+          data[idx] = r;
+          data[idx + 1] = g;
+          data[idx + 2] = b;
+          data[idx + 3] = a;
+        }
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
     const texture = new THREE.CanvasTexture(canvas);
     texture.generateMipmaps = false;
     texture.minFilter = THREE.LinearFilter;
@@ -495,6 +808,12 @@ export default function CosmicOdyssey3D() {
 
     // Textures
     const starTexture = createParticleTexture('rgba(255, 255, 255, 1)', 'rgba(56, 189, 248, 0)');
+    const fireTexture = createFireTexture();
+    const streakTexture = createStreakTexture();
+    const persistentIonTexture = createPersistentIonTexture();
+    const bowShockTexture = createBowShockTexture();
+    const smokePuffTexture = createSmokePuffTexture();
+    const meteorPlasmaTexture = createMeteorPlasmaTexture();
     const oceanPlanetTexture = createOceanPlanetTexture();
     const gasGiantTexture = createGasGiantTexture();
     const megaEarthTexture = createMegaEarthTexture();
@@ -950,6 +1269,336 @@ export default function CosmicOdyssey3D() {
 
     scene.add(blackHoleGroup);
 
+    // ----------------------------------------------------------------------------
+    // E. PERIODIC BACKGROUND CELESTIAL PHENOMENA (Shooting Star & Meteor Every 30s)
+    // Composited relative to camera space so they streak across the cosmic void
+    // at any scroll waypoint without visual obstruction
+    // ----------------------------------------------------------------------------
+    const celestialGroup = new THREE.Group();
+    scene.add(camera);
+    camera.add(celestialGroup);
+
+    // 1. Hyper-Velocity Shooting Star (Needle-sharp ion trail + persistent afterglow)
+    const shootingStarGroup = new THREE.Group();
+    shootingStarGroup.visible = false;
+    celestialGroup.add(shootingStarGroup);
+
+    // Active ionization streak
+    const ssStreakMat = new THREE.SpriteMaterial({
+      map: streakTexture,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const ssStreak = new THREE.Sprite(ssStreakMat);
+    shootingStarGroup.add(ssStreak);
+
+    // Intense incandescent head
+    const ssHeadMat = new THREE.SpriteMaterial({
+      map: starTexture,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const ssHead = new THREE.Sprite(ssHeadMat);
+    shootingStarGroup.add(ssHead);
+
+    // Persistent Ion Train (lingering astrophotography trail in mesosphere)
+    const ssTrainMat = new THREE.SpriteMaterial({
+      map: persistentIonTexture,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const ssTrain = new THREE.Sprite(ssTrainMat);
+    shootingStarGroup.add(ssTrain);
+
+    let ssLaunchCount = 0;
+    const ssState = {
+      active: false,
+      startTime: 0,
+      duration: 0.52, // realistic ~0.5s hypersonic entry
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+      z: -82,
+      length: 28,
+      // Persistent train afterglow
+      trainActive: false,
+      trainStartTime: 0,
+      trainDuration: 1.8,
+      trainCenterX: 0,
+      trainCenterY: 0,
+      trainAngle: 0,
+      trainLen: 0,
+    };
+
+    const launchShootingStar = (time) => {
+      ssLaunchCount++;
+      const fromLeft = ssLaunchCount % 2 === 1;
+      ssState.active = true;
+      ssState.startTime = time;
+      ssState.duration = 0.48 + Math.random() * 0.12; // 0.48s - 0.60s realistic speed
+      ssState.z = -78 - Math.random() * 8;
+      ssState.length = 26 + Math.random() * 8;
+
+      if (fromLeft) {
+        ssState.startX = -68 - Math.random() * 8;
+        ssState.startY = 35 + Math.random() * 6;
+        ssState.endX = 58 + Math.random() * 12;
+        ssState.endY = -14 - Math.random() * 8;
+      } else {
+        ssState.startX = 68 + Math.random() * 8;
+        ssState.startY = 35 + Math.random() * 6;
+        ssState.endX = -58 - Math.random() * 12;
+        ssState.endY = -14 - Math.random() * 8;
+      }
+
+      // Compute persistent train geometry
+      const tdx = ssState.endX - ssState.startX;
+      const tdy = ssState.endY - ssState.startY;
+      ssState.trainLen = Math.hypot(tdx, tdy);
+      ssState.trainCenterX = (ssState.startX + ssState.endX) * 0.5;
+      ssState.trainCenterY = (ssState.startY + ssState.endY) * 0.5;
+      ssState.trainAngle = -Math.atan2(tdx, tdy);
+
+      ssState.trainActive = false;
+      ssTrainMat.opacity = 0;
+      shootingStarGroup.visible = true;
+    };
+
+    // 2. Cosmic Meteor / Bolide (Nucleus, Bow Shock, Fragment Spallation & Smoke Train)
+    const meteorGroup = new THREE.Group();
+    meteorGroup.visible = false;
+    celestialGroup.add(meteorGroup);
+
+    // Wide incandescent plasma wake
+    const meteorStreakMat = new THREE.SpriteMaterial({
+      map: meteorPlasmaTexture,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const meteorStreak = new THREE.Sprite(meteorStreakMat);
+    meteorGroup.add(meteorStreak);
+
+    // Hypersonic Forward Bow Shock Cap
+    const meteorBowShockMat = new THREE.SpriteMaterial({
+      map: bowShockTexture,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const meteorBowShock = new THREE.Sprite(meteorBowShockMat);
+    meteorGroup.add(meteorBowShock);
+
+    // Incandescent fireball halo
+    const meteorHaloMat = new THREE.SpriteMaterial({
+      map: fireTexture,
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const meteorHalo = new THREE.Sprite(meteorHaloMat);
+    meteorGroup.add(meteorHalo);
+
+    // 3D Molten Rock Nucleus
+    const meteorRockGeo = new THREE.DodecahedronGeometry(1.3, 1);
+    const meteorRockMat = new THREE.MeshStandardMaterial({
+      color: 0xffedd5,
+      emissive: 0xf97316,
+      emissiveIntensity: 5.0,
+      roughness: 0.35,
+      fog: false,
+    });
+    const meteorRock = new THREE.Mesh(meteorRockGeo, meteorRockMat);
+    meteorGroup.add(meteorRock);
+
+    // Dynamic Flash Light (illuminates celestial surroundings during terminal airburst)
+    const meteorFlashLight = new THREE.PointLight(0xfed7aa, 0, 160, 1.8);
+    meteorGroup.add(meteorFlashLight);
+
+    // Secondary Spallation Fragments (aerodynamic breakup under high dynamic pressure)
+    const frag1Rock = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.55, 0),
+      new THREE.MeshStandardMaterial({ color: 0xffedd5, emissive: 0xf97316, emissiveIntensity: 4.0, fog: false })
+    );
+    const frag1HaloMat = new THREE.SpriteMaterial({ map: fireTexture, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+    const frag1Halo = new THREE.Sprite(frag1HaloMat);
+    frag1Halo.scale.set(7, 7, 1);
+    const frag1Group = new THREE.Group();
+    frag1Group.add(frag1Rock);
+    frag1Group.add(frag1Halo);
+    frag1Group.visible = false;
+    meteorGroup.add(frag1Group);
+
+    const frag2Rock = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.42, 0),
+      new THREE.MeshStandardMaterial({ color: 0xffedd5, emissive: 0xfbbf24, emissiveIntensity: 3.8, fog: false })
+    );
+    const frag2HaloMat = new THREE.SpriteMaterial({ map: fireTexture, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+    const frag2Halo = new THREE.Sprite(frag2HaloMat);
+    frag2Halo.scale.set(5.5, 5.5, 1);
+    const frag2Group = new THREE.Group();
+    frag2Group.add(frag2Rock);
+    frag2Group.add(frag2Halo);
+    frag2Group.visible = false;
+    meteorGroup.add(frag2Group);
+
+    // Mesospheric Billowing Smoke Puffs (Chelyabinsk-style Bolide Dust Wake)
+    const smokePuffCount = 30;
+    const smokePuffs = [];
+    const smokePuffMats = [];
+
+    for (let i = 0; i < smokePuffCount; i++) {
+      const mat = new THREE.SpriteMaterial({
+        map: smokePuffTexture,
+        transparent: true,
+        opacity: 0,
+        blending: THREE.NormalBlending,
+        depthWrite: false,
+        fog: false,
+      });
+      smokePuffMats.push(mat);
+      const sprite = new THREE.Sprite(mat);
+      sprite.visible = false;
+      meteorGroup.add(sprite);
+
+      smokePuffs.push({
+        sprite,
+        mat,
+        active: false,
+        birthTime: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+        baseScale: 3.5,
+        maxScale: 17.0,
+        driftX: 0,
+        driftY: 0,
+        duration: 3.2,
+      });
+    }
+
+    // Dynamic Spark Embers (48 particles trailing backwards)
+    const sparkCount = 48;
+    const sparkGeo = new THREE.BufferGeometry();
+    const sparkPositions = new Float32Array(sparkCount * 3);
+    const sparkColors = new Float32Array(sparkCount * 3);
+    const sparkVelocities = [];
+
+    for (let i = 0; i < sparkCount; i++) {
+      sparkPositions[i * 3] = 0;
+      sparkPositions[i * 3 + 1] = 0;
+      sparkPositions[i * 3 + 2] = 0;
+
+      sparkColors[i * 3] = 1.0;
+      sparkColors[i * 3 + 1] = 0.8;
+      sparkColors[i * 3 + 2] = 0.3;
+
+      sparkVelocities.push({
+        vx: 0,
+        vy: 0,
+        vz: 0,
+        life: 0,
+      });
+    }
+    sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPositions, 3));
+    sparkGeo.setAttribute('color', new THREE.BufferAttribute(sparkColors, 3));
+
+    const sparkMat = new THREE.PointsMaterial({
+      size: 4.5,
+      sizeAttenuation: false,
+      map: starTexture,
+      transparent: true,
+      vertexColors: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      fog: false,
+    });
+    const sparkPoints = new THREE.Points(sparkGeo, sparkMat);
+    meteorGroup.add(sparkPoints);
+
+    let meteorLaunchCount = 0;
+    const meteorState = {
+      active: false,
+      startTime: 0,
+      duration: 2.2,
+      startX: 0,
+      startY: 0,
+      endX: 0,
+      endY: 0,
+      z: -76,
+      lastPuffProgress: 0,
+      nextPuffIdx: 0,
+    };
+
+    const launchMeteor = (time) => {
+      meteorLaunchCount++;
+      const fromRight = meteorLaunchCount % 2 === 1;
+      meteorState.active = true;
+      meteorState.startTime = time;
+      meteorState.duration = 2.2 + Math.random() * 0.25;
+      meteorState.z = -74 - Math.random() * 8;
+      meteorState.lastPuffProgress = 0;
+
+      if (fromRight) {
+        meteorState.startX = 64 + Math.random() * 8;
+        meteorState.startY = 35 + Math.random() * 5;
+        meteorState.endX = -58 - Math.random() * 12;
+        meteorState.endY = -24 - Math.random() * 8;
+      } else {
+        meteorState.startX = -64 - Math.random() * 8;
+        meteorState.startY = 35 + Math.random() * 5;
+        meteorState.endX = 58 + Math.random() * 12;
+        meteorState.endY = -24 - Math.random() * 8;
+      }
+
+      for (let i = 0; i < smokePuffCount; i++) {
+        smokePuffs[i].active = false;
+        smokePuffs[i].sprite.visible = false;
+        smokePuffMats[i].opacity = 0;
+      }
+
+      for (let s = 0; s < sparkCount; s++) {
+        sparkVelocities[s].life = 0;
+      }
+      frag1Group.visible = false;
+      frag2Group.visible = false;
+      meteorGroup.visible = true;
+    };
+
+    let lastSSCycle = -1;
+    let lastMeteorCycle = -1;
+
+    const handleCelestialKey = (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      const key = (e.key || '').toLowerCase();
+      const code = e.code || '';
+      if (key === 's' || code === 'KeyS') {
+        launchShootingStar(clock.getElapsedTime());
+      } else if (key === 'm' || code === 'KeyM') {
+        launchMeteor(clock.getElapsedTime());
+      }
+    };
+    window.addEventListener('keydown', handleCelestialKey);
+
+    window.__triggerShootingStar = () => launchShootingStar(clock.getElapsedTime());
+    window.__triggerMeteor = () => launchMeteor(clock.getElapsedTime());
+
     // ============================================================================
     // CAMERA 3D SPLINE FLIGHT PATH
     // ============================================================================
@@ -993,9 +1642,7 @@ export default function CosmicOdyssey3D() {
 
     const onScroll = () => {
       const scrollY = window.scrollY || window.pageYOffset || 0;
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const normalized = Math.min(1, Math.max(0, scrollY / maxScroll));
-      scroll.target = normalized;
+      scroll.target = cosmicProgressRef.current;
 
       const now = performance.now();
       const dt = Math.max(1, now - lastTime);
@@ -1039,7 +1686,8 @@ export default function CosmicOdyssey3D() {
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
-      // Smooth scroll interpolation
+      // Smooth scroll interpolation synced with cosmic waypoint progress
+      scroll.target = cosmicProgressRef.current;
       scroll.current += (scroll.target - scroll.current) * 0.07;
       scroll.velocity *= 0.88;
 
@@ -1121,6 +1769,303 @@ export default function CosmicOdyssey3D() {
         starField.position.z *= 0.95;
       }
 
+      // 3. Periodic Background Shooting Star & Meteor Scheduler (Every 30 seconds)
+      const ssCycle = Math.floor((elapsed - 5.0) / 30.0);
+      if (ssCycle >= 0 && ssCycle > lastSSCycle) {
+        lastSSCycle = ssCycle;
+        launchShootingStar(elapsed);
+      }
+
+      const meteorCycle = Math.floor((elapsed - 18.0) / 30.0);
+      if (meteorCycle >= 0 && meteorCycle > lastMeteorCycle) {
+        lastMeteorCycle = meteorCycle;
+        launchMeteor(elapsed);
+      }
+
+      // Animate Hyper-Velocity Shooting Star (0.46s hypersonic entry + 1.6s persistent ion train)
+      if (ssState.active || ssState.trainActive) {
+        const headProgress = (elapsed - ssState.startTime) / ssState.duration;
+
+        if (headProgress < 1.0 && ssState.active) {
+          // 1. Head is actively streaking at hypersonic speed
+          const headX = ssState.startX + (ssState.endX - ssState.startX) * headProgress;
+          const headY = ssState.startY + (ssState.endY - ssState.startY) * headProgress;
+          const headZ = ssState.z;
+
+          const dx = ssState.endX - ssState.startX;
+          const dy = ssState.endY - ssState.startY;
+          const len = Math.hypot(dx, dy) || 1;
+          const ndx = dx / len;
+          const ndy = dy / len;
+
+          // Atmospheric heating & vaporization curve
+          let opacity = 1.0;
+          let microBurst = 1.0;
+          if (headProgress < 0.18) {
+            opacity = Math.pow(headProgress / 0.18, 1.8);
+          } else if (headProgress > 0.65) {
+            opacity = Math.max(0, 1.0 - (headProgress - 0.65) / 0.35);
+          }
+
+          // Grain fragmentation micro-flash around peak ablation (progress 0.50 - 0.62)
+          if (headProgress > 0.50 && headProgress < 0.62) {
+            microBurst = 1.0 + Math.sin((headProgress - 0.50) / 0.12 * Math.PI) * 0.75;
+          }
+
+          ssHeadMat.opacity = opacity * microBurst;
+          ssStreakMat.opacity = opacity * 0.95 * microBurst;
+
+          const streakLen = ssState.length * Math.min(1.0, headProgress * 4.0) * microBurst;
+          ssStreak.scale.set(7.5 * microBurst, streakLen, 1.0);
+          ssStreak.material.rotation = -Math.atan2(dx, dy);
+          ssStreak.position.set(
+            headX - ndx * (streakLen * 0.5),
+            headY - ndy * (streakLen * 0.5),
+            headZ
+          );
+
+          ssHead.position.set(headX, headY, headZ);
+          ssHead.scale.set(11.0 * microBurst, 11.0 * microBurst, 1.0);
+          ssHead.visible = true;
+          ssStreak.visible = true;
+
+          // Start lingering persistent train behind the head (progressively grows behind head)
+          ssState.trainActive = true;
+          ssState.trainStartTime = elapsed;
+          const curLen = Math.hypot(headX - ssState.startX, headY - ssState.startY);
+          ssTrain.position.set(
+            (ssState.startX + headX) * 0.5,
+            (ssState.startY + headY) * 0.5,
+            headZ - 0.5
+          );
+          ssTrain.scale.set(3.8, Math.max(0.1, curLen), 1.0);
+          ssTrain.material.rotation = ssState.trainAngle;
+          ssTrainMat.opacity = Math.min(0.88, headProgress * 1.3);
+          ssTrain.visible = true;
+        } else {
+          // Head has burned out!
+          ssState.active = false;
+          ssHead.visible = false;
+          ssStreak.visible = false;
+
+          // Fade persistent ion train lingering in the mesosphere for 1.6 seconds!
+          const trainAge = elapsed - ssState.trainStartTime;
+          const trainT = trainAge / ssState.trainDuration;
+          if (trainT >= 1.0) {
+            ssState.trainActive = false;
+            ssTrain.visible = false;
+            shootingStarGroup.visible = false;
+            ssHead.visible = true;
+            ssStreak.visible = true;
+          } else {
+            // Smooth natural decay with slight high-altitude wind drift
+            const trainFade = (1.0 - trainT);
+            ssTrainMat.opacity = Math.pow(trainFade, 1.1) * 0.85;
+            ssTrain.position.x = ssState.trainCenterX + trainT * 1.6;
+            ssTrain.scale.set(3.8 + trainT * 4.2, ssState.trainLen, 1.0);
+          }
+        }
+      }
+
+      // Animate Cosmic Meteor / Bolide (Bow Shock, Spallation Fragments, Smoke Puffs & Airburst)
+      if (meteorState.active || smokePuffs.some((p) => p.active)) {
+        const progress = (elapsed - meteorState.startTime) / meteorState.duration;
+
+        if (progress < 1.0 && meteorState.active) {
+          const headX = meteorState.startX + (meteorState.endX - meteorState.startX) * progress;
+          const arcY = Math.sin(progress * Math.PI) * 4.8;
+          const headY = meteorState.startY + (meteorState.endY - meteorState.startY) * progress - arcY;
+          const headZ = meteorState.z;
+
+          // Local tangent direction including parabolic curvature
+          const dx = meteorState.endX - meteorState.startX;
+          const dy = (meteorState.endY - meteorState.startY) - Math.cos(progress * Math.PI) * (4.8 * Math.PI);
+          const len = Math.hypot(dx, dy) || 1;
+          const ndx = dx / len;
+          const ndy = dy / len;
+          const angle = -Math.atan2(dx, dy);
+
+          let opacity = 1.0;
+          let flare = 1.0;
+          if (progress < 0.12) {
+            opacity = progress / 0.12;
+          } else if (progress > 0.88) {
+            opacity = (1.0 - progress) / 0.12;
+          }
+
+          // Terminal Catastrophic Airburst Flare (at progress 0.76 to 0.90)
+          let flashLightIntensity = 0;
+          if (progress > 0.76 && progress < 0.90) {
+            const burstT = (progress - 0.76) / 0.14;
+            flare = 1.0 + Math.sin(burstT * Math.PI) * 2.8; // intense 3.8x flash
+            flashLightIntensity = Math.sin(burstT * Math.PI) * 2.6;
+          }
+
+          meteorFlashLight.position.set(headX, headY, headZ);
+          meteorFlashLight.intensity = flashLightIntensity;
+
+          // Molten Rock Nucleus
+          meteorRock.position.set(headX, headY, headZ);
+          meteorRock.rotation.x = elapsed * 6.5;
+          meteorRock.rotation.y = elapsed * 4.5;
+          meteorRockMat.emissiveIntensity = 5.0 * flare;
+
+          // Hypersonic Bow Shock
+          meteorBowShock.position.set(headX + ndx * 1.4, headY + ndy * 1.4, headZ + 0.2);
+          meteorBowShock.scale.set(13.0 * flare, 13.0 * flare, 1.0);
+          meteorBowShock.material.rotation = angle;
+          meteorBowShockMat.opacity = opacity * 0.96 * flare;
+
+          // Flaming Corona Halo
+          meteorHalo.position.set(headX, headY, headZ);
+          meteorHaloMat.opacity = opacity * 0.92;
+          meteorHalo.scale.set(18.0 * flare, 18.0 * flare, 1.0);
+
+          // Fiery Plasma Wake
+          const streakLen = 50.0 * Math.min(1.0, progress * 3.2);
+          meteorStreak.scale.set(9.0 * flare, streakLen, 1.0);
+          meteorStreak.material.rotation = angle;
+          meteorStreak.position.set(
+            headX - ndx * (streakLen * 0.5),
+            headY - ndy * (streakLen * 0.5),
+            headZ
+          );
+          meteorStreakMat.opacity = opacity * 0.90;
+
+          // Secondary Fragment Spallation 1 (detaches at progress 0.38 - 0.65)
+          if (progress > 0.38 && progress < 0.65) {
+            const frag1T = (progress - 0.38) / 0.27;
+            const lagDist = 3.5 + frag1T * 6.0;
+            const offDist = Math.sin(frag1T * Math.PI) * 2.5;
+            frag1Group.position.set(
+              headX - ndx * lagDist - ndy * offDist,
+              headY - ndy * lagDist + ndx * offDist,
+              headZ
+            );
+            frag1HaloMat.opacity = (1.0 - frag1T) * opacity * 0.85;
+            frag1Group.visible = true;
+          } else {
+            frag1Group.visible = false;
+          }
+
+          // Secondary Fragment Spallation 2 (detaches at progress 0.60 - 0.84)
+          if (progress > 0.60 && progress < 0.84) {
+            const frag2T = (progress - 0.60) / 0.24;
+            const lagDist = 4.0 + frag2T * 7.5;
+            const offDist = -Math.sin(frag2T * Math.PI) * 3.2;
+            frag2Group.position.set(
+              headX - ndx * lagDist - ndy * offDist,
+              headY - ndy * lagDist + ndx * offDist,
+              headZ
+            );
+            frag2HaloMat.opacity = (1.0 - frag2T) * opacity * 0.8;
+            frag2Group.visible = true;
+          } else {
+            frag2Group.visible = false;
+          }
+
+          // Emit billowing mesospheric smoke puffs along the true parabolic arc
+          if (progress - meteorState.lastPuffProgress >= 0.032) {
+            meteorState.lastPuffProgress = progress;
+            const puff = smokePuffs[meteorState.nextPuffIdx % smokePuffCount];
+            meteorState.nextPuffIdx++;
+            puff.active = true;
+            puff.birthTime = elapsed;
+            puff.x = headX + (Math.random() - 0.5) * 1.5;
+            puff.y = headY + (Math.random() - 0.5) * 1.5;
+            puff.z = headZ + (Math.random() - 0.5) * 1.0;
+            puff.driftX = (Math.random() - 0.5) * 1.2 - ndx * 1.2;
+            puff.driftY = (Math.random() - 0.5) * 1.2 - ndy * 1.2;
+            puff.baseScale = 3.8;
+            puff.maxScale = flare > 1.2 ? 22.0 : 16.0;
+            puff.duration = 3.2;
+            puff.sprite.position.set(puff.x, puff.y, puff.z);
+            puff.sprite.scale.set(puff.baseScale, puff.baseScale, 1);
+            puff.sprite.visible = true;
+          }
+
+          // Update sparks
+          const spkPositions = sparkGeo.attributes.position.array;
+          const spkCols = sparkGeo.attributes.color.array;
+          for (let s = 0; s < sparkCount; s++) {
+            const spk = sparkVelocities[s];
+            if (spk.life <= 0 && Math.random() < 0.45) {
+              spkPositions[s * 3] = headX + (Math.random() - 0.5) * 2.0;
+              spkPositions[s * 3 + 1] = headY + (Math.random() - 0.5) * 2.0;
+              spkPositions[s * 3 + 2] = headZ + (Math.random() - 0.5) * 2.0;
+              spk.vx = -ndx * 9.5 + (Math.random() - 0.5) * 5.0;
+              spk.vy = -ndy * 9.5 + (Math.random() - 0.5) * 5.0;
+              spk.vz = (Math.random() - 0.5) * 3.0;
+              spk.life = 1.0;
+            } else if (spk.life > 0) {
+              spk.life -= 0.04;
+              spkPositions[s * 3] += spk.vx * 0.14;
+              spkPositions[s * 3 + 1] += spk.vy * 0.14;
+              spkPositions[s * 3 + 2] += spk.vz * 0.14;
+
+              spkCols[s * 3] = spk.life * opacity * flare;
+              spkCols[s * 3 + 1] = spk.life * 0.75 * opacity * flare;
+              spkCols[s * 3 + 2] = spk.life * 0.28 * opacity;
+            }
+          }
+          sparkGeo.attributes.position.needsUpdate = true;
+          sparkGeo.attributes.color.needsUpdate = true;
+        } else {
+          // Bolide burned out!
+          meteorState.active = false;
+          meteorRock.visible = false;
+          meteorHalo.visible = false;
+          meteorStreak.visible = false;
+          meteorBowShock.visible = false;
+          frag1Group.visible = false;
+          frag2Group.visible = false;
+          meteorFlashLight.intensity = 0;
+        }
+
+        // Animate all billowing mesospheric smoke puffs
+        let anyPuffActive = false;
+        for (let i = 0; i < smokePuffCount; i++) {
+          const puff = smokePuffs[i];
+          if (!puff.active) continue;
+
+          const puffAge = elapsed - puff.birthTime;
+          const puffT = puffAge / puff.duration;
+          if (puffT >= 1.0) {
+            puff.active = false;
+            puff.sprite.visible = false;
+          } else {
+            anyPuffActive = true;
+            const curScale = puff.baseScale + (puff.maxScale - puff.baseScale) * Math.pow(puffT, 0.55);
+            puff.sprite.scale.set(curScale, curScale, 1);
+            puff.sprite.position.set(
+              puff.x + puff.driftX * (puffAge * 0.75),
+              puff.y + puff.driftY * (puffAge * 0.75),
+              puff.z
+            );
+            const fade = Math.pow(1.0 - puffT, 1.2) * (puffT < 0.1 ? (puffT / 0.1) * 0.65 : 0.65);
+            puff.mat.opacity = fade;
+
+            if (puffT < 0.22) {
+              // Incandescent glowing mineral vapor
+              puff.mat.color.setRGB(1.0, 0.72, 0.42);
+            } else {
+              // Cooling silicate/iron slate grey mesospheric smoke
+              const coolT = (puffT - 0.22) / 0.78;
+              puff.mat.color.setRGB(1.0 - coolT * 0.42, 0.72 - coolT * 0.08, 0.42 + coolT * 0.32);
+            }
+            puff.sprite.visible = true;
+          }
+        }
+
+        if (!meteorState.active && !anyPuffActive) {
+          meteorGroup.visible = false;
+          meteorRock.visible = true;
+          meteorHalo.visible = true;
+          meteorStreak.visible = true;
+          meteorBowShock.visible = true;
+        }
+      }
+
       renderer.render(scene, camera);
     };
 
@@ -1131,10 +2076,37 @@ export default function CosmicOdyssey3D() {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('keydown', handleCelestialKey);
+
+      delete window.__triggerShootingStar;
+      delete window.__triggerMeteor;
 
       try {
         starGeo.dispose();
         starMaterial.dispose();
+        ssHeadMat.dispose();
+        ssStreakMat.dispose();
+        ssTrainMat.dispose();
+        meteorStreakMat.dispose();
+        meteorBowShockMat.dispose();
+        meteorHaloMat.dispose();
+        smokePuffMats.forEach((m) => m.dispose());
+        meteorRockGeo.dispose();
+        meteorRockMat.dispose();
+        frag1Rock.geometry.dispose();
+        frag1Rock.material.dispose();
+        frag1HaloMat.dispose();
+        frag2Rock.geometry.dispose();
+        frag2Rock.material.dispose();
+        frag2HaloMat.dispose();
+        sparkGeo.dispose();
+        sparkMat.dispose();
+        streakTexture.dispose();
+        persistentIonTexture.dispose();
+        bowShockTexture.dispose();
+        smokePuffTexture.dispose();
+        meteorPlasmaTexture.dispose();
+        fireTexture.dispose();
         lhsGeo.dispose();
         lhsMat.dispose();
         betaStarGeo.dispose();
@@ -1153,6 +2125,12 @@ export default function CosmicOdyssey3D() {
     };
   }, [
     createParticleTexture,
+    createFireTexture,
+    createStreakTexture,
+    createPersistentIonTexture,
+    createBowShockTexture,
+    createSmokePuffTexture,
+    createMeteorPlasmaTexture,
     createOceanPlanetTexture,
     createGasGiantTexture,
     createMegaEarthTexture,
@@ -1202,7 +2180,6 @@ export default function CosmicOdyssey3D() {
             {/* Top Telemetry Header */}
             <div className="cosmic-route-header">
               <div className="cosmic-immersion-badge">
-                <span className="cosmic-immersion-dot" />
                 <span>Astronomical Immersion Active</span>
               </div>
               <div className="cosmic-telemetry-tag">
@@ -1221,15 +2198,15 @@ export default function CosmicOdyssey3D() {
                 <div className="cosmic-track-line track-bottom" />
               </div>
 
-              {/* Dynamic Active Illuminated Progress Rail */}
+              {/* Dynamic Active Illuminated Progress Rail (from Station 01 up to current train position) */}
               <div 
                 className="cosmic-double-track-fill" 
-                style={{ width: `${Math.min(100, Math.max(0, scrollProgress * 100))}%` }}
+                style={{ width: `calc(75% * ${scrollProgress})` }}
                 aria-hidden="true"
               >
                 <div className="cosmic-fill-line track-top" />
                 <div className="cosmic-fill-line track-bottom" />
-                {/* Gliding Micro-Shuttle along the rail */}
+                {/* Gliding Micro-Shuttle / Train at the leading head of the rail fill */}
                 <div className="cosmic-rail-shuttle">
                   <RocketProgressIcon className="cosmic-micro-shuttle" />
                 </div>

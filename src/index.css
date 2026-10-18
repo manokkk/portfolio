@@ -3102,8 +3102,8 @@ body.cinematic-active .cosmic-hud-top {
 
 .cosmic-cinematic-box {
   background: rgba(10, 13, 24, 0.94);
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 30px rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(244, 114, 182, 0.28);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 30px rgba(244, 114, 182, 0.15);
   border-radius: 1.5rem;
   padding: 1.25rem 1.75rem;
   backdrop-filter: blur(24px);
@@ -3124,7 +3124,7 @@ body.cinematic-active .cosmic-hud-top {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), rgba(168, 85, 247, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(244, 114, 182, 0.6), rgba(249, 168, 212, 0.6), transparent);
 }
 
 /* Header Telemetry Row */
@@ -3141,27 +3141,12 @@ body.cinematic-active .cosmic-hud-top {
 .cosmic-immersion-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #38bdf8;
+  color: #ffffff; /* Crisp white same as hero section */
   text-transform: uppercase;
-}
-
-.cosmic-immersion-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
-  animation: immersionBlink 1.5s infinite ease-in-out;
-}
-
-@keyframes immersionBlink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.8); }
 }
 
 .cosmic-telemetry-tag {
@@ -3176,7 +3161,7 @@ body.cinematic-active .cosmic-hud-top {
 }
 
 .cosmic-telemetry-val {
-  color: #f8fafc;
+  color: #f472b6;
   font-weight: 700;
 }
 
@@ -3187,12 +3172,12 @@ body.cinematic-active .cosmic-hud-top {
   padding: 0.75rem 0.5rem 0.25rem;
 }
 
-/* Background Double-Rail Tracks (Subway Rail from Image 2) */
+/* Background Double-Rail Tracks (Subway Rail - Spans exactly from Station 01 to Station 04) */
 .cosmic-double-track-bg {
   position: absolute;
-  top: 28px;
-  left: 36px;
-  right: 36px;
+  top: 27px;
+  left: 12.5%;
+  right: 12.5%;
   height: 6px;
   pointer-events: none;
   z-index: 1;
@@ -3214,16 +3199,16 @@ body.cinematic-active .cosmic-hud-top {
   bottom: 0;
 }
 
-/* Dynamic Active Illuminated Track Fill */
+/* Dynamic Active Illuminated Track Fill (Pastel Pink Accent) */
 .cosmic-double-track-fill {
   position: absolute;
-  top: 28px;
-  left: 36px;
+  top: 27px;
+  left: 12.5%;
   height: 6px;
   pointer-events: none;
   z-index: 2;
-  transition: width 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-  max-width: calc(100% - 72px);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 75%;
 }
 
 .cosmic-fill-line {
@@ -3231,8 +3216,8 @@ body.cinematic-active .cosmic-hud-top {
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #38bdf8, #f59e0b, #f43f5e, #a855f7);
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.8), 0 0 16px rgba(168, 85, 247, 0.5);
+  background: linear-gradient(90deg, #f9a8d4, #f472b6);
+  box-shadow: 0 0 8px rgba(244, 114, 182, 0.9), 0 0 16px rgba(244, 114, 182, 0.5);
 }
 
 .cosmic-fill-line.track-top {
@@ -3243,7 +3228,7 @@ body.cinematic-active .cosmic-hud-top {
   bottom: -0.5px;
 }
 
-/* Gliding Micro-Shuttle along the rail */
+/* Gliding Micro-Shuttle / Train at the leading tip of the rail fill */
 .cosmic-rail-shuttle {
   position: absolute;
   right: -12px;
@@ -3252,7 +3237,9 @@ body.cinematic-active .cosmic-hud-top {
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 6px #38bdf8);
+  filter: drop-shadow(0 0 8px #f472b6);
+  pointer-events: none;
+  z-index: 6;
 }
 
 .cosmic-micro-shuttle {
@@ -3267,7 +3254,7 @@ body.cinematic-active .cosmic-hud-top {
   z-index: 5;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  gap: 0;
   width: 100%;
 }
 
@@ -3292,7 +3279,7 @@ body.cinematic-active .cosmic-hud-top {
 }
 
 .cosmic-station-node:focus-visible .cosmic-station-circle {
-  box-shadow: 0 0 0 2px #0a0d18, 0 0 0 4px var(--station-border, #38bdf8);
+  box-shadow: 0 0 0 2px #0a0d18, 0 0 0 4px var(--station-border, #f472b6);
 }
 
 /* Circular Station Number Badge (Image 2 style) */
@@ -3315,42 +3302,61 @@ body.cinematic-active .cosmic-hud-top {
   font-size: 0.85rem;
   font-weight: 800;
   color: #ffffff;
-  background: var(--station-color, #38bdf8);
-  border: 2.5px solid #ffffff;
+  background: rgba(18, 22, 38, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 2;
 }
 
+.cosmic-station-circle span {
+  color: #ffffff;
+  font-weight: 800;
+  line-height: 1;
+}
+
 /* Visited / Passed state */
 .cosmic-station-node.is-passed .cosmic-station-circle {
-  background: var(--station-color, #38bdf8);
-  border-color: rgba(255, 255, 255, 0.8);
-  opacity: 0.85;
+  background: #f472b6;
+  border-color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
+  opacity: 0.9;
+  box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
 }
 
 /* Upcoming state */
 .cosmic-station-node.is-upcoming .cosmic-station-circle {
   background: rgba(18, 22, 38, 0.85);
-  color: #94a3b8;
   border-color: rgba(255, 255, 255, 0.25);
   opacity: 0.6;
+}
+
+.cosmic-station-node.is-upcoming .cosmic-station-circle span {
+  color: #94a3b8;
 }
 
 .cosmic-station-node:hover .cosmic-station-circle {
   transform: scale(1.1);
   opacity: 1;
   border-color: #ffffff;
-  box-shadow: 0 0 14px var(--station-border, #38bdf8);
+  box-shadow: 0 0 14px rgba(244, 114, 182, 0.85);
 }
 
-/* Active Highlighted Station (The Station User is Currently in) */
+.cosmic-station-node:hover .cosmic-station-circle span {
+  color: #ffffff;
+}
+
+/* Active Highlighted Station (Pastel Pink Glow) */
 .cosmic-station-node.is-active .cosmic-station-circle {
   transform: scale(1.15);
-  background: var(--station-color, #38bdf8);
+  background: #f472b6;
   border-color: #ffffff;
-  box-shadow: 0 0 18px var(--station-border, #38bdf8), 0 0 32px var(--station-color, #38bdf8);
+  box-shadow: 0 0 18px rgba(244, 114, 182, 0.95), 0 0 32px rgba(244, 114, 182, 0.55);
   opacity: 1;
+}
+
+.cosmic-station-node.is-active .cosmic-station-circle span {
+  color: #ffffff;
 }
 
 /* Radar Pulse Wave around active station */
@@ -3358,7 +3364,8 @@ body.cinematic-active .cosmic-hud-top {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 2px solid var(--station-border, #38bdf8);
+  border: 2px solid #f472b6;
+  box-shadow: 0 0 12px rgba(244, 114, 182, 0.6);
   animation: stationRadarPing 1.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
   pointer-events: none;
 }
@@ -3396,7 +3403,7 @@ body.cinematic-active .cosmic-hud-top {
 .cosmic-station-node.is-active .cosmic-station-name {
   color: #ffffff;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  text-shadow: 0 0 10px rgba(244, 114, 182, 0.6);
 }
 
 .cosmic-station-distance {
@@ -3408,7 +3415,7 @@ body.cinematic-active .cosmic-hud-top {
 }
 
 .cosmic-station-node.is-active .cosmic-station-distance {
-  color: var(--station-border, #38bdf8);
+  color: var(--station-border, #f472b6);
   font-weight: 700;
 }
 
@@ -3429,8 +3436,8 @@ body.cinematic-active .cosmic-hud-top {
   gap: 0.5rem;
   padding: 0.45rem 1.15rem;
   border-radius: 9999px;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(244, 114, 182, 0.12);
+  border: 1px solid rgba(244, 114, 182, 0.35);
   font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
   font-size: 0.75rem;
   font-weight: 600;
@@ -3440,15 +3447,15 @@ body.cinematic-active .cosmic-hud-top {
 }
 
 .cosmic-return-btn:hover {
-  background: rgba(56, 189, 248, 0.25);
-  border-color: rgba(56, 189, 248, 0.6);
+  background: rgba(244, 114, 182, 0.25);
+  border-color: rgba(244, 114, 182, 0.6);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
+  box-shadow: 0 4px 16px rgba(244, 114, 182, 0.25);
 }
 
 .cosmic-return-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #0a0d18, 0 0 0 4px #38bdf8;
+  box-shadow: 0 0 0 2px #0a0d18, 0 0 0 4px #f472b6;
 }
 
 .cosmic-route-hint {
@@ -3475,15 +3482,15 @@ body.cinematic-active .cosmic-hud-top {
     border-radius: 1.15rem;
   }
 
-  .cosmic-double-track-bg,
-  .cosmic-double-track-fill {
+  .cosmic-double-track-bg {
     top: 24px;
-    left: 24px;
-    right: 24px;
+    left: 12.5%;
+    right: 12.5%;
   }
 
   .cosmic-double-track-fill {
-    max-width: calc(100% - 48px);
+    top: 24px;
+    left: 12.5%;
   }
 
   .cosmic-station-circle {
@@ -3511,10 +3518,6 @@ body.cinematic-active .cosmic-hud-top {
 }
 
 @media (max-width: 480px) {
-  .cosmic-stations-row {
-    gap: 0.25rem;
-  }
-
   .cosmic-station-name {
     font-size: 0.66rem;
   }
