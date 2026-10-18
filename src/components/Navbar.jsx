@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Menu, X, Check } from 'lucide-react';
+import RocketProgressIcon from './RocketProgressIcon';
 
 export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -7,22 +8,42 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
   const [activeSection, setActiveSection] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const progressBarRef = useRef(null);
+  const rocketRef = useRef(null);
 
   useEffect(() => {
     let ticking = false;
     let lastIsScrolled = false;
     let lastActiveSection = '';
+    let scrollTimeout = null;
 
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY || window.pageYOffset || 0;
           const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-          const percent = Math.min(100, Math.max(0, Math.round((currentY / docHeight) * 100)));
+          const percent = Math.min(100, Math.max(0, (currentY / docHeight) * 100));
+          const roundedPercent = Math.round(percent);
+          const scrollRatio = percent / 100;
+          const rocketShift = (1 - scrollRatio) * 100;
 
           // Direct DOM transform/style update avoids continuous React re-renders
           if (progressBarRef.current) {
             progressBarRef.current.style.width = `${percent}%`;
+            progressBarRef.current.style.setProperty('--rocket-shift', `${rocketShift}%`);
+            progressBarRef.current.style.setProperty('--scroll-ratio', scrollRatio);
+          }
+
+          // Active cruising thruster boost when actively scrolling
+          if (rocketRef.current) {
+            if (!rocketRef.current.classList.contains('is-cruising')) {
+              rocketRef.current.classList.add('is-cruising');
+            }
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+              if (rocketRef.current) {
+                rocketRef.current.classList.remove('is-cruising');
+              }
+            }, 180);
           }
 
           const scrolledNow = currentY > 40;
@@ -33,9 +54,9 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
           // Fast arithmetic active section detection matching ScrollNavigator
           let current = '';
-          if (percent >= 84) current = 'contact';
-          else if (percent >= 55) current = 'services';
-          else if (percent >= 24) current = 'projects';
+          if (roundedPercent >= 84) current = 'contact';
+          else if (roundedPercent >= 55) current = 'services';
+          else if (roundedPercent >= 24) current = 'projects';
 
           if (current !== lastActiveSection) {
             lastActiveSection = current;
@@ -51,7 +72,10 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
   }, []);
 
   const handleCopyEmail = (e) => {
@@ -61,15 +85,38 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const handleRocketClick = (e) => {
+    e.preventDefault();
+    const currentY = window.scrollY || window.pageYOffset || 0;
+    if (currentY > 80) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const worksElem = document.getElementById('works') || document.getElementById('projects');
+      if (worksElem) {
+        worksElem.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <header className={`site-header ${isScrolled ? 'site-header-scrolled' : ''}`}>
-      {/* Laser Reading Progress Bar */}
+      {/* Laser Reading Progress Bar with Horizontal Rocket Explorer */}
       <div 
         ref={progressBarRef}
         className="nav-reading-bar" 
         style={{ width: '0%' }} 
-        aria-hidden="true" 
-      />
+      >
+        <button
+          ref={rocketRef}
+          type="button"
+          onClick={handleRocketClick}
+          className="nav-rocket-btn"
+          aria-label="Rocket explorer: click to return to top"
+          title="Rocket Explorer • Click to scroll to top"
+        >
+          <RocketProgressIcon />
+        </button>
+      </div>
 
       <div className="header-inner">
         {/* Left: Circled mail icon + email button with instant copy feedback */}

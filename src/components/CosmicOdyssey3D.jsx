@@ -1,45 +1,66 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Compass } from 'lucide-react';
+import RocketProgressIcon from './RocketProgressIcon';
 
 // ============================================================================
 // 1. SCROLLYTELLING SPACE MAP WAYPOINTS (Aligned with Page Sections)
-// Destination is the historic Sagittarius A* Black Hole & Speed-Demon Star S301
+// Horizontal Metro / Transit Route Stations with custom identity tokens
 // ============================================================================
 export const COSMIC_SECTORS = [
   {
     id: 'hero',
-    label: '01 // LHS 1140 b (SUPER-EARTH)',
+    code: '01',
+    label: '01 // LHS 1140 b',
+    name: 'LHS 1140 b',
     title: 'LHS 1140 b Ocean Super-Earth',
-    sub: 'Confirmed Atmosphere • 48 LY • Water Ocean Candidate',
+    sub: 'Super-Earth',
     distance: '48 LY',
+    color: '#0ea5e9', // Sky Cyan (Image 2 station badge style)
+    border: '#38bdf8',
+    bg: 'rgba(14, 165, 233, 0.25)',
     mission: 'JWST Habitable Zone Milestone',
     coord: 'Cetus Constellation • Orbiting in Habitable Zone',
   },
   {
     id: 'projects',
-    label: '02 // 6,000 EXOPLANETS FLEET',
+    code: '02',
+    label: '02 // 6,000 EXOPLANETS',
+    name: '6,000 Exoplanets',
     title: 'Beta Pictoris d & GJ 523b',
-    sub: '6,000 Confirmed Worlds • Hidden Giant & Mega-Earth',
+    sub: 'Beta Pic d',
     distance: '63 LY',
+    color: '#f59e0b', // Amber / Orange
+    border: '#fbbf24',
+    bg: 'rgba(245, 158, 11, 0.25)',
     mission: 'Exoplanet Archive 6,000+ Milestone',
     coord: 'Debris Disk • 23.5 M⊕ Mega-Earth',
   },
   {
     id: 'services',
-    label: '03 // EP260321a (STELLAR COLLAPSE)',
+    code: '03',
+    label: '03 // EP260321a FLASH',
+    name: 'EP260321a Flash',
     title: 'EP260321a Pre-Supernova Flash',
-    sub: 'Caught in the Act of Death • Real-Time Flash',
+    sub: 'Pre-Supernova',
     distance: '500M LY',
+    color: '#f43f5e', // Coral / Red-Orange
+    border: '#fb7185',
+    bg: 'rgba(244, 63, 94, 0.25)',
     mission: 'NOIRLab Real-Time Explosion Alert',
     coord: '500M LY • Pre-Supernova Cosmic Flash',
   },
   {
     id: 'contact',
-    label: '04 // BLACK HOLE (SGR A* & S301)',
+    code: '04',
+    label: '04 // SAGITTARIUS A*',
+    name: 'Sagittarius A*',
     title: 'Sagittarius A* & Star S301',
-    sub: 'Supermassive Singularity • S301 at 25,000 km/s (8.5% c)',
+    sub: 'Black Hole & S301',
     distance: '26,000 LY',
+    color: '#a855f7', // Violet / Purple
+    border: '#c084fc',
+    bg: 'rgba(168, 85, 247, 0.25)',
     mission: 'EHT & JWST Black Hole Star',
     coord: 'Galactic Center • Relativistic Horizon',
   },
@@ -148,6 +169,8 @@ export const DISCOVERY_DOSSIER = [
 export default function CosmicOdyssey3D() {
   const mountRef = useRef(null);
   const [isCinematicMode, setIsCinematicMode] = useState(false);
+  const [activeSectorIdx, setActiveSectorIdx] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   // Sync cinematic mode with document body so HTML page contents fade out
   useEffect(() => {
@@ -169,6 +192,55 @@ export default function CosmicOdyssey3D() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isCinematicMode]);
+
+  // Real-time responsive scroll tracking for horizontal transit route map
+  useEffect(() => {
+    let ticking = false;
+    let lastIdx = -1;
+
+    const handleScrollTracking = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentY = window.scrollY || window.pageYOffset || 0;
+          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          const ratio = Math.min(1, Math.max(0, currentY / maxScroll));
+          setScrollProgress(ratio);
+
+          let idx = 0;
+          if (ratio >= 0.82) idx = 3;
+          else if (ratio >= 0.52) idx = 2;
+          else if (ratio >= 0.22) idx = 1;
+
+          if (idx !== lastIdx) {
+            lastIdx = idx;
+            setActiveSectorIdx(idx);
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollTracking, { passive: true });
+    handleScrollTracking();
+
+    return () => window.removeEventListener('scroll', handleScrollTracking);
+  }, []);
+
+  const handleStationClick = (targetId) => {
+    const elem = document.getElementById(targetId);
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      let targetRatio = 0;
+      if (targetId === 'projects') targetRatio = 0.32;
+      else if (targetId === 'services') targetRatio = 0.62;
+      else if (targetId === 'contact') targetRatio = 0.95;
+      window.scrollTo({ top: targetRatio * maxScroll, behavior: 'smooth' });
+    }
+  };
 
 
   // ============================================================================
@@ -1122,35 +1194,104 @@ export default function CosmicOdyssey3D() {
 
 
       {/* =========================================================================
-          CINEMATIC MODE PROMPT BANNER
+          HORIZONTAL TRANSIT ROUTE MAP BANNER (Subway / Metro Map Style from Image 2)
           ========================================================================= */}
       {isCinematicMode && (
-        <div className="cosmic-cinematic-prompt">
+        <aside aria-label="Cosmic Odyssey Route Map" className="cosmic-cinematic-prompt">
           <div className="cosmic-cinematic-box">
-            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '0.1em', color: '#38bdf8', fontWeight: 'bold', marginBottom: '0.25rem' }}>
-              Astronomical Immersion Active
+            {/* Top Telemetry Header */}
+            <div className="cosmic-route-header">
+              <div className="cosmic-immersion-badge">
+                <span className="cosmic-immersion-dot" />
+                <span>Astronomical Immersion Active</span>
+              </div>
+              <div className="cosmic-telemetry-tag">
+                <span>SECTOR {COSMIC_SECTORS[activeSectorIdx]?.code}:</span>
+                <span className="cosmic-telemetry-val">
+                  {COSMIC_SECTORS[activeSectorIdx]?.name.toUpperCase()} ({COSMIC_SECTORS[activeSectorIdx]?.distance})
+                </span>
+              </div>
             </div>
-            <p style={{ fontSize: '0.875rem', color: '#cbd5e1', marginBottom: '0.75rem' }}>
-              Traversing: LHS 1140 b → 6,000 Exoplanets & Beta Pic → EP260321a Pre-Supernova → Sagittarius A* Black Hole.
-            </p>
-            <button
-              type="button"
-              onClick={() => setIsCinematicMode(false)}
-              style={{
-                padding: '0.4rem 1rem',
-                borderRadius: '9999px',
-                background: 'rgba(56, 189, 248, 0.2)',
-                border: '1px solid rgba(56, 189, 248, 0.4)',
-                fontSize: '0.75rem',
-                fontFamily: 'monospace',
-                color: '#ffffff',
-                cursor: 'pointer',
-              }}
-            >
-              Return to Portfolio View
-            </button>
+
+            {/* Horizontal Subway / Metro Rail Route Map */}
+            <div className="cosmic-transit-rail-container">
+              {/* Background Parallel Double Rail (Subway Track) */}
+              <div className="cosmic-double-track-bg" aria-hidden="true">
+                <div className="cosmic-track-line track-top" />
+                <div className="cosmic-track-line track-bottom" />
+              </div>
+
+              {/* Dynamic Active Illuminated Progress Rail */}
+              <div 
+                className="cosmic-double-track-fill" 
+                style={{ width: `${Math.min(100, Math.max(0, scrollProgress * 100))}%` }}
+                aria-hidden="true"
+              >
+                <div className="cosmic-fill-line track-top" />
+                <div className="cosmic-fill-line track-bottom" />
+                {/* Gliding Micro-Shuttle along the rail */}
+                <div className="cosmic-rail-shuttle">
+                  <RocketProgressIcon className="cosmic-micro-shuttle" />
+                </div>
+              </div>
+
+              {/* Stations Grid / Row */}
+              <div className="cosmic-stations-row" role="tablist" aria-label="Cosmic Waypoints">
+                {COSMIC_SECTORS.map((sector, index) => {
+                  const isCurrent = index === activeSectorIdx;
+                  const isPassed = index < activeSectorIdx;
+                  return (
+                    <button
+                      key={sector.id}
+                      type="button"
+                      onClick={() => handleStationClick(sector.id)}
+                      className={`cosmic-station-node ${isCurrent ? 'is-active' : ''} ${isPassed ? 'is-passed' : 'is-upcoming'}`}
+                      style={{
+                        '--station-color': sector.color,
+                        '--station-border': sector.border,
+                        '--station-bg': sector.bg,
+                      }}
+                      title={`Warp to Station ${sector.code}: ${sector.title} (${sector.distance})`}
+                      aria-label={`Station ${sector.code}: ${sector.name}. ${isCurrent ? 'Current location' : 'Click to warp here'}`}
+                      aria-current={isCurrent ? 'step' : undefined}
+                    >
+                      {/* Circular Station Number Badge (Image 2 style) */}
+                      <div className="cosmic-station-circle-wrap">
+                        {isCurrent && <span className="cosmic-station-radar" />}
+                        <div className="cosmic-station-circle">
+                          <span>{sector.code}</span>
+                        </div>
+                      </div>
+
+                      {/* Station Name & Subtitle */}
+                      <div className="cosmic-station-details">
+                        <span className="cosmic-station-name">{sector.name}</span>
+                        <span className="cosmic-station-distance">{sector.distance}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Bottom Actions Row */}
+            <div className="cosmic-route-footer">
+              <button
+                type="button"
+                onClick={() => setIsCinematicMode(false)}
+                className="cosmic-return-btn"
+                aria-label="Exit galaxy and return to portfolio view"
+              >
+                <EyeOff className="w-3.5 h-3.5" />
+                <span>Return to Portfolio View</span>
+              </button>
+              <div className="cosmic-route-hint">
+                <Compass className="w-3.5 h-3.5 text-sky-400" />
+                <span>Scroll or click station to warp</span>
+              </div>
+            </div>
           </div>
-        </div>
+        </aside>
       )}
     </>
   );
