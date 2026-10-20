@@ -1,0 +1,1896 @@
+/* Arkive Design Studio — Architectural Layout & Design System */
+
+.arkive-page,
+.arkive-projects-page-wrapper {
+  --paper: #fcfcfa;
+  --ink: #252923;
+  --muted: #646b63;
+  --line: #d8ddd4;
+  --wash: #eff2ec;
+  --accent: #a9441c;
+  --gutter: clamp(20px, 3.5vw, 64px);
+  --space: clamp(48px, 5vw, 84px);
+  --gap: clamp(24px, 3vw, 48px);
+}
+
+.arkive-page {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: clip;
+}
+
+.arkive-wrap,
+.wrap {
+  width: calc(100% - var(--gutter) * 2);
+  max-width: 1360px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* Accessible Skip Link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 24px;
+  z-index: 9999;
+  background: var(--ink);
+  color: #ffffff !important;
+  padding: 10px 18px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 16px;
+  outline: 2px solid var(--accent);
+}
+
+/* Back to Portfolio pill badge */
+.arkive-route-badge {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: #ffffff;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+}
+
+.arkive-route-badge:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: var(--accent);
+}
+
+.arkive-page .eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arkive-page .micro {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.arkive-page .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  box-shadow: 0 0 0 3px rgba(169, 68, 28, 0.2);
+}
+
+/* Header */
+.arkive-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(252, 252, 250, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transition: all 0.25s ease;
+}
+
+.arkive-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0.85rem;
+  gap: 24px;
+}
+
+.arkive-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--ink);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.arkive-brand:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.arkive-brand-logo {
+  height: 38px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: multiply;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.arkive-brand:hover .arkive-brand-logo {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.arkive-brand-title {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.arkive-brand-sub {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.arkive-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 14px;
+}
+
+.arkive-nav a {
+  text-decoration: none;
+  color: var(--ink);
+  transition: color 0.18s ease;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.arkive-nav a:hover {
+  color: var(--accent);
+}
+
+.arkive-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 2px;
+  border-bottom: 1.5px solid var(--ink);
+  font-weight: 600 !important;
+}
+
+.arkive-nav-cta:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.arkive-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Hero Section */
+.arkive-hero {
+  padding-block: clamp(36px, 5vw, 72px) clamp(48px, 6vw, 96px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: var(--gap);
+  align-items: center;
+}
+
+.arkive-hero-lead h1 {
+  font-size: clamp(42px, 5.2vw, 86px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  margin: 0 0 24px;
+  text-wrap: balance;
+}
+
+.arkive-hero-lead h1 em {
+  font-style: normal;
+  color: var(--muted);
+}
+
+.arkive-hero-desc {
+  max-width: 520px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-bottom: 32px;
+}
+
+.arkive-hero-desc p.lead {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.arkive-hero-desc p.muted {
+  color: var(--muted);
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.arkive-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.arkive-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 26px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(37, 41, 35, 0.12);
+}
+
+.arkive-btn-primary:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+
+.arkive-btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--ink);
+  transition: all 0.2s ease;
+}
+
+.arkive-btn-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Hero Visual Showcase */
+.arkive-hero-visual {
+  position: relative;
+  background: var(--wash);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 40px -15px rgba(37, 41, 35, 0.08);
+}
+
+.arkive-hero-visual img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.arkive-hero-visual-caption {
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+/* Sections */
+.arkive-section {
+  padding-block: var(--space);
+  border-top: 1px solid var(--line);
+}
+
+.arkive-section-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--gap);
+}
+
+.arkive-section h2 {
+  font-size: clamp(34px, 3.4vw, 56px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  margin: 0 0 24px;
+  text-wrap: balance;
+}
+
+.arkive-body-copy {
+  font-size: 16px;
+  color: var(--ink);
+  max-width: 580px;
+}
+
+.arkive-body-copy p {
+  margin-bottom: 18px;
+}
+
+.arkive-body-copy p.muted {
+  color: var(--muted);
+}
+
+/* Production Highlights List */
+.arkive-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.arkive-highlights li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.arkive-highlights li::before {
+  content: "—";
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Metric Counters */
+.arkive-metrics {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  margin-top: 48px;
+  padding-top: 36px;
+  gap: var(--gap);
+}
+
+.arkive-metric-item {
+  border-left: 1px solid var(--line);
+  padding-left: 28px;
+}
+
+.arkive-metric-item:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.arkive-metric-value {
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.arkive-metric-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Projects Section & Architectural Blueprint overlay */
+.arkive-projects-section {
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--space);
+  border-top: 1px solid var(--line);
+}
+
+.arkive-projects-section::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  clip-path: inset(0 -100vw);
+  opacity: 0.42;
+  background: 
+    repeating-linear-gradient(118deg, transparent 0 104px, rgba(37, 41, 35, 0.12) 105px 106px, transparent 107px 192px),
+    repeating-linear-gradient(64deg, transparent 0 158px, rgba(169, 68, 28, 0.20) 159px 161px, transparent 162px 286px);
+  pointer-events: none;
+}
+
+.arkive-section-heading-block {
+  margin-bottom: clamp(28px, 3.5vw, 44px);
+}
+
+.arkive-section-heading-block .eyebrow {
+  margin-bottom: 14px;
+}
+
+.arkive-section-heading-block h2 {
+  font-size: clamp(38px, 4.4vw, 68px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+
+.arkive-section-note {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+  max-width: 420px;
+}
+
+/* Category Grid - Exactly 2 Columns */
+.arkive-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  position: relative;
+  z-index: 1;
+}
+
+.arkive-category-card {
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.arkive-category-photo {
+  position: relative;
+  aspect-ratio: 1645 / 956;
+  background: var(--wash);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(37, 41, 35, 0.14);
+  box-shadow: 0 4px 20px rgba(37, 41, 35, 0.04);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.35s ease;
+}
+
+.arkive-category-card:hover .arkive-category-photo {
+  transform: translateY(-5px);
+  border-color: var(--ink);
+  box-shadow: 0 16px 36px -8px rgba(37, 41, 35, 0.12);
+}
+
+.arkive-category-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arkive-category-card:hover .arkive-category-photo img {
+  transform: scale(1.025);
+}
+
+/* Action Badge: Click me to explore ↗ - Visible by default like in screenshot */
+.arkive-category-action {
+  position: absolute;
+  bottom: clamp(14px, 1.8vw, 22px);
+  right: clamp(14px, 1.8vw, 22px);
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 2px;
+  border: 1px solid rgba(37, 41, 35, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arkive-category-card:hover .arkive-category-action {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.arkive-category-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 14px;
+}
+
+.arkive-category-title {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.arkive-category-meta .micro {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Divisions Section */
+.arkive-division-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.arkive-division-item {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+  transition: border-color 0.2s ease;
+}
+
+.arkive-division-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 12px 0;
+}
+
+.arkive-division-title {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.arkive-division-body {
+  padding-top: 8px;
+  padding-left: 36px;
+  max-width: 620px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Process Timeline (05 / How we work) */
+.arkive-process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+  margin-top: 36px;
+}
+
+.arkive-process-card {
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.arkive-process-card:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.arkive-process-card .micro {
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.arkive-process-card h3 {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+
+.arkive-process-card p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* FAQ Accordion */
+.arkive-faq-item {
+  border-bottom: 1px solid var(--line);
+  padding-block: 18px;
+}
+
+.arkive-faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+
+.arkive-faq-question:hover {
+  color: var(--accent);
+}
+
+.arkive-faq-answer {
+  padding-top: 14px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 640px;
+}
+
+/* Footer */
+.arkive-footer {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  padding-block: clamp(48px, 6vw, 84px) 36px;
+}
+
+.arkive-footer-cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--gap);
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--line);
+}
+
+.arkive-footer-cta h2 {
+  font-size: clamp(34px, 4vw, 64px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.arkive-footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: var(--gap);
+  padding-block: 48px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.arkive-footer-grid p {
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+/* Architectural Footer Directory */
+.arkive-footer-directory {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(20px, 2.5vw, 36px);
+  padding-block: 44px;
+  border-bottom: 1px solid var(--line);
+}
+
+.arkive-footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.arkive-footer-col-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+.arkive-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.arkive-footer-link-item a,
+.arkive-footer-link-item button {
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.arkive-footer-link-item a:hover,
+.arkive-footer-link-item button:hover {
+  color: var(--ink);
+  transform: translateX(2px);
+}
+
+.arkive-footer-link-item a:focus-visible,
+.arkive-footer-link-item button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.arkive-footer-link-ext-icon {
+  opacity: 0.5;
+  transition: opacity 0.18s ease;
+  flex-shrink: 0;
+}
+
+.arkive-footer-link-item a:hover .arkive-footer-link-ext-icon {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .arkive-footer-directory {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .arkive-footer-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .arkive-footer-directory {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.arkive-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 28px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Interactive Modal / Drawer Dialog */
+.arkive-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(37, 41, 35, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.arkive-modal-shell {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 1080px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3);
+  display: grid;
+  grid-template-columns: 1.25fr 0.95fr;
+}
+
+.arkive-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 20;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+
+.arkive-modal-close:hover {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.arkive-modal-media {
+  background: var(--wash);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+}
+
+.arkive-modal-frame {
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arkive-modal-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.arkive-modal-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.arkive-modal-btn {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  padding: 8px 16px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.arkive-modal-btn:hover {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.arkive-modal-copy {
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.arkive-modal-copy h2 {
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  margin: 0 0 12px;
+}
+
+.arkive-modal-copy p.lead {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.arkive-modal-copy p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.arkive-modal-focus {
+  font-size: 12px;
+  padding: 12px;
+  background: var(--wash);
+  border-radius: 2px;
+  border-left: 2px solid var(--accent);
+  color: var(--ink);
+  margin-top: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .arkive-hero {
+    grid-template-columns: 1fr;
+  }
+  .arkive-section-grid {
+    grid-template-columns: 1fr;
+  }
+  .arkive-category-grid {
+    grid-template-columns: 1fr;
+  }
+  .arkive-process-grid {
+    grid-template-columns: 1fr;
+  }
+  .arkive-metrics {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .arkive-metric-item {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: 16px;
+  }
+  .arkive-metric-item:first-child {
+    border-top: none;
+  }
+  .arkive-modal-shell {
+    grid-template-columns: 1fr;
+  }
+  .arkive-modal-media {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .arkive-footer-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .arkive-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .arkive-nav {
+    display: none;
+  }
+  .arkive-menu-btn {
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   ARKIVE PROJECTS PAGE (/arkive/projects)
+   Matches the user's reference screenshots as a full dedicated page
+   ========================================================================== */
+
+.arkive-projects-page {
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+}
+
+.arkive-projects-main-container {
+  padding-top: clamp(28px, 3.5vw, 44px);
+  padding-bottom: clamp(64px, 8vw, 100px);
+  flex: 1;
+  width: calc(100% - var(--gutter) * 2);
+  max-width: 1360px;
+  margin-inline: auto;
+}
+
+.arkive-projects-nav-trail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.arkive-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.arkive-back-link:hover {
+  color: var(--accent);
+  transform: translateX(-3px);
+}
+
+.arkive-back-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.crumb-sep {
+  color: var(--line);
+  font-size: 14px;
+}
+
+.crumb-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.arkive-projects-sheet-shell {
+  background: #fbfbf9;
+  color: #252923 !important;
+  border: 1px solid rgba(37, 41, 35, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 16px 45px -10px rgba(0, 0, 0, 0.08);
+  padding: clamp(24px, 3.5vw, 44px);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.arkive-projects-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.arkive-projects-top-slogan {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #646b63 !important;
+}
+
+.arkive-projects-sheet-close {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #252923 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arkive-projects-sheet-close:hover {
+  background: #252923;
+  color: #ffffff !important;
+  transform: scale(1.05);
+}
+
+.arkive-projects-sheet-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) 1fr;
+  gap: clamp(32px, 4vw, 52px);
+  align-items: stretch;
+}
+
+.arkive-projects-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-right: 1px solid var(--line);
+  padding-right: clamp(24px, 3vw, 40px);
+}
+
+.arkive-projects-sidebar .eyebrow {
+  color: var(--accent) !important;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.arkive-projects-category-title {
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: #252923 !important;
+  margin: 0 0 14px;
+}
+
+.arkive-projects-category-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #646b63 !important;
+  margin: 0;
+}
+
+.arkive-category-pill-tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.arkive-cat-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: #646b63 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.arkive-cat-pill:hover {
+  border-color: #252923;
+  color: #252923 !important;
+}
+
+.arkive-cat-pill.is-active {
+  background: #252923;
+  color: #ffffff !important;
+  border-color: #252923;
+}
+
+/* Prototype Box in Sidebar */
+.arkive-prototype-box {
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.arkive-prototype-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.arkive-proto-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #252923 !important;
+  display: block;
+}
+
+.arkive-proto-sub {
+  font-size: 12px;
+  color: #646b63 !important;
+  display: block;
+  margin-top: 3px;
+}
+
+.arkive-proto-badge {
+  text-align: right;
+}
+
+.arkive-proto-badge strong {
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1;
+  color: #252923 !important;
+  display: block;
+}
+
+.arkive-proto-badge span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #646b63 !important;
+}
+
+.arkive-proto-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 18px;
+  background: #a9441c !important;
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(169, 68, 28, 0.2);
+}
+
+.arkive-proto-btn:hover {
+  background: #8f3815 !important;
+  transform: translateY(-1px);
+}
+
+.arkive-proto-btn:focus-visible {
+  outline: 2px solid #252923;
+  outline-offset: 2px;
+}
+
+/* Counter block at bottom of sidebar */
+.arkive-projects-counter-block {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.arkive-projects-counter-num {
+  font-size: clamp(40px, 4.4vw, 56px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  color: #252923 !important;
+  line-height: 1;
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.arkive-projects-counter-txt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #646b63 !important;
+  margin-top: 8px;
+  display: block;
+}
+
+.arkive-projects-counter-line {
+  display: block;
+  width: 48px;
+  height: 1.5px;
+  background: var(--line);
+  margin-top: 14px;
+}
+
+/* Cards Column & Grid */
+.arkive-projects-cards-column {
+  min-width: 0;
+}
+
+.arkive-projects-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 40px);
+}
+
+.arkive-project-item-card {
+  min-width: 0;
+}
+
+.arkive-project-card-btn {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.arkive-project-img-frame {
+  position: relative;
+  aspect-ratio: 1645 / 956;
+  background: var(--wash);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(37, 41, 35, 0.14);
+  box-shadow: 0 4px 18px rgba(37, 41, 35, 0.05);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.35s ease;
+}
+
+.arkive-project-card-btn:hover .arkive-project-img-frame {
+  transform: translateY(-5px);
+  border-color: #252923;
+  box-shadow: 0 16px 36px -8px rgba(37, 41, 35, 0.14);
+}
+
+.arkive-project-img-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arkive-project-card-btn:hover .arkive-project-img-frame img {
+  transform: scale(1.025);
+}
+
+/* Badge Action */
+.arkive-project-badge-action {
+  position: absolute;
+  bottom: clamp(14px, 1.8vw, 20px);
+  right: clamp(14px, 1.8vw, 20px);
+  background: #ffffff !important;
+  color: #252923 !important;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 2px;
+  border: 1px solid rgba(37, 41, 35, 0.1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arkive-project-card-btn:hover .arkive-project-badge-action {
+  background: #252923 !important;
+  color: #ffffff !important;
+  border-color: #252923;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.arkive-project-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 14px;
+}
+
+.arkive-project-name {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: #252923 !important;
+  margin: 0;
+}
+
+.arkive-project-caption .micro {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #646b63 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 960px) {
+  .arkive-projects-sheet-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .arkive-projects-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding-right: 0;
+    padding-bottom: 32px;
+  }
+  .arkive-projects-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Nav Item Button */
+.arkive-nav-link-btn {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.arkive-nav-link-btn:hover,
+.arkive-nav-link-btn.is-active {
+  color: var(--accent);
+}
+
+.arkive-nav-link-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   ARKIVE PROJECT DETAIL PAGE (/arkive/project?id=...)
+   Dedicated architectural project showcase
+   ========================================================================== */
+
+.arkive-detail-page {
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+}
+
+.arkive-detail-subnav-bar {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.arkive-detail-subnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 18px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.arkive-detail-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.crumb-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.crumb-link:hover {
+  color: var(--accent);
+}
+
+.crumb-current {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.arkive-detail-content {
+  padding-top: clamp(28px, 3.5vw, 44px);
+  padding-bottom: clamp(64px, 8vw, 100px);
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.arkive-detail-header {
+  margin-bottom: clamp(28px, 3.5vw, 40px);
+}
+
+.arkive-detail-title {
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  margin: 10px 0 8px;
+  text-wrap: balance;
+}
+
+.arkive-detail-subtitle {
+  font-size: clamp(16px, 1.8vw, 20px);
+  color: var(--muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+.arkive-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
+  gap: clamp(32px, 4.5vw, 64px);
+  align-items: start;
+}
+
+.arkive-detail-visuals {
+  min-width: 0;
+}
+
+.arkive-detail-image-stage {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.08);
+  padding: clamp(12px, 2vw, 24px);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.arkive-detail-slide {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.arkive-detail-slide:active {
+  cursor: grabbing;
+}
+
+.arkive-stage-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 250, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arkive-stage-nav-btn.prev {
+  left: clamp(14px, 2vw, 24px);
+}
+
+.arkive-stage-nav-btn.next {
+  right: clamp(14px, 2vw, 24px);
+}
+
+.arkive-stage-nav-btn:hover {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.arkive-stage-nav-btn:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.arkive-stage-nav-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.arkive-detail-img {
+  width: 100%;
+  height: auto;
+  max-height: 680px;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.arkive-detail-gallery-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 14px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.arkive-gallery-indexes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.arkive-gallery-dot-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--wash);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.arkive-gallery-dot-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.arkive-gallery-dot-btn.is-active {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+}
+
+.arkive-detail-image-caption {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+/* Sidebar Editorial */
+.arkive-detail-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.arkive-detail-lead {
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+.arkive-detail-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
+}
+
+.arkive-detail-focus-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.arkive-detail-focus-card .focus-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.arkive-detail-focus-card .focus-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.arkive-detail-spec-table {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.arkive-detail-spec-table .spec-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.arkive-detail-spec-table .spec-row:last-child {
+  border-bottom: none;
+}
+
+.arkive-detail-spec-table .spec-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.arkive-detail-spec-table .spec-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: right;
+}
+
+.arkive-detail-signoff {
+  padding: 14px 18px;
+  background: var(--wash);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.arkive-detail-cta-card {
+  background: var(--ink);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 28px;
+}
+
+.arkive-detail-cta-card h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0 0 8px;
+}
+
+.arkive-detail-cta-card p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+/* Next Project Teaser Banner */
+.arkive-next-project-banner {
+  margin-top: clamp(48px, 6vw, 84px);
+  padding: clamp(24px, 3vw, 36px);
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.arkive-next-project-banner .next-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.arkive-next-project-banner .next-label span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.arkive-next-project-banner .next-label .next-cat {
+  color: var(--accent);
+}
+
+.arkive-next-project-banner .next-main {
+  flex: 1;
+  min-width: 260px;
+}
+
+.arkive-next-project-banner .next-title {
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 400;
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.arkive-next-project-banner .next-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.arkive-next-project-banner .next-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  background: var(--ink);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arkive-next-project-banner .next-btn:hover {
+  background: var(--accent);
+  transform: translateX(2px);
+}
+
+@media (max-width: 960px) {
+  .arkive-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+
