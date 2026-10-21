@@ -1,6 +1,8 @@
 import React from 'react';
 import { Mail, ArrowUp, Code2 } from 'lucide-react';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -29,8 +31,8 @@ export default function Footer() {
             <a href="#services" className="footer-link">Services</a>
             <a href="#contact" className="footer-link">Contact</a>
 
-            <a href="mailto:micogianan28@gmail.com" className="footer-email-btn">
-              <Mail className="w-3.5 h-3.5" />
+            <a href="mailto:micogianan28@gmail.com" className="footer-email-btn" aria-label="Send email to micogianan28@gmail.com">
+              <Mail className="w-3.5 h-3.5" aria-hidden="true" />
               <span>micogianan28@gmail.com</span>
             </a>
           </div>
@@ -40,22 +42,24 @@ export default function Footer() {
         {/* Bottom Credits Row */}
         <div className="footer-bottom">
           
-          <p>© {new Date().getFullYear()} Mico H. Gianan. All rights reserved.</p>
+          <p>© {CURRENT_YEAR} Mico H. Gianan. All rights reserved.</p>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {/* React & Vite Tech Badge */}
             <div className="tech-badge">
-              <Code2 className="w-3.5 h-3.5 text-sky-400" />
+              <Code2 className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
               <span>Built with <strong style={{ color: '#ffffff' }}>React</strong> & <strong style={{ color: '#c084fc' }}>Vite</strong></span>
             </div>
 
             {/* Back to Top Button */}
             <button
+              type="button"
               onClick={scrollToTop}
               className="top-scroll-btn"
+              aria-label="Back to top"
               title="Back to Top"
             >
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
 

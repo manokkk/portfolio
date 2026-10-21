@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, MailCheck, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, ArrowRight } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 
 export default function Contact({ email = "micogianan28@gmail.com", prefilledInquiry = null }) {
@@ -8,8 +8,10 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' });
+  const [prevInquiry, setPrevInquiry] = useState(prefilledInquiry);
 
-  useEffect(() => {
+  if (prefilledInquiry !== prevInquiry) {
+    setPrevInquiry(prefilledInquiry);
     if (prefilledInquiry) {
       setForm(prev => ({
         ...prev,
@@ -17,7 +19,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
         message: prefilledInquiry.message || prev.message
       }));
     }
-  }, [prefilledInquiry]);
+  }
 
   const handleCopyEmail = (e) => {
     e.preventDefault();
@@ -72,7 +74,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
         triggerMailtoFallback();
         setSubmitted(true);
       }
-    } catch (err) {
+    } catch {
       triggerMailtoFallback();
       setSubmitted(true);
     } finally {
@@ -102,10 +104,16 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
               <div className="contact-cards-stack">
                 
                 {/* Email Card */}
-                <div className="contact-info-card" onClick={handleCopyEmail} title="Click to copy email">
+                <button 
+                  type="button"
+                  className="contact-info-card text-left" 
+                  onClick={handleCopyEmail} 
+                  aria-label={`Copy email address: ${email}`}
+                  title="Click to copy email address"
+                >
                   <div className="contact-card-left">
                     <div className="contact-icon-box">
-                      <Mail className="w-5 h-5 text-sky-400" />
+                      <Mail className="w-5 h-5 text-sky-400" aria-hidden="true" />
                     </div>
                     <div>
                       <span className="contact-card-label">EMAIL ADDRESS</span>
@@ -113,15 +121,21 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     </div>
                   </div>
                   <div className="text-xs font-mono text-gray-400 flex items-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
+                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" /> : <Copy className="w-4 h-4 text-gray-400" aria-hidden="true" />}
                   </div>
-                </div>
+                </button>
 
                 {/* Phone Card */}
-                <div className="contact-info-card" onClick={handleCopyPhone} title="Click to copy phone number">
+                <button 
+                  type="button"
+                  className="contact-info-card text-left" 
+                  onClick={handleCopyPhone} 
+                  aria-label="Copy phone number: +63 939 319 1546"
+                  title="Click to copy phone number"
+                >
                   <div className="contact-card-left">
                     <div className="contact-icon-box">
-                      <Phone className="w-5 h-5 text-emerald-400" />
+                      <Phone className="w-5 h-5 text-emerald-400" aria-hidden="true" />
                     </div>
                     <div>
                       <span className="contact-card-label">PHONE / WHATSAPP</span>
@@ -129,9 +143,9 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     </div>
                   </div>
                   <div className="text-xs font-mono text-gray-400 flex items-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
-                    {copiedPhone ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
+                    {copiedPhone ? <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" /> : <Copy className="w-4 h-4 text-gray-400" aria-hidden="true" />}
                   </div>
-                </div>
+                </button>
 
                 {/* Location Card */}
                 <div className="contact-info-card" style={{ cursor: 'default' }}>
@@ -196,6 +210,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover:translate-x-1" />
                   </a>
                   <button
+                    type="button"
                     onClick={() => { setSubmitted(false); setForm({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' }); }}
                     className="btn-success-item btn-success-outline"
                   >
@@ -212,10 +227,13 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">YOUR NAME *</label>
+                  <label htmlFor="contact-name" className="form-label">YOUR NAME *</label>
                   <input
+                    id="contact-name"
+                    name="name"
                     type="text"
                     required
+                    autoComplete="name"
                     placeholder="Sarah Connor"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -224,10 +242,13 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">EMAIL ADDRESS *</label>
+                  <label htmlFor="contact-email" className="form-label">EMAIL ADDRESS *</label>
                   <input
+                    id="contact-email"
+                    name="email"
                     type="email"
                     required
+                    autoComplete="email"
                     placeholder="sarah@company.com"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -236,8 +257,10 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">PROJECT TYPE / TOPIC</label>
+                  <label htmlFor="contact-topic" className="form-label">PROJECT TYPE / TOPIC</label>
                   <select
+                    id="contact-topic"
+                    name="topic"
                     value={form.topic}
                     onChange={(e) => setForm({ ...form, topic: e.target.value })}
                     className="form-select"
@@ -254,8 +277,10 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">YOUR MESSAGE *</label>
+                  <label htmlFor="contact-message" className="form-label">YOUR MESSAGE *</label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     rows={4}
                     required
                     placeholder="Tell me about your web, mobile, or engineering requirements..."

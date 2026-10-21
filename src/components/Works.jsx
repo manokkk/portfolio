@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowUpRight, 
   X, 
-  CheckCircle2, 
   FolderGit2, 
   Globe, 
   Smartphone, 
@@ -23,6 +23,26 @@ export default function Works() {
   const [modalTab, setModalTab] = useState('overview');
 
   const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'AI & ML', 'IoT Hardware'];
+  
+  // Escape key and background scroll locking for project inspector modal
+  useEffect(() => {
+    if (!selectedProject) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedProject(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedProject]);
 
   const worksData = [
     {
@@ -273,12 +293,15 @@ export default function Works() {
         </div>
 
         {/* Interactive Category Filter Tabs */}
-        <div className="filter-tabs">
+        <div className="filter-tabs" role="tablist" aria-label="Project Categories">
           {categories.map((cat) => (
             <button
+              type="button"
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
+              role="tab"
+              aria-selected={activeCategory === cat}
             >
               {cat}
             </button>
@@ -291,9 +314,12 @@ export default function Works() {
         {filteredWorks.map((work) => {
           return (
             <div key={work.id}>
-              <div 
+              <button 
+                type="button"
                 className="work-card group"
                 onClick={() => handleOpenModal(work)}
+                aria-haspopup="dialog"
+                aria-label={`View architecture and deliverables for ${work.title}`}
               >
                 <div className="card-img-box">
                   {work.image ? (
@@ -318,26 +344,47 @@ export default function Works() {
                       <h3 className="card-title" title={work.title}>
                         {work.title}
                       </h3>
-                      <ArrowUpRight className="card-title-icon text-gray-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+                      <ArrowUpRight className="card-title-icon text-gray-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" aria-hidden="true" />
                     </div>
                   </div>
                 </div>
-              </div>
+              </button>
             </div>
           );
         })}
       </div>
 
-      {/* Interactive Cyber-Terminal Inspector Modal */}
-      {selectedProject && (
-        <div className="modal-backdrop" onClick={() => setSelectedProject(null)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+      {/* Interactive Cyber-Terminal Inspector Modal with Spring Physics */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div 
+            key="work-modal-backdrop"
+            className="modal-backdrop" 
+            onClick={() => setSelectedProject(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="work-modal-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+          >
+            <motion.div 
+              key="work-modal-box"
+              className="modal-box" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 12, transition: { duration: 0.15 } }}
+              transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            >
             <button 
+              type="button"
               className="modal-close-btn"
               onClick={() => setSelectedProject(null)}
+              aria-label="Close project modal"
               title="Close modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
 
             {/* Modal Header */}
@@ -353,7 +400,7 @@ export default function Works() {
               </div>
               <div>
                 <span className="service-modal-badge">{selectedProject.category}</span>
-                <h3 className="service-modal-title">{selectedProject.title}</h3>
+                <h3 id="work-modal-title" className="service-modal-title">{selectedProject.title}</h3>
               </div>
             </div>
 
@@ -363,26 +410,35 @@ export default function Works() {
             </p>
 
             {/* Interactive Inspector Tab Navigation Bar */}
-            <div className="inspector-tab-nav">
+            <div className="inspector-tab-nav" role="tablist" aria-label="Project Inspector Tabs">
               <button
+                type="button"
                 onClick={() => setModalTab('overview')}
                 className={`inspector-tab-btn ${modalTab === 'overview' ? 'active' : ''}`}
+                role="tab"
+                aria-selected={modalTab === 'overview'}
               >
-                <Layers className="w-3.5 h-3.5" />
+                <Layers className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Overview & Deliverables</span>
               </button>
               <button
+                type="button"
                 onClick={() => setModalTab('architecture')}
                 className={`inspector-tab-btn ${modalTab === 'architecture' ? 'active' : ''}`}
+                role="tab"
+                aria-selected={modalTab === 'architecture'}
               >
-                <Terminal className="w-3.5 h-3.5" />
+                <Terminal className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Cyber Terminal</span>
               </button>
               <button
+                type="button"
                 onClick={() => setModalTab('tech')}
                 className={`inspector-tab-btn ${modalTab === 'tech' ? 'active' : ''}`}
+                role="tab"
+                aria-selected={modalTab === 'tech'}
               >
-                <Code2 className="w-3.5 h-3.5" />
+                <Code2 className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Tech Stack</span>
               </button>
             </div>
@@ -514,13 +570,14 @@ export default function Works() {
                 style={{ textDecoration: 'none' }}
               >
                 <span>EXPLORE PROJECT ARCHIVE</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </a>
             </div>
 
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </section>
   );

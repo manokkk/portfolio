@@ -120,7 +120,13 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
       <div className="header-inner">
         {/* Left: Circled mail icon + email button with instant copy feedback */}
-        <button onClick={handleCopyEmail} className="email-pill" title="Click to copy email address">
+        <button 
+          type="button"
+          onClick={handleCopyEmail} 
+          className="email-pill" 
+          aria-label={`Copy email address: ${email}`}
+          title="Click to copy email address"
+        >
           <div className="icon-circle">
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Mail className="w-4 h-4 text-white" />}
           </div>
@@ -129,7 +135,13 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
         {/* Right: Desktop Navigation Links with Scroll-Active Glow */}
         <nav className="nav-links">
-          <button onClick={onOpenResume} className="nav-link">
+          <button 
+            type="button"
+            onClick={onOpenResume} 
+            className="nav-link"
+            aria-haspopup="dialog"
+            aria-label="Open Curriculum Vitae / Resume"
+          >
             Resume
           </button>
           <a 
@@ -154,9 +166,11 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
         {/* Mobile Hamburger Toggle */}
         <button
+          type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="mobile-toggle-btn"
           aria-label="Toggle Navigation"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
         </button>
@@ -164,8 +178,9 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="mobile-drawer">
+        <div className="mobile-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
           <button 
+            type="button"
             onClick={() => { setMobileOpen(false); onOpenResume(); }} 
             className="mobile-nav-link"
           >

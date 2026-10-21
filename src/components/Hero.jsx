@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, MapPin, Code2, Sparkles } from 'lucide-react';
 
 export default function Hero({
@@ -6,48 +7,35 @@ export default function Hero({
   avatarUrl = "/images/profile.png",
   description = "Full-Stack Web & Mobile Developer based in Taguig, Philippines. Specializing in Next.js, NestJS, .NET Framework, and React Native (Expo) to build high-performance cross-platform applications.",
 }) {
-  const [scrollY, setScrollY] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    let ticking = false;
-    let lastClamped = 0;
+  // Optimized off-thread transform pipelines (Zero React component re-renders during scroll)
+  const imageOffsetY = useTransform(scrollY, [0, 600], [0, 96]);
+  const imageScale = useTransform(scrollY, [0, 600], [1, 0.85]);
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const y = window.scrollY || 0;
-          const clamped = Math.min(600, y);
+  const topBadgeX = useTransform(scrollY, [0, 600], [0, 72]);
+  const topBadgeY = useTransform(scrollY, [0, 600], [0, -90]);
+  const topBadgeRot = useTransform(scrollY, [0, 600], [0, 9]);
 
-          // Only re-render Hero if clamped parallax value changed by >= 3px
-          if (Math.abs(clamped - lastClamped) >= 3) {
-            lastClamped = clamped;
-            setScrollY(clamped);
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
+  const bottomBadgeX = useTransform(scrollY, [0, 600], [0, -60]);
+  const bottomBadgeY = useTransform(scrollY, [0, 600], [0, 90]);
+  const bottomBadgeRot = useTransform(scrollY, [0, 600], [0, -7.2]);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const textOffsetY = useTransform(scrollY, [0, 600], [0, 48]);
+  const textOpacity = useTransform(scrollY, [0, 550], [1, 0]);
 
-  // Calculate smooth scroll parallax values (capped for natural physics)
-  const clampedScroll = Math.min(600, scrollY);
-  const imageOffsetY = clampedScroll * 0.16;
-  const imageScale = Math.max(0.9, 1 - clampedScroll * 0.00025);
+  const glowScale = useTransform(scrollY, [0, 600], [1, 1.24]);
+  const glowOpacity = useTransform(scrollY, [0, 600], [1, 0.2]);
 
-  const topBadgeX = Math.min(80, clampedScroll * 0.12);
-  const topBadgeY = Math.max(-90, -clampedScroll * 0.2);
-  const topBadgeRot = clampedScroll * 0.015;
+  // Subtle staggered tech-chip scroll float
+  const chip1Y = useTransform(scrollY, [0, 600], [0, -12]);
+  const chip2Y = useTransform(scrollY, [0, 600], [0, -18]);
+  const chip3Y = useTransform(scrollY, [0, 600], [0, -15]);
+  const chip4Y = useTransform(scrollY, [0, 600], [0, -21]);
+  const chip5Y = useTransform(scrollY, [0, 600], [0, -12]);
 
-  const bottomBadgeX = Math.max(-80, -clampedScroll * 0.1);
-  const bottomBadgeY = Math.min(90, clampedScroll * 0.18);
-  const bottomBadgeRot = -clampedScroll * 0.012;
-
-  const textOffsetY = clampedScroll * 0.08;
-  const textOpacity = Math.max(0, 1 - clampedScroll / 550);
+  const springConfig = { type: "spring", stiffness: 400, damping: 28 };
 
   return (
     <section id="hero" className="hero-section container-custom">
@@ -55,20 +43,14 @@ export default function Hero({
         
         {/* Left Column: Borderless Picture Blending into Background with 3D Scroll Parallax */}
         <div className="hero-picture-column">
-          <div 
+          <motion.div 
             className="picture-glow-bg"
-            style={{
-              transform: `translate(-50%, -45%) scale(${1 + clampedScroll * 0.0004})`,
-              opacity: Math.max(0.2, 1 - clampedScroll / 600)
-            }}
+            style={shouldReduceMotion ? {} : { scale: glowScale, opacity: glowOpacity }}
           />
           
-          <div 
+          <motion.div 
             className="picture-blend-wrapper"
-            style={{
-              transform: `translateY(${imageOffsetY}px) scale(${imageScale})`,
-              transition: 'transform 0.05s ease-out'
-            }}
+            style={shouldReduceMotion ? {} : { y: imageOffsetY, scale: imageScale }}
           >
             <img
               src={avatarUrl}
@@ -76,40 +58,30 @@ export default function Hero({
               className="picture-blend-img"
             />
             <div className="picture-vignette-overlay" />
-          </div>
+          </motion.div>
 
           {/* Floating Badges with Multi-Plane 3D Zero-G Parallax */}
-          <div 
+          <motion.div 
             className="floating-badge badge-top"
-            style={{
-              transform: `translate(${topBadgeX}px, ${topBadgeY}px) rotate(${topBadgeRot}deg)`,
-              transition: 'transform 0.05s ease-out'
-            }}
+            style={shouldReduceMotion ? {} : { x: topBadgeX, y: topBadgeY, rotate: topBadgeRot }}
           >
-            <Code2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <Code2 className="w-3.5 h-3.5 text-blue-400 shrink-0" aria-hidden="true" />
             <span>Full-Stack Dev</span>
-          </div>
+          </motion.div>
           
-          <div 
+          <motion.div 
             className="floating-badge badge-bottom font-mono"
-            style={{
-              transform: `translate(${bottomBadgeX}px, ${bottomBadgeY}px) rotate(${bottomBadgeRot}deg)`,
-              transition: 'transform 0.05s ease-out'
-            }}
+            style={shouldReduceMotion ? {} : { x: bottomBadgeX, y: bottomBadgeY, rotate: bottomBadgeRot }}
           >
-            <Sparkles className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-blue-400 shrink-0" aria-hidden="true" />
             <span>React Native & Next.js</span>
-          </div>
+          </motion.div>
         </div>
 
         {/* Right Column: Text Content & Actions with Gentle Parallax and Fade */}
-        <div 
+        <motion.div 
           className="hero-text-column"
-          style={{
-            transform: `translateY(${textOffsetY}px)`,
-            opacity: textOpacity,
-            transition: 'transform 0.05s ease-out, opacity 0.05s ease-out'
-          }}
+          style={shouldReduceMotion ? {} : { y: textOffsetY, opacity: textOpacity }}
         >
           {/* Greeting */}
           <div className="greeting-text">
@@ -128,38 +100,50 @@ export default function Hero({
 
           {/* Tech Chips with Staggered Scroll Float */}
           <div className="hero-tech-chips">
-            <span className="tech-chip" style={{ transform: `translateY(${-clampedScroll * 0.02}px)` }}>Next.js</span>
-            <span className="tech-chip" style={{ transform: `translateY(${-clampedScroll * 0.03}px)` }}>NestJS</span>
-            <span className="tech-chip" style={{ transform: `translateY(${-clampedScroll * 0.025}px)` }}>.NET</span>
-            <span className="tech-chip" style={{ transform: `translateY(${-clampedScroll * 0.035}px)` }}>React Native</span>
-            <span className="tech-chip" style={{ transform: `translateY(${-clampedScroll * 0.02}px)` }}>Supabase</span>
+            <motion.span className="tech-chip" style={shouldReduceMotion ? {} : { y: chip1Y }}>Next.js</motion.span>
+            <motion.span className="tech-chip" style={shouldReduceMotion ? {} : { y: chip2Y }}>NestJS</motion.span>
+            <motion.span className="tech-chip" style={shouldReduceMotion ? {} : { y: chip3Y }}>.NET</motion.span>
+            <motion.span className="tech-chip" style={shouldReduceMotion ? {} : { y: chip4Y }}>React Native</motion.span>
+            <motion.span className="tech-chip" style={shouldReduceMotion ? {} : { y: chip5Y }}>Supabase</motion.span>
           </div>
 
-          {/* Action Buttons */}
+          {/* Action Buttons with Tactile Spring Physics */}
           <div className="hero-actions">
-            <a href="#contact" className="pill-btn-white group">
+            <motion.a 
+              href="#contact" 
+              className="pill-btn-white group"
+              whileHover={{ scale: 1.025 }}
+              whileTap={{ scale: 0.97 }}
+              transition={springConfig}
+            >
               <span>CONNECT WITH ME</span>
-              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
-            <a href="#projects" className="pill-btn-outline">
+              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+            </motion.a>
+            <motion.a 
+              href="#projects" 
+              className="pill-btn-outline"
+              whileHover={{ scale: 1.025 }}
+              whileTap={{ scale: 0.97 }}
+              transition={springConfig}
+            >
               <span>EXPLORE PROJECTS</span>
-            </a>
+            </motion.a>
           </div>
 
           {/* Metadata Footer Line */}
           <div className="hero-meta">
             <div className="meta-item">
-              <MapPin className="w-3.5 h-3.5 text-blue-400" />
+              <MapPin className="w-3.5 h-3.5 text-blue-400" aria-hidden="true" />
               <span>Taguig, Philippines</span>
             </div>
-            <div className="meta-divider">•</div>
+            <div className="meta-divider" aria-hidden="true">•</div>
             <div className="meta-item">
-              <Code2 className="w-3.5 h-3.5 text-purple-400" />
+              <Code2 className="w-3.5 h-3.5 text-purple-400" aria-hidden="true" />
               <span>Web & Mobile Developer</span>
             </div>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

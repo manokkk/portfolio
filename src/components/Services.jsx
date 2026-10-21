@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Layout, 
   Smartphone, 
   Database, 
   Cpu, 
   Sparkles, 
   CheckCircle2, 
   ArrowRight, 
-  Zap, 
-  Code2, 
-  Layers, 
   Clock, 
   X, 
   ShieldCheck, 
-  Rocket, 
   ChevronRight, 
-  Calculator, 
-  Server,
-  Globe,
-  Check,
-  RefreshCw
+  Globe
 } from 'lucide-react';
 
 export default function Services({ onRequestInquiry }) {
@@ -27,6 +19,26 @@ export default function Services({ onRequestInquiry }) {
   const [selectedServiceModal, setSelectedServiceModal] = useState(null);
 
   const categories = ['All', 'Web & Mobile', 'Cloud & DB', 'Security', 'AI & IoT'];
+  
+  // Escape key and background scroll locking for service inspection modal
+  useEffect(() => {
+    if (!selectedServiceModal) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedServiceModal(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedServiceModal]);
 
   const services = [
     {
@@ -220,12 +232,15 @@ export default function Services({ onRequestInquiry }) {
         </div>
 
         {/* Category Filter Pills */}
-        <div className="filter-tabs mb-8">
+        <div className="filter-tabs mb-8" role="tablist" aria-label="Service Categories">
           {categories.map((cat) => (
             <button
+              type="button"
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`filter-btn ${activeCategory === cat ? 'active' : ''}`}
+              role="tab"
+              aria-selected={activeCategory === cat}
             >
               {cat}
             </button>
@@ -240,9 +255,12 @@ export default function Services({ onRequestInquiry }) {
 
           return (
             <div key={service.id}>
-              <div 
+              <button 
+                type="button"
                 className="service-card group cursor-pointer"
                 onClick={() => setSelectedServiceModal(service)}
+                aria-haspopup="dialog"
+                aria-label={`View details and architecture blueprint for ${service.title}`}
               >
                 {/* Card Content Top */}
                 <div>
@@ -299,7 +317,7 @@ export default function Services({ onRequestInquiry }) {
                   </div>
                 </div>
 
-              </div>
+              </button>
             </div>
           );
         })}
@@ -307,16 +325,37 @@ export default function Services({ onRequestInquiry }) {
 
       {/* ------------------------------------------------------------- */}
       {/* Service Detail Modal */}
-      {/* ------------------------------------------------------------- */}
-      {selectedServiceModal && (
-        <div className="modal-backdrop" onClick={() => setSelectedServiceModal(null)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+      {/* Detailed Service Inspection Modal with Spring Physics */}
+      <AnimatePresence>
+        {selectedServiceModal && (
+          <motion.div 
+            key="service-modal-backdrop"
+            className="modal-backdrop" 
+            onClick={() => setSelectedServiceModal(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-modal-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+          >
+            <motion.div 
+              key="service-modal-box"
+              className="modal-box" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 12, transition: { duration: 0.15 } }}
+              transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            >
             <button 
+              type="button"
               className="modal-close-btn"
               onClick={() => setSelectedServiceModal(null)}
+              aria-label="Close service details"
               title="Close modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
 
             {/* Modal Header */}
@@ -335,7 +374,7 @@ export default function Services({ onRequestInquiry }) {
               </div>
               <div>
                 <span className="service-modal-badge">{selectedServiceModal.badge}</span>
-                <h3 className="service-modal-title">{selectedServiceModal.title}</h3>
+                <h3 id="service-modal-title" className="service-modal-title">{selectedServiceModal.title}</h3>
               </div>
             </div>
 
@@ -387,17 +426,19 @@ export default function Services({ onRequestInquiry }) {
               </div>
 
               <button
+                type="button"
                 onClick={() => handleRequestServiceFromModal(selectedServiceModal)}
                 className="modal-request-btn"
               >
                 <span>REQUEST THIS SERVICE</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </div>
 
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </section>
   );

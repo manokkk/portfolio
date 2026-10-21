@@ -1,15 +1,37 @@
 :root {
-  --bg-color: #08090d;
-  --bg-card: #12131a;
-  --bg-card-hover: #181922;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --card-border-hover: rgba(255, 255, 255, 0.2);
-  --text-main: #ffffff;
-  --text-muted: #a1a1aa;
-  --text-dim: #71717a;
-  --accent-cyan: #38bdf8;
+  /* Surfaces (DESIGN.md architecture) */
+  --bg-deep: #06070a;          /* Deepest canvas background behind WebGL */
+  --bg-surface-1: #0c0d14;      /* Section level container */
+  --bg-surface-2: #12131e;      /* Card & interactive panel background */
+  --bg-surface-elevated: #1a1b2a; /* Modals, dropdowns, sticky elements */
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(12, 13, 20, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.18);
+  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+
+  /* Accents & Brand Tones */
+  --accent-cyan: #38bdf8;       /* Primary highlight (electric sky) */
+  --accent-indigo: #6366f1;     /* Secondary highlight (deep cosmic indigo) */
+  --accent-emerald: #10b981;    /* Live status, success indicator */
+  --accent-amber: #f59e0b;      /* Notice / warning */
+
+  /* Typography Colors */
+  --text-primary: #f8fafc;      /* High contrast readability */
+  --text-secondary: #94a3b8;    /* Subtitles, descriptions */
+  --text-muted: #64748b;        /* Metadata, labels, inactive tabs */
+  --text-code: #38bdf8;         /* Technical tokens, numbers */
+
+  /* Unified Aliases for existing styles */
+  --bg-color: var(--bg-deep);
+  --bg-card: var(--bg-surface-2);
+  --bg-card-hover: var(--bg-surface-elevated);
+  --card-border: var(--glass-border);
+  --card-border-hover: var(--glass-border-hover);
+  --text-main: var(--text-primary);
+  --text-dim: var(--text-muted);
   --accent-purple: #c084fc;
-  --accent-emerald: #34d399;
   --font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
 }
 
@@ -22,6 +44,62 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
+}
+
+/* Typography Engineering & TasteSkill Standards */
+h1, h2, h3, h4, 
+.hero-headline, 
+.section-title, 
+.card-title, 
+.service-title, 
+.service-modal-title, 
+.resume-title {
+  text-wrap: balance;
+  letter-spacing: -0.02em;
+}
+
+.hero-description,
+.service-desc,
+.service-modal-desc,
+.resume-subtitle {
+  text-wrap: pretty;
+  line-height: 1.6;
+}
+
+/* Numeric & Monospace Metric Alignment */
+.font-mono,
+code,
+kbd,
+time,
+.tech-chip,
+.stat-value,
+.terminal-badge-active,
+.spec-table td:first-child,
+.spec-table td:last-child,
+.preloader-metric-val,
+.resume-badge,
+.contact-card-val,
+.nav-rocket-btn {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Global Vercel Web Standards Focus Ring */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #06070a, 0 0 0 4px #38bdf8;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Section Anchor Fixed Navbar Clearance */
+#hero,
+#projects,
+#works,
+#services,
+#contact {
+  scroll-margin-top: 5.5rem;
 }
 
 body {
@@ -987,6 +1065,10 @@ body {
   flex-direction: column;
   height: 100%;
   flex: 1;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
 }
 
 .work-card:hover {
@@ -1102,6 +1184,10 @@ body {
   height: 100%;
   position: relative;
   cursor: pointer !important;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
 }
 
 .service-card * {
@@ -1253,6 +1339,10 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .contact-info-card:hover {
@@ -1486,7 +1576,6 @@ body {
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  animation: fadeIn 0.2s ease-out;
 }
 
 .modal-box {

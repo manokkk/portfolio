@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
   Briefcase, 
@@ -22,7 +23,25 @@ export default function ResumeModal({ isOpen, onClose }) {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
 
-  if (!isOpen) return null;
+  // Escape key and background scroll locking
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   const handleCopyEmail = (e) => {
     e.preventDefault();
@@ -141,24 +160,50 @@ export default function ResumeModal({ isOpen, onClose }) {
   ];
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-box resume-modal-box" onClick={(e) => e.stopPropagation()}>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          key="resume-modal-backdrop"
+          className="modal-backdrop" 
+          onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="resume-modal-title"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.15 } }}
+        >
+          <motion.div 
+            key="resume-modal-box"
+            className="modal-box resume-modal-box" 
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12, transition: { duration: 0.15 } }}
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          >
         
         {/* Close Button */}
-        <button className="modal-close-btn" onClick={onClose} title="Close Resume Modal">
-          <X className="w-5 h-5" />
+        <button 
+          type="button"
+          className="modal-close-btn" 
+          onClick={onClose} 
+          aria-label="Close resume modal"
+          title="Close Resume Modal"
+        >
+          <X className="w-5 h-5" aria-hidden="true" />
         </button>
 
         {/* Header */}
         <div className="resume-header">
           <div className="resume-header-top">
             <span className="resume-badge">
-              <Briefcase className="w-3.5 h-3.5" />
+              <Briefcase className="w-3.5 h-3.5" aria-hidden="true" />
               <span>MICO H. GIANAN — CURRICULUM VITAE</span>
             </span>
           </div>
 
-          <h2 className="resume-title">Professional Resume</h2>
+          <h2 id="resume-modal-title" className="resume-title">Professional Resume</h2>
           <p className="resume-subtitle">
             Full-Stack Web & Mobile Developer specializing in high-performance web applications, cross-platform mobile engineering, and resilient backend architectures.
           </p>
@@ -166,20 +211,24 @@ export default function ResumeModal({ isOpen, onClose }) {
           {/* Quick Contact Bar */}
           <div className="resume-quick-bar">
             <button 
+              type="button"
               onClick={handleCopyEmail} 
               className="resume-quick-item"
+              aria-label="Copy email address: micogianan28@gmail.com"
               title="Click to copy email address"
             >
-              {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Mail className="w-3.5 h-3.5 text-sky-400" />}
+              {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> : <Mail className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />}
               <span>{copiedEmail ? "Email Copied!" : "micogianan28@gmail.com"}</span>
             </button>
 
             <button 
+              type="button"
               onClick={handleCopyPhone} 
               className="resume-quick-item"
+              aria-label="Copy phone number: +63 939 319 1546"
               title="Click to copy phone number"
             >
-              {copiedPhone ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Phone className="w-3.5 h-3.5 text-sky-400" />}
+              {copiedPhone ? <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" /> : <Phone className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />}
               <span>{copiedPhone ? "Phone Copied!" : "+63 939 319 1546"}</span>
             </button>
 
@@ -314,7 +363,9 @@ export default function ResumeModal({ isOpen, onClose }) {
           </a>
         </div>
 
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
