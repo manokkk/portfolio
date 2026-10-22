@@ -12,7 +12,6 @@ import Services from './components/Services';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ResumeModal from './components/ResumeModal';
-import { Compass } from 'lucide-react';
 
 export default function App() {
   const { currentPath, getQueryParam, navigate } = useRouter();
@@ -68,18 +67,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#07080e] text-[#ffffff] font-sans antialiased relative">
-      {/* Floating Pill to Switch to /arkive Redesign Preview */}
-      <button 
-        onClick={() => navigate('/arkive')}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#12131e]/90 hover:bg-[#a9441c] text-white text-xs font-semibold tracking-wide border border-white/10 hover:border-[#a9441c] shadow-2xl backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
-        aria-label="Visit Arkive Design Studio page at /arkive"
-        title="Open Arkive Design Studio Redesign"
-      >
-        <Compass className="w-4 h-4 text-[#38bdf8] group-hover:text-white" />
-        <span>View /arkive Redesign</span>
-        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 text-slate-300">New</span>
-      </button>
-
       {/* J.A.R.V.I.S. Stark Industries Preloader with Arc Iris Aperture Closing FX */}
       {isLoading && (
         <Preloader 
