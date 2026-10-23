@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, ArrowRight, Clock, AlertCircle, ShieldCheck } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
+
+const COOLDOWN_SECONDS = 60;
+const COOLDOWN_STORAGE_KEY = 'portfolio_contact_last_sub';
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Contact({ email = "micogianan28@gmail.com", prefilledInquiry = null }) {
   const [submitting, setSubmitting] = useState(false);
@@ -9,6 +13,12 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', topic: 'Full-Stack Web Applications', message: '' });
   const [prevInquiry, setPrevInquiry] = useState(prefilledInquiry);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [validationError, setValidationError] = useState('');
+  const [botcheck, setBotcheck] = useState(false);
+
+  const formLoadedAt = useRef(Date.now());
+  const hasInteracted = useRef(false);
 
   if (prefilledInquiry !== prevInquiry) {
     setPrevInquiry(prefilledInquiry);
@@ -20,6 +30,36 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
       }));
     }
   }
+
+  // Restore active cooldown from localStorage on initial render
+  useEffect(() => {
+    try {
+      const lastSub = localStorage.getItem(COOLDOWN_STORAGE_KEY);
+      if (lastSub) {
+        const elapsed = Math.floor((Date.now() - parseInt(lastSub, 10)) / 1000);
+        if (elapsed < COOLDOWN_SECONDS) {
+          setCooldownRemaining(COOLDOWN_SECONDS - elapsed);
+        }
+      }
+    } catch {
+      // Graceful degradation if localStorage is inaccessible
+    }
+  }, []);
+
+  // Cooldown countdown interval
+  useEffect(() => {
+    if (cooldownRemaining <= 0) return;
+    const interval = setInterval(() => {
+      setCooldownRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [cooldownRemaining]);
 
   const handleCopyEmail = (e) => {
     e.preventDefault();
@@ -35,22 +75,98 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
     setTimeout(() => setCopiedPhone(false), 2500);
   };
 
-  const triggerMailtoFallback = () => {
-    const subject = encodeURIComponent(`[Portfolio Inquiry] ${form.topic} - ${form.name}`);
+  const triggerMailtoFallback = (cleanTopic, cleanName, cleanEmail, cleanMessage) => {
+    const subject = encodeURIComponent(`[Portfolio Inquiry] ${cleanTopic} - ${cleanName}`);
     const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\nTopic: ${form.topic}\n\nMessage:\n${form.message}`
+      `Name: ${cleanName}\nEmail: ${cleanEmail}\nTopic: ${cleanTopic}\n\nMessage:\n${cleanMessage}`
     );
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
+  const recordSuccessfulSubmission = () => {
+    try {
+      localStorage.setItem(COOLDOWN_STORAGE_KEY, Date.now().toString());
+    } catch {
+      // Graceful fallback
+    }
+    setCooldownRemaining(COOLDOWN_SECONDS);
+    setSubmitted(true);
+  };
+
+  const registerInteraction = () => {
+    if (!hasInteracted.current) {
+      hasInteracted.current = true;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return;
+    setValidationError('');
+
+    // 1. Honeypot Guard: If bot filled the hidden honeypot trap, silently simulate success
+    if (botcheck) {
+      recordSuccessfulSubmission();
+      return;
+    }
+
+    // 2. Bot Velocity Check: Minimum 2.5 seconds required for human inspection & entry
+    const timeElapsed = Date.now() - formLoadedAt.current;
+    if (timeElapsed < 2500) {
+      setValidationError('Submission was too rapid. Please review your message before submitting.');
+      return;
+    }
+
+    // 3. User Interaction Guard: Block synthetic script dispatches without input events
+    if (!hasInteracted.current) {
+      setValidationError('Automated submission detected.');
+      return;
+    }
+
+    // 4. Rate Limiting Cooldown Guard
+    if (cooldownRemaining > 0) {
+      setValidationError(`Rate limit active: Please wait ${cooldownRemaining}s before sending another message.`);
+      return;
+    }
+
+    // 5. Double-Submission In-Flight Guard
+    if (submitting) return;
+
+    // 6. Whitespace Sanitization & Trimming
+    const cleanName = form.name.trim();
+    const cleanEmail = form.email.trim();
+    const cleanTopic = form.topic.trim();
+    const cleanMessage = form.message.trim();
+
+    // 7. Required Fields Verification
+    if (!cleanName || !cleanEmail || !cleanMessage) {
+      setValidationError('Please complete all required fields.');
+      return;
+    }
+
+    // 8. Email Regex Validation
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      setValidationError('Please provide a valid email address.');
+      return;
+    }
+
+    // 9. Maximum Payload Length Bounds
+    if (cleanName.length > 100) {
+      setValidationError('Name exceeds the maximum allowed limit of 100 characters.');
+      return;
+    }
+    if (cleanEmail.length > 120) {
+      setValidationError('Email exceeds the maximum allowed limit of 120 characters.');
+      return;
+    }
+    if (cleanMessage.length > 2000) {
+      setValidationError('Message exceeds the maximum allowed limit of 2,000 characters.');
+      return;
+    }
 
     setSubmitting(true);
 
     try {
-      // Free Web3Forms endpoint dispatches submission to email
+      // Web3Forms endpoint dispatches submission to email
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
@@ -59,24 +175,25 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
         },
         body: JSON.stringify({
           access_key: '2d3d385f-99ed-4118-b15d-a73846db72d3', // Web3Forms Access Key for micogianan28@gmail.com
-          name: form.name,
-          email: form.email,
-          subject: `[Portfolio Inquiry] ${form.topic} - ${form.name}`,
-          message: `Sender Name: ${form.name}\nSender Email: ${form.email}\nTopic: ${form.topic}\n\nMessage:\n${form.message}`,
-          from_name: form.name
+          name: cleanName,
+          email: cleanEmail,
+          subject: `[Portfolio Inquiry] ${cleanTopic} - ${cleanName}`,
+          message: `Sender Name: ${cleanName}\nSender Email: ${cleanEmail}\nTopic: ${cleanTopic}\n\nMessage:\n${cleanMessage}`,
+          from_name: cleanName,
+          botcheck: botcheck ? 'true' : undefined
         })
       });
 
       const data = await response.json();
       if (data.success) {
-        setSubmitted(true);
+        recordSuccessfulSubmission();
       } else {
-        triggerMailtoFallback();
-        setSubmitted(true);
+        triggerMailtoFallback(cleanTopic, cleanName, cleanEmail, cleanMessage);
+        recordSuccessfulSubmission();
       }
     } catch {
-      triggerMailtoFallback();
-      setSubmitted(true);
+      triggerMailtoFallback(cleanTopic, cleanName, cleanEmail, cleanMessage);
+      recordSuccessfulSubmission();
     } finally {
       setSubmitting(false);
     }
@@ -220,11 +337,40 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
 
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} onFocus={registerInteraction}>
+                {/* Anti-Spam Honeypot Field (Hidden from real users, traps automated scrapers) */}
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="hidden opacity-0 pointer-events-none absolute -left-[9999px]"
+                  style={{ display: 'none' }}
+                  checked={botcheck}
+                  onChange={(e) => setBotcheck(e.target.checked)}
+                />
+
                 <div className="flex items-center gap-2" style={{ marginBottom: '2.5rem' }}>
                   <MessageSquare className="w-5 h-5 text-white" />
                   <h3 className="text-xl font-bold text-white">Direct Inquiry Form</h3>
                 </div>
+
+                {/* Live Cooldown Rate Limit Notice */}
+                {cooldownRemaining > 0 && (
+                  <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-mono mb-5 shadow-lg">
+                    <Clock className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
+                    <span>Rate limit active: Please wait <strong className="tabular-nums text-white">{cooldownRemaining}s</strong> before dispatching another message.</span>
+                  </div>
+                )}
+
+                {/* Validation Error Banner */}
+                {validationError && (
+                  <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-300 text-xs font-mono mb-5 shadow-lg">
+                    <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                    <span>{validationError}</span>
+                  </div>
+                )}
 
                 <div className="form-group">
                   <label htmlFor="contact-name" className="form-label">YOUR NAME *</label>
@@ -233,10 +379,16 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     name="name"
                     type="text"
                     required
+                    maxLength={100}
                     autoComplete="name"
                     placeholder="Sarah Connor"
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    onFocus={registerInteraction}
+                    onChange={(e) => {
+                      registerInteraction();
+                      setValidationError('');
+                      setForm({ ...form, name: e.target.value });
+                    }}
                     className="form-input"
                   />
                 </div>
@@ -248,10 +400,16 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     name="email"
                     type="email"
                     required
+                    maxLength={120}
                     autoComplete="email"
                     placeholder="sarah@company.com"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onFocus={registerInteraction}
+                    onChange={(e) => {
+                      registerInteraction();
+                      setValidationError('');
+                      setForm({ ...form, email: e.target.value });
+                    }}
                     className="form-input"
                   />
                 </div>
@@ -262,7 +420,11 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     id="contact-topic"
                     name="topic"
                     value={form.topic}
-                    onChange={(e) => setForm({ ...form, topic: e.target.value })}
+                    onFocus={registerInteraction}
+                    onChange={(e) => {
+                      registerInteraction();
+                      setForm({ ...form, topic: e.target.value });
+                    }}
                     className="form-select"
                   >
                     <option value="Full-Stack Web Applications">Full-Stack Web Applications</option>
@@ -277,22 +439,45 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contact-message" className="form-label">YOUR MESSAGE *</label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label htmlFor="contact-message" className="form-label" style={{ marginBottom: 0 }}>YOUR MESSAGE *</label>
+                    <span className="text-[11px] font-mono text-gray-400 tabular-nums">
+                      {form.message.length} / 2000
+                    </span>
+                  </div>
                   <textarea
                     id="contact-message"
                     name="message"
                     rows={4}
                     required
+                    maxLength={2000}
                     placeholder="Tell me about your web, mobile, or engineering requirements..."
                     value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    onFocus={registerInteraction}
+                    onChange={(e) => {
+                      registerInteraction();
+                      setValidationError('');
+                      setForm({ ...form, message: e.target.value });
+                    }}
                     className="form-textarea"
                   />
                 </div>
 
-                <button type="submit" disabled={submitting} className="pill-btn-white w-full justify-center mt-2 disabled:opacity-75">
+                <button 
+                  type="submit" 
+                  disabled={submitting || cooldownRemaining > 0} 
+                  className={`pill-btn-white w-full justify-center mt-2 ${
+                    submitting || cooldownRemaining > 0 ? 'opacity-60 cursor-not-allowed hover:bg-white' : ''
+                  }`}
+                  aria-label={cooldownRemaining > 0 ? `Rate limited. Please wait ${cooldownRemaining} seconds.` : 'Send Message'}
+                >
                   {submitting ? (
                     <span>TRANSMITTING...</span>
+                  ) : cooldownRemaining > 0 ? (
+                    <span className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-amber-500 shrink-0" />
+                      <span className="tabular-nums">COOLDOWN ({cooldownRemaining}S)</span>
+                    </span>
                   ) : (
                     <>
                       <span>SEND MESSAGE</span>
@@ -300,6 +485,12 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     </>
                   )}
                 </button>
+
+                {/* Subtle Security Trust Badge */}
+                <div className="flex items-center justify-center gap-1.5 mt-3.5 text-[11px] font-mono text-gray-400">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Protected by automated bot detection & rate limiting</span>
+                </div>
               </form>
             )}
           </div>
