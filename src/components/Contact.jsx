@@ -5,6 +5,7 @@ import { GithubIcon } from './SocialIcons';
 const COOLDOWN_SECONDS = 60;
 const COOLDOWN_STORAGE_KEY = 'portfolio_contact_last_sub';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '2d3d385f-99ed-4118-b15d-a73846db72d3';
 
 export default function Contact({ email = "micogianan28@gmail.com", prefilledInquiry = null }) {
   const [submitting, setSubmitting] = useState(false);
@@ -174,7 +175,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: '2d3d385f-99ed-4118-b15d-a73846db72d3', // Web3Forms Access Key for micogianan28@gmail.com
+          access_key: WEB3FORMS_ACCESS_KEY,
           name: cleanName,
           email: cleanEmail,
           subject: `[Portfolio Inquiry] ${cleanTopic} - ${cleanName}`,
