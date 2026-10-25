@@ -29,10 +29,20 @@ export default function CosmicOdyssey3D() {
       }
     };
 
+    const handleToggleGalaxy = (e) => {
+      if (e && e.detail !== undefined) {
+        setIsCinematicMode(Boolean(e.detail));
+      } else {
+        setIsCinematicMode(prev => !prev);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('toggle-galaxy-mode', handleToggleGalaxy);
     return () => {
       document.body.classList.remove('cinematic-active');
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('toggle-galaxy-mode', handleToggleGalaxy);
     };
   }, [isCinematicMode]);
 

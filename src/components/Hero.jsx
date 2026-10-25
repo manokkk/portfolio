@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, MapPin, Code2, Sparkles } from 'lucide-react';
 
@@ -9,20 +9,28 @@ export default function Hero({
 }) {
   const shouldReduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Optimized off-thread transform pipelines (Zero React component re-renders during scroll)
-  const imageOffsetY = useTransform(scrollY, [0, 600], [0, 96]);
-  const imageScale = useTransform(scrollY, [0, 600], [1, 0.85]);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const topBadgeX = useTransform(scrollY, [0, 600], [0, 72]);
-  const topBadgeY = useTransform(scrollY, [0, 600], [0, -90]);
-  const topBadgeRot = useTransform(scrollY, [0, 600], [0, 9]);
+  // Optimized off-thread transform pipelines (Tuned specifically for mobile vs desktop)
+  const imageOffsetY = useTransform(scrollY, [0, 600], isMobile ? [0, 40] : [0, 96]);
+  const imageScale = useTransform(scrollY, [0, 600], isMobile ? [1, 0.94] : [1, 0.85]);
 
-  const bottomBadgeX = useTransform(scrollY, [0, 600], [0, -60]);
-  const bottomBadgeY = useTransform(scrollY, [0, 600], [0, 90]);
-  const bottomBadgeRot = useTransform(scrollY, [0, 600], [0, -7.2]);
+  const topBadgeX = useTransform(scrollY, [0, 600], isMobile ? [0, 14] : [0, 72]);
+  const topBadgeY = useTransform(scrollY, [0, 600], isMobile ? [0, -24] : [0, -90]);
+  const topBadgeRot = useTransform(scrollY, [0, 600], isMobile ? [0, 4] : [0, 9]);
 
-  const textOffsetY = useTransform(scrollY, [0, 600], [0, 48]);
+  const bottomBadgeX = useTransform(scrollY, [0, 600], isMobile ? [0, -14] : [0, -60]);
+  const bottomBadgeY = useTransform(scrollY, [0, 600], isMobile ? [0, 24] : [0, 90]);
+  const bottomBadgeRot = useTransform(scrollY, [0, 600], isMobile ? [0, -3] : [0, -7.2]);
+
+  const textOffsetY = useTransform(scrollY, [0, 600], isMobile ? [0, 20] : [0, 48]);
   const textOpacity = useTransform(scrollY, [0, 550], [1, 0]);
 
   const glowScale = useTransform(scrollY, [0, 600], [1, 1.24]);

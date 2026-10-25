@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
@@ -159,7 +160,7 @@ export default function ResumeModal({ isOpen, onClose }) {
     }
   ];
 
-  return (
+  return typeof document !== 'undefined' ? createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div 
@@ -366,6 +367,7 @@ export default function ResumeModal({ isOpen, onClose }) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
-  );
+    </AnimatePresence>,
+    document.body
+  ) : null;
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Menu, X, Check } from 'lucide-react';
+import { Mail, Menu, X, Check, Sparkles, FileText, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import RocketProgressIcon from './RocketProgressIcon';
 
 export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume }) {
@@ -9,6 +10,23 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
   const [isScrolled, setIsScrolled] = useState(false);
   const progressBarRef = useRef(null);
   const rocketRef = useRef(null);
+
+  // Lock background scroll when mobile menu is active
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     let ticking = false;
@@ -31,6 +49,17 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
             progressBarRef.current.style.width = `${percent}%`;
             progressBarRef.current.style.setProperty('--rocket-shift', `${rocketShift}%`);
             progressBarRef.current.style.setProperty('--scroll-ratio', scrollRatio);
+          }
+
+          // Fade in rocket button smoothly only once scrolling starts (> 1.5%) to avoid cut-off at initial load
+          if (rocketRef.current) {
+            if (percent > 1.5) {
+              rocketRef.current.style.opacity = '1';
+              rocketRef.current.style.pointerEvents = 'auto';
+            } else {
+              rocketRef.current.style.opacity = '0';
+              rocketRef.current.style.pointerEvents = 'none';
+            }
           }
 
           // Active cruising thruster boost when actively scrolling
@@ -99,7 +128,7 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
   };
 
   return (
-    <header className={`site-header ${isScrolled ? 'site-header-scrolled' : ''}`}>
+    <header className={`site-header ${isScrolled ? 'site-header-scrolled' : ''} ${mobileOpen ? 'mobile-menu-active' : ''}`}>
       {/* Laser Reading Progress Bar with Horizontal Rocket Explorer */}
       <div 
         ref={progressBarRef}
@@ -176,39 +205,84 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
         </button>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileOpen && (
-        <div className="mobile-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
-          <button 
-            type="button"
-            onClick={() => { setMobileOpen(false); onOpenResume(); }} 
-            className="mobile-nav-link"
-          >
-            Resume
-          </button>
-          <a 
-            href="#projects" 
-            onClick={() => setMobileOpen(false)} 
-            className={`mobile-nav-link ${activeSection === 'projects' ? 'active-mobile-link' : ''}`}
-          >
-            Projects
-          </a>
-          <a 
-            href="#services" 
-            onClick={() => setMobileOpen(false)} 
-            className={`mobile-nav-link ${activeSection === 'services' ? 'active-mobile-link' : ''}`}
-          >
-            Services
-          </a>
-          <a 
-            href="#contact" 
-            onClick={() => setMobileOpen(false)} 
-            className={`mobile-nav-link ${activeSection === 'contact' ? 'active-mobile-link' : ''}`}
-          >
-            Contact
-          </a>
-        </div>
-      )}
+      {/* Mobile Drawer Overlay & Content */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div 
+              key="mobile-backdrop"
+              className="mobile-drawer-backdrop"
+              onClick={() => setMobileOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              aria-hidden="true"
+            />
+            <motion.div 
+              key="mobile-drawer"
+              className="mobile-drawer" 
+              role="dialog" 
+              aria-modal="true" 
+              aria-label="Mobile Navigation"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
+            >
+              <div className="mobile-drawer-links">
+                <button 
+                  type="button"
+                  onClick={() => { setMobileOpen(false); onOpenResume(); }} 
+                  className="mobile-nav-link"
+                >
+                  <FileText className="w-4 h-4 text-sky-400" aria-hidden="true" />
+                  <span>Resume</span>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto" aria-hidden="true" />
+                </button>
+                <a 
+                  href="#projects" 
+                  onClick={() => setMobileOpen(false)} 
+                  className={`mobile-nav-link ${activeSection === 'projects' ? 'active-mobile-link' : ''}`}
+                >
+                  <span>Projects</span>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto" aria-hidden="true" />
+                </a>
+                <a 
+                  href="#services" 
+                  onClick={() => setMobileOpen(false)} 
+                  className={`mobile-nav-link ${activeSection === 'services' ? 'active-mobile-link' : ''}`}
+                >
+                  <span>Services</span>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto" aria-hidden="true" />
+                </a>
+                <a 
+                  href="#contact" 
+                  onClick={() => setMobileOpen(false)} 
+                  className={`mobile-nav-link ${activeSection === 'contact' ? 'active-mobile-link' : ''}`}
+                >
+                  <span>Contact</span>
+                  <ChevronRight className="w-4 h-4 text-gray-500 ml-auto" aria-hidden="true" />
+                </a>
+              </div>
+
+              {/* Dedicated 3D Galaxy Toggle on Mobile */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileOpen(false);
+                  window.dispatchEvent(new CustomEvent('toggle-galaxy-mode', { detail: true }));
+                }}
+                className="mobile-galaxy-toggle-btn"
+                aria-label="Explore 3D Galaxy Simulation"
+              >
+                <Sparkles className="w-4 h-4 text-sky-400 shrink-0" aria-hidden="true" />
+                <span>Explore 3D Galaxy</span>
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Smartphone, 
-  Database, 
-  Cpu, 
-  Sparkles, 
   CheckCircle2, 
   ArrowRight, 
   Clock, 
   X, 
-  ShieldCheck, 
-  ChevronRight, 
-  Globe 
+  ChevronRight 
 } from 'lucide-react';
 import { servicesData } from '../data/servicesData';
 
@@ -164,8 +159,9 @@ export default function Services({ onRequestInquiry }) {
       {/* ------------------------------------------------------------- */}
       {/* Service Detail Modal */}
       {/* Detailed Service Inspection Modal with Spring Physics */}
-      <AnimatePresence>
-        {selectedServiceModal && (
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedServiceModal && (
           <motion.div 
             key="service-modal-backdrop"
             className="modal-backdrop" 
@@ -276,7 +272,9 @@ export default function Services({ onRequestInquiry }) {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
 
     </section>
   );

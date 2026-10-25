@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowUpRight, 
@@ -165,8 +166,9 @@ export default function Works() {
       </div>
 
       {/* Interactive Cyber-Terminal Inspector Modal with Spring Physics */}
-      <AnimatePresence>
-        {selectedProject && (
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedProject && (
           <motion.div 
             key="work-modal-backdrop"
             className="modal-backdrop" 
@@ -387,7 +389,9 @@ export default function Works() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
 
     </section>
   );
