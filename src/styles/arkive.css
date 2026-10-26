@@ -21,6 +21,9 @@
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   overflow-x: clip;
 }
 
@@ -446,6 +449,7 @@
   isolation: isolate;
   padding-block: var(--space);
   border-top: 1px solid var(--line);
+  overflow: hidden;
 }
 
 .arkive-projects-section::before {
@@ -453,7 +457,7 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  clip-path: inset(0 -100vw);
+  clip-path: inset(0);
   opacity: 0.42;
   background: 
     repeating-linear-gradient(118deg, transparent 0 104px, rgba(37, 41, 35, 0.12) 105px 106px, transparent 107px 192px),
