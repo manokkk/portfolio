@@ -204,20 +204,24 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
+  width: calc(100% - 4px);
   height: 2px;
   background: linear-gradient(90deg, #38bdf8, #34d399, #c084fc);
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.8), 0 0 20px rgba(52, 211, 153, 0.4);
   z-index: 60;
-  transition: width 0.08s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: left center;
+  transform: scaleX(var(--scroll-ratio, 0));
+  transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
   pointer-events: none;
 }
 
 /* Horizontal Rocketship Scroll Navigator */
 .nav-rocket-btn {
   position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translate(clamp(-100%, calc(var(--rocket-shift, 0%) - 100%), 0%), -50%);
+  left: 0;
+  bottom: 1px;
+  transform: translate3d(var(--rocket-x, 0px), 50%, 0);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -234,7 +238,8 @@ body {
   will-change: transform, opacity;
 }
 
-.mobile-menu-active .nav-reading-bar {
+.mobile-menu-active .nav-reading-bar,
+.mobile-menu-active .nav-rocket-btn {
   opacity: 0 !important;
   pointer-events: none !important;
 }
@@ -1324,6 +1329,17 @@ body {
   transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.form-char-count {
+  display: block;
+  margin-top: 0.4rem;
+  text-align: left;
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .form-input::placeholder, .form-textarea::placeholder {
   color: #94a3b8;
   opacity: 0.9;
@@ -1849,6 +1865,18 @@ body {
   color: #94a3b8;
   line-height: 1.6;
   margin-top: 0.65rem;
+}
+
+.resume-exp-bullets {
+  list-style: disc;
+  padding-left: 1.15rem;
+  margin: 0.65rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.84rem;
+  color: #94a3b8;
+  line-height: 1.6;
 }
 
 .resume-tech-row {
@@ -2473,6 +2501,9 @@ body {
 }
 
 @media (max-width: 768px) {
+  .nav-reading-bar {
+    width: 100%;
+  }
   .nav-rocket-btn {
     display: none !important;
   }

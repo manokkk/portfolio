@@ -16,7 +16,10 @@ import {
   Database,
   Cloud,
   Server,
-  Cpu
+  Cpu,
+  FolderGit2,
+  UserCheck,
+  GitBranch
 } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 
@@ -64,16 +67,41 @@ export default function ResumeModal({ isOpen, onClose }) {
       role: 'Full-Stack Developer (Internship)',
       company: 'Inspire Holdings Inc.',
       location: 'Taguig, Philippines',
-      summary: 'Primary web & mobile developer using Next.js, NestJS, .NET Framework, and React Native (Expo). Architected database solutions with Supabase/Firebase and integrated Redis caching for performance.',
+      bullets: [
+        'Spearheaded full-stack web and mobile application development using Next.js, NestJS, .NET Framework, and React Native (Expo), while architecting scalable Supabase and Firebase database solutions with Redis caching to maximize performance.',
+        'Championed engineering standards through rigorous code reviews, developer mentorship, and strategic sprint planning to improve code quality, cross-functional collaboration, and on-time milestone delivery.'
+      ],
       techStack: ['Next.js', 'NestJS', '.NET Framework', 'React Native (Expo)', 'Supabase', 'Firebase', 'Redis']
+    }
+  ];
+
+  const projects = [
+    {
+      title: 'ISAP - TUPT Thesis Archive: Intelligent Search and Access Platform',
+      subtitle: 'ML Semantic Search & AI Thesis Repository',
+      bullets: [
+        'Developed and rigorously validated a machine learning semantic search engine and an AI-driven thesis improvement module within a scalable, role-based digital repository, achieving 90% search accuracy and sub-5-second retrieval times.',
+        'Engineered end-to-end testing and continuous quality assurance strategies covering authentication security, data integrity, administrative workflows, and usability to guarantee a reliable, bug-free user experience.'
+      ],
+      techStack: ['Machine Learning', 'Semantic Search', 'AI Module', 'Role-Based Access', 'E2E Testing & QA']
     },
     {
-      period: '2022 — 2026',
-      role: 'Project Full-Stack Web & Mobile Developer',
-      company: 'Academic & Multidisciplinary Software Projects',
-      location: 'Taguig, Philippines',
-      summary: 'Engineered end-to-end applications and RESTful APIs using React, Laravel, Django, FastAPI, PostgreSQL, and MongoDB.',
-      techStack: ['React', 'Laravel', 'Django', 'FastAPI', 'PostgreSQL', 'MongoDB']
+      title: 'CacheFlow – Cross-Platform Personal Finance & Multi-Account Budget Planner',
+      subtitle: 'Web & Mobile Financial Tracking Platform',
+      bullets: [
+        'Engineered and validated a full-stack financial tracking platform across Web and Mobile applications using Prisma, PostgreSQL, and Supabase JWT authentication, featuring a dynamic multi-wallet ledger (Cash, E-Wallets, and Bank Accounts), automated daily allowance carryovers, and interactive budget analytics.',
+        'Implemented end-to-end quality assurance, API security handshakes, and offline-first resilience strategies, validating background queue synchronization, conflict-free data integrity, and responsive cross-device usability under both online and offline conditions.'
+      ],
+      techStack: ['Web & Mobile', 'Prisma', 'PostgreSQL', 'Supabase JWT', 'Offline-First Sync']
+    },
+    {
+      title: 'NoteQuest — Gamified Productivity & Notes Platform',
+      subtitle: 'Cross-Platform RPG Task & Note Management',
+      bullets: [
+        'Engineered a full-stack task and note management platform across React Native (Expo) and Express/TypeScript using Prisma, PostgreSQL (Supabase), and JWT authentication, featuring a server-authoritative RPG progression engine with 1.5x level scaling, rank tiers, and automated End-of-Day (EOD) EXP settlement and daily task resets.',
+        'Created a frictionless user experience with a full-featured, offline-first Guest Mode requiring no mandatory sign-up alongside optional cloud sync, unifying categorized missions (Daily, Weekly, Monthly) and rich-text notes with an automated End-of-Day (EOD) EXP settlement and daily reset system.'
+      ],
+      techStack: ['React Native (Expo)', 'Express', 'TypeScript', 'Prisma', 'PostgreSQL', 'Supabase', 'JWT']
     }
   ];
 
@@ -82,80 +110,66 @@ export default function ResumeModal({ isOpen, onClose }) {
       category: 'Frontend & Mobile Development',
       icon: Layers,
       skills: [
-        'React.JS',
-        'Next.JS',
-        'React Native',
-        'React Redux',
+        'Next.js',
+        'React',
+        'React Native (Expo)',
         'MERN Stack',
-        'HTML',
-        'CSS',
-        'Web Applications'
+        'TypeScript'
       ]
     },
     {
       category: 'Backend & APIs',
       icon: Server,
       skills: [
-        'Laravel Framework',
         'NestJS',
         '.NET Framework',
-        'REST APIs',
-        'API',
-        'Software Development',
-        'Systems Development'
+        'Express.js',
+        'RESTful APIs',
+        'Prisma'
       ]
     },
     {
-      category: 'Programming Languages',
-      icon: Code2,
-      skills: [
-        'JavaScript Programming',
-        'Python Programming',
-        'PHP Programming',
-        'Java Programming',
-        'C# Programming',
-        'C++ Programming',
-        'SQL Query Language'
-      ]
-    },
-    {
-      category: 'Databases & Storage',
+      category: 'Database Design & Management',
       icon: Database,
       skills: [
-        'Postgresql',
+        'PostgreSQL',
         'MongoDB',
+        'SQL / NoSQL',
         'Supabase',
         'Firebase',
-        'PhpMyAdmin',
-        'Database Systems',
-        'Redis Caching'
+        'Redis'
       ]
     },
     {
-      category: 'Cloud, DevOps & Pipelines',
-      icon: Cloud,
-      skills: [
-        'Amazon Web Services',
-        'Docker Software',
-        'Pipelines',
-        'CI/CD',
-        'DevOps',
-        'Deployment',
-        'Git Version Control System',
-        'Version Control',
-        'Debugging',
-        'Troubleshooting'
-      ]
-    },
-    {
-      category: 'IoT, Hardware & AI Systems',
+      category: 'IoT Development',
       icon: Cpu,
       skills: [
-        'Raspberry PI',
+        'Raspberry Pi',
         'ESP32',
-        'Claude Opus',
-        'Automation',
-        'Information Technology'
+        'Python',
+        'FastAPI'
+      ]
+    },
+    {
+      category: 'Cloud Deployment & DevOps',
+      icon: Cloud,
+      skills: [
+        'Docker',
+        'GCP',
+        'Vercel',
+        'Render'
+      ]
+    },
+    {
+      category: 'Version Control & Collaboration',
+      icon: GitBranch,
+      skills: [
+        'Git',
+        'GitHub',
+        'GitLab',
+        'Agile Methodologies',
+        'Team Leadership',
+        'Code Reviews'
       ]
     }
   ];
@@ -206,7 +220,7 @@ export default function ResumeModal({ isOpen, onClose }) {
 
           <h2 id="resume-modal-title" className="resume-title">Professional Resume</h2>
           <p className="resume-subtitle">
-            Full-Stack Web & Mobile Developer specializing in high-performance web applications, cross-platform mobile engineering, and resilient backend architectures.
+            Adaptable full-stack web and mobile developer specializing in Next.js, NestJS, .NET Framework, and React Native (Expo), leveraging strong problem-solving skills and database expertise to build robust, scalable cross-platform applications.
           </p>
 
           {/* Quick Contact Bar */}
@@ -275,10 +289,53 @@ export default function ResumeModal({ isOpen, onClose }) {
                   <span className="resume-date-badge">{exp.period}</span>
                 </div>
 
-                <p className="resume-exp-desc">{exp.summary}</p>
+                <ul className="resume-exp-bullets">
+                  {exp.bullets.map((item, bIdx) => (
+                    <li key={bIdx}>{item}</li>
+                  ))}
+                </ul>
 
                 <div className="resume-tech-row">
                   {exp.techStack.map((tech) => (
+                    <span key={tech} className="resume-tech-pill">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Projects Section */}
+        <div className="resume-section">
+          <div className="resume-section-header">
+            <div className="resume-section-icon">
+              <FolderGit2 className="w-4 h-4" />
+            </div>
+            <h3 className="resume-section-title">Featured Engineering Projects</h3>
+          </div>
+
+          <div className="resume-exp-list">
+            {projects.map((proj, idx) => (
+              <div key={idx} className="resume-exp-card">
+                <div className="resume-exp-card-header">
+                  <div>
+                    <h4 className="resume-role-title">{proj.title}</h4>
+                    <div className="resume-company-meta">
+                      <span>{proj.subtitle}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <ul className="resume-exp-bullets">
+                  {proj.bullets.map((item, bIdx) => (
+                    <li key={bIdx}>{item}</li>
+                  ))}
+                </ul>
+
+                <div className="resume-tech-row">
+                  {proj.techStack.map((tech) => (
                     <span key={tech} className="resume-tech-pill">
                       {tech}
                     </span>
@@ -321,7 +378,7 @@ export default function ResumeModal({ isOpen, onClose }) {
         </div>
 
         {/* Education Section */}
-        <div className="resume-section" style={{ marginBottom: '1rem' }}>
+        <div className="resume-section">
           <div className="resume-section-header">
             <div className="resume-section-icon">
               <GraduationCap className="w-4 h-4" />
@@ -338,6 +395,27 @@ export default function ResumeModal({ isOpen, onClose }) {
               </p>
             </div>
             <span className="resume-date-badge">2022 — 2026</span>
+          </div>
+        </div>
+
+        {/* References Section */}
+        <div className="resume-section" style={{ marginBottom: '1rem' }}>
+          <div className="resume-section-header">
+            <div className="resume-section-icon">
+              <UserCheck className="w-4 h-4" />
+            </div>
+            <h3 className="resume-section-title">Character Reference</h3>
+          </div>
+
+          <div className="resume-edu-card">
+            <div>
+              <h4 className="resume-role-title">Benedick Cervantes</h4>
+              <p className="resume-company-meta">
+                <span>benedickcervantes@gmail.com</span>
+                <span>•</span>
+                <span>0917 843 2759</span>
+              </p>
+            </div>
           </div>
         </div>
 

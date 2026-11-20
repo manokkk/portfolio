@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, ArrowRight, Clock, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Check, Copy, ExternalLink, MessageSquare, ArrowRight, Clock, AlertCircle } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 
 const COOLDOWN_SECONDS = 60;
@@ -440,12 +440,7 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                 </div>
 
                 <div className="form-group">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label htmlFor="contact-message" className="form-label" style={{ marginBottom: 0 }}>YOUR MESSAGE *</label>
-                    <span className="text-[11px] font-mono text-gray-400 tabular-nums">
-                      {form.message.length} / 2000
-                    </span>
-                  </div>
+                  <label htmlFor="contact-message" className="form-label">YOUR MESSAGE *</label>
                   <textarea
                     id="contact-message"
                     name="message"
@@ -462,6 +457,9 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     }}
                     className="form-textarea"
                   />
+                  <span className="form-char-count">
+                    {form.message.length} / 2000
+                  </span>
                 </div>
 
                 <button 
@@ -486,12 +484,6 @@ export default function Contact({ email = "micogianan28@gmail.com", prefilledInq
                     </>
                   )}
                 </button>
-
-                {/* Subtle Security Trust Badge */}
-                <div className="flex items-center justify-center gap-1.5 mt-3.5 text-[11px] font-mono text-gray-400">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Protected by automated bot detection & rate limiting</span>
-                </div>
               </form>
             )}
           </div>

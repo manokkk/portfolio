@@ -8,6 +8,7 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
   const [copied, setCopied] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
+  const headerRef = useRef(null);
   const progressBarRef = useRef(null);
   const rocketRef = useRef(null);
 
@@ -39,20 +40,21 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY || window.pageYOffset || 0;
           const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-          const percent = Math.min(100, Math.max(0, (currentY / docHeight) * 100));
+          const scrollRatio = Math.min(1, Math.max(0, currentY / docHeight));
+          const percent = scrollRatio * 100;
           const roundedPercent = Math.round(percent);
-          const scrollRatio = percent / 100;
-          const rocketShift = (1 - scrollRatio) * 100;
+          const headerWidth = headerRef.current ? headerRef.current.clientWidth : window.innerWidth;
+          const rocketWidth = rocketRef.current ? rocketRef.current.offsetWidth || 42 : 42;
+          const rocketX = Math.max(0, scrollRatio * Math.max(0, headerWidth - rocketWidth));
 
-          // Direct DOM transform/style update avoids continuous React re-renders
+          // Direct DOM transform/style update avoids continuous React re-renders and layout reflow
           if (progressBarRef.current) {
-            progressBarRef.current.style.width = `${percent}%`;
-            progressBarRef.current.style.setProperty('--rocket-shift', `${rocketShift}%`);
             progressBarRef.current.style.setProperty('--scroll-ratio', scrollRatio);
           }
 
-          // Fade in rocket button smoothly only once scrolling starts (> 1.5%) to avoid cut-off at initial load
           if (rocketRef.current) {
+            rocketRef.current.style.setProperty('--rocket-x', `${rocketX}px`);
+            // Fade in rocket button smoothly only once scrolling starts (> 1.5%)
             if (percent > 1.5) {
               rocketRef.current.style.opacity = '1';
               rocketRef.current.style.pointerEvents = 'auto';
@@ -99,10 +101,12 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
       if (scrollTimeout) clearTimeout(scrollTimeout);
     };
   }, []);
@@ -128,24 +132,22 @@ export default function Navbar({ email = "micogianan28@gmail.com", onOpenResume 
   };
 
   return (
-    <header className={`site-header ${isScrolled ? 'site-header-scrolled' : ''} ${mobileOpen ? 'mobile-menu-active' : ''}`}>
+    <header ref={headerRef} className={`site-header ${isScrolled ? 'site-header-scrolled' : ''} ${mobileOpen ? 'mobile-menu-active' : ''}`}>
       {/* Laser Reading Progress Bar with Horizontal Rocket Explorer */}
-      <div 
+      <div
         ref={progressBarRef}
-        className="nav-reading-bar" 
-        style={{ width: '0%' }} 
+        className="nav-reading-bar"
+      />
+      <button
+        ref={rocketRef}
+        type="button"
+        onClick={handleRocketClick}
+        className="nav-rocket-btn"
+        aria-label="Rocket explorer: click to return to top"
+        title="Rocket Explorer • Click to scroll to top"
       >
-        <button
-          ref={rocketRef}
-          type="button"
-          onClick={handleRocketClick}
-          className="nav-rocket-btn"
-          aria-label="Rocket explorer: click to return to top"
-          title="Rocket Explorer • Click to scroll to top"
-        >
-          <RocketProgressIcon />
-        </button>
-      </div>
+        <RocketProgressIcon />
+      </button>
 
       <div className="header-inner">
         {/* Left: Circled mail icon + email button with instant copy feedback */}
