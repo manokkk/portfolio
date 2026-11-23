@@ -189,5 +189,89 @@ export const worksData = [
     ],
     tags: ['Raspberry Pi', 'ESP32', 'Python', 'FastAPI', 'Docker', 'IoT Telemetry'],
     projectUrl: 'https://github.com/manokkk'
+  },
+  {
+    id: 10,
+    title: 'NoteQuest Mobile',
+    category: 'Mobile (Expo)',
+    image: '/images/notequest_mobile.jpg',
+    description: 'Gamified task manager, rich notes, mind-map, and drawing canvas mobile application built with React Native (Expo 58), TypeScript, and NativeWind. Features galaxy rank progression, local push notifications, offline guest mode, and secure token persistence.',
+    blueprint: 'Mobile App (Expo 58 / React Native 0.88) ➔ NativeWind + Reanimated ➔ SecureStore / Guest Store ➔ Express REST API',
+    metrics: [
+      { label: 'Expo 58 + RN 0.88', desc: 'NativeWind & Reanimated 4 UI', icon: Zap },
+      { label: 'Gamified Tasks', desc: 'Galaxy Ranks, Mind Maps & Canvas', icon: Sparkles },
+      { label: 'Offline-First', desc: 'Guest Store & Expo SecureStore', icon: ShieldCheck }
+    ],
+    highlights: [
+      'Gamified Task & Galaxy Rank Progression System',
+      'Interactive Mind Map & Drawing Canvas Modals',
+      'Local Push Notifications via Expo Notifications',
+      'Offline Guest Store & Expo SecureStore Auth Persistence'
+    ],
+    tags: ['React Native', 'Expo', 'TypeScript', 'NativeWind', 'Reanimated', 'Expo Notifications', 'SecureStore'],
+    projectUrl: 'https://github.com/manokkk/TaskManagerMobile'
+  },
+  {
+    id: 11,
+    title: 'NoteQuest Backend',
+    category: 'Backend / API',
+    image: '/images/project_confidential_admin.png',
+    description: 'Authoritative Express + TypeScript + Prisma PostgreSQL REST API powering NoteQuest. Handles JWT authentication, custom rate limiting, task CRUD, and a server-side gamification engine calculating EXP rewards and daily rank settlements.',
+    blueprint: 'REST Client ➔ Rate Limiter + JWT Auth ➔ Express API + Gamification Engine ➔ Prisma ORM ➔ PostgreSQL',
+    metrics: [
+      { label: 'Express + TypeScript', desc: 'Authoritative REST Microservice', icon: Zap },
+      { label: 'Gamification Engine', desc: 'EXP Rewards & Daily Settlement', icon: Sparkles },
+      { label: 'Hardened Security', desc: 'JWT, bcryptjs & Rate Limiting', icon: ShieldCheck }
+    ],
+    highlights: [
+      'Express & TypeScript REST API with Prisma ORM',
+      'Server-Side Gamification & EXP Settlement Engine',
+      'JWT Authentication & bcryptjs Password Hashing',
+      'Custom Rate Limiting & Security Response Headers'
+    ],
+    tags: ['Node.js', 'Express', 'TypeScript', 'Prisma ORM', 'PostgreSQL', 'JWT', 'bcryptjs'],
+    projectUrl: 'https://github.com/manokkk/TaskManagerBackend'
+  },
+  {
+    id: 12,
+    title: 'Bloom Mobile',
+    category: 'Mobile (Expo)',
+    image: '/images/bloom_mobile.jpg',
+    description: 'Privacy-focused reproductive health and menstrual cycle tracker built with React Native (Expo 58), TypeScript, and NativeWind. Features cycle calendar predictions, daily symptom & mood logging, PIN lock & biometric unlock, and encrypted token storage.',
+    blueprint: 'Mobile App (Expo 58 / React Native 0.88) ➔ Biometric & PIN Lock ➔ SecureStore ➔ Bloom REST API',
+    metrics: [
+      { label: 'Privacy-First Lock', desc: 'PIN & Biometric Local Auth', icon: ShieldCheck },
+      { label: 'Cycle Calendar', desc: 'Phase Tracking & Predictions', icon: Sparkles },
+      { label: 'Expo 58 + NativeWind', desc: 'Cross-Platform iOS, Android & Web', icon: Zap }
+    ],
+    highlights: [
+      'Interactive Cycle Calendar & Phase Prediction Dashboard',
+      'Biometric & PIN Lock Screen via Expo LocalAuthentication',
+      'Daily Flow, Symptom & Mood Logging Workflows',
+      'Expo SecureStore 7-Day Session Persistence'
+    ],
+    tags: ['React Native', 'Expo', 'TypeScript', 'NativeWind', 'Expo LocalAuth', 'SecureStore', 'Axios'],
+    projectUrl: 'https://github.com/manokkk/BloomMobile'
+  },
+  {
+    id: 13,
+    title: 'Bloom Backend',
+    category: 'Backend / API',
+    image: '/images/project_confidential_admin.png',
+    description: 'Privacy-focused Express + TypeScript + PostgreSQL (Neon) REST API for Bloom Reproductive Health Tracker. Provides cycle phase prediction algorithms, daily symptom log upserts, Helmet security headers, JWT auth, and an in-memory fallback store.',
+    blueprint: 'Mobile Client ➔ Helmet + CORS + JWT Auth ➔ Express API + Cycle Predictor ➔ Neon PostgreSQL',
+    metrics: [
+      { label: 'Cycle Prediction', desc: 'UTC Date-Safe Phase Calculator', icon: Sparkles },
+      { label: 'Neon PostgreSQL', desc: 'Direct pg Pool & In-Memory Fallback', icon: Zap },
+      { label: 'Hardened API', desc: 'Helmet, JWT & Scoped User Auth', icon: ShieldCheck }
+    ],
+    highlights: [
+      'Express & TypeScript REST API with Helmet Security',
+      'UTC-Safe Menstrual Cycle & Phase Prediction Engine',
+      'Daily Symptom & Mood Upsert on PostgreSQL',
+      'Zero-Config In-Memory Fallback for Local Testing'
+    ],
+    tags: ['Node.js', 'Express', 'TypeScript', 'PostgreSQL', 'Neon', 'JWT', 'Helmet'],
+    projectUrl: 'https://github.com/manokkk/BloomBackend'
   }
 ];

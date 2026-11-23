@@ -15,7 +15,8 @@ import {
   Sparkles, 
   ShieldCheck, 
   Zap, 
-  Code2 
+  Code2,
+  Server
 } from 'lucide-react';
 import { worksData } from '../data/projectsData';
 
@@ -24,7 +25,7 @@ export default function Works() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [modalTab, setModalTab] = useState('overview');
 
-  const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'AI & ML', 'IoT Hardware'];
+  const categories = ['All', 'Full-Stack Web', 'Mobile (Expo)', 'Backend / API', 'AI & ML', 'IoT Hardware'];
   
   // Escape key and background scroll locking for project inspector modal
   useEffect(() => {
@@ -62,6 +63,8 @@ export default function Works() {
         return <Globe className="w-5 h-5" style={{ color: '#38bdf8' }} />;
       case 'Mobile (Expo)':
         return <Smartphone className="w-5 h-5" style={{ color: '#34d399' }} />;
+      case 'Backend / API':
+        return <Server className="w-5 h-5" style={{ color: '#f472b6' }} />;
       case 'AI & ML':
         return <Cpu className="w-5 h-5" style={{ color: '#c084fc' }} />;
       case 'IoT Hardware':
@@ -86,6 +89,8 @@ export default function Works() {
         return { bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.3)' };
       case 'Mobile (Expo)':
         return { bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.3)' };
+      case 'Backend / API':
+        return { bg: 'rgba(244, 114, 182, 0.12)', border: 'rgba(244, 114, 182, 0.3)' };
       case 'AI & ML':
         return { bg: 'rgba(192, 132, 252, 0.12)', border: 'rgba(192, 132, 252, 0.3)' };
       case 'IoT Hardware':
